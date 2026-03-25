@@ -1,0 +1,7 @@
+<!-- pages/favorites/favorites.wxml -->
+<view class="container">
+  <view class="content">
+    <text class="title">我的收藏</text>
+    <text class="desc">功能开发中...</text>
+  </view>
+</view>

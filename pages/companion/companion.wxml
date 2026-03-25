@@ -1,0 +1,195 @@
+<!-- pages/companion/companion.wxml -->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input">
+      <van-icon name="search" size="18" color="#999" />
+      <input class="search-field" placeholder="请输入陪诊师姓名" value="{{searchText}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearchConfirm" />
+      <van-icon wx:if="{{searchText}}" name="clear" size="16" color="#999" bindtap="onClearSearch" />
+    </view>
+  </view>
+
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <view class="filter-item {{currentFilter === 'score' ? 'active' : ''}}" bindtap="onSortChange" data-type="score">
+      <text>评分优先</text>
+      <van-icon name="arrow-down" size="14" color="{{currentFilter === 'score' ? '#409eff' : '#999'}}" />
+    </view>
+    <view class="filter-item {{currentFilter === 'sales' ? 'active' : ''}}" bindtap="onSortChange" data-type="sales">
+      <text>服务量优先</text>
+      <van-icon name="arrow-down" size="14" color="{{currentFilter === 'sales' ? '#409eff' : '#999'}}" />
+    </view>
+    <view class="filter-item filter-btn" bindtap="showFilterDrawer">
+      <text>筛选</text>
+      <van-icon name="filter-o" size="14" color="#409eff" />
+    </view>
+  </view>
+
+  <!-- 陪诊师列表 -->
+  <view class="companion-list">
+    <view class="companion-card" wx:for="{{filteredCompanions}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+      <view class="card-left">
+        <image class="companion-avatar" src="{{item.avatar}}" mode="aspectFill" />
+      </view>
+      <view class="card-right">
+        <view class="info-content">
+          <view class="row-1">
+            <text class="name">{{item.name}}</text>
+            <view class="gender-icon {{item.gender}}">
+              <van-icon wx:if="{{item.gender === 'male'}}" name="passed" size="12" color="#fff" />
+              <van-icon wx:else name="passed" size="12" color="#fff" />
+            </view>
+            <text class="age" wx:if="{{item.age}}">{{item.age}}岁</text>
+            <view class="experience-tag" wx:if="{{item.experience}}">{{item.experience}}</view>
+          </view>
+          <view class="stats-row">
+            <view class="stat-item">
+              <van-icon name="orders-o" size="14" color="#999" />
+              <text>{{item.orders}}单</text>
+            </view>
+            <view class="stat-item">
+              <van-icon name="star" size="14" color="#f7ba2a" />
+              <text class="score">{{item.score}}</text>
+            </view>
+            <view class="stat-item">
+              <van-icon name="chat-o" size="14" color="#999" />
+              <text>{{item.comments}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="action-column">
+          <view class="book-btn" catchtap="openBooking" data-companion="{{item}}">
+            <text>立即预约</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{filteredCompanions.length === 0 && !loading}}">
+    <van-icon name="search" size="80" color="#ddd" />
+    <text class="empty-text">暂无符合条件的陪诊师</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+</view>
+
+<!-- 预约服务抽屉 -->
+<view class="drawer-mask" wx:if="{{showBookingDrawer}}" bindtap="closeBookingDrawer">
+  <view class="drawer-content" catchtap="stopPropagation">
+    <view class="drawer-header">
+      <view class="header-left"></view>
+      <text class="drawer-title">选择服务</text>
+      <view class="header-right" bindtap="closeBookingDrawer">
+        <van-icon name="cross" size="20" color="#999" />
+      </view>
+    </view>
+    
+    <!-- 陪诊师信息 -->
+    <view class="companion-header-card" wx:if="{{selectedCompanion}}">
+      <image class="companion-avatar" src="{{selectedCompanion.avatar}}" mode="aspectFill" />
+      <view class="companion-info">
+        <view class="info-row">
+          <text class="name">{{selectedCompanion.name}}</text>
+          <view class="gender-icon {{selectedCompanion.gender}}">
+            <van-icon wx:if="{{selectedCompanion.gender === 'male'}}" name="passed" size="12" color="#fff" />
+            <van-icon wx:else name="passed" size="12" color="#fff" />
+          </view>
+          <text class="age">{{selectedCompanion.age}}岁</text>
+          <view class="experience-tag">{{selectedCompanion.experience}}</view>
+        </view>
+        <view class="stats-row">
+          <view class="stat-item">
+            <van-icon name="orders-o" size="14" color="#999" />
+            <text>{{selectedCompanion.orders}}单</text>
+          </view>
+          <view class="stat-item">
+            <van-icon name="star" size="14" color="#f7ba2a" />
+            <text>{{selectedCompanion.score}}</text>
+          </view>
+          <view class="stat-item">
+            <van-icon name="chat-o" size="14" color="#999" />
+            <text>{{selectedCompanion.comments}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 服务列表 -->
+    <view class="service-selection">
+      <scroll-view class="service-scroll" scroll-y="{{true}}">
+        <view class="service-card" wx:for="{{serviceList}}" wx:key="id" bindtap="selectService" data-service="{{item}}">
+          <image class="service-image" src="{{item.image}}" mode="aspectFill" />
+          <view class="service-info">
+            <text class="service-name">{{item.name}}</text>
+            <text class="service-desc">{{item.description}}</text>
+            <text class="service-price">¥{{item.price}}</text>
+          </view>
+          <view class="select-icon">
+            <van-icon name="arrow" size="20" color="#409eff" />
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>
+
+<!-- 筛选抽屉 -->
+<view class="drawer-mask" wx:if="{{showFilterDrawer}}" bindtap="closeFilterDrawer">
+  <view class="filter-drawer-content" catchtap="stopPropagation">
+    <view class="filter-header">
+      <text class="filter-title">筛选条件</text>
+      <view class="close-btn" bindtap="closeFilterDrawer">
+        <van-icon name="cross" size="20" color="#999" />
+      </view>
+    </view>
+    
+    <scroll-view class="filter-body" scroll-y="{{true}}">
+      <!-- 性别筛选 -->
+      <view class="filter-section">
+        <text class="section-title">性别要求</text>
+        <view class="tag-group">
+          <view class="tag-item {{filterForm.gender === '' ? 'active' : ''}}" bindtap="onGenderFilter" data-gender="">
+            <text>全部</text>
+          </view>
+          <view class="tag-item {{filterForm.gender === 'male' ? 'active' : ''}}" bindtap="onGenderFilter" data-gender="male">
+            <text>男</text>
+          </view>
+          <view class="tag-item {{filterForm.gender === 'female' ? 'active' : ''}}" bindtap="onGenderFilter" data-gender="female">
+            <text>女</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 服务分类筛选 -->
+      <view class="filter-section">
+        <text class="section-title">服务分类</text>
+        <view class="tag-group">
+          <view class="tag-item {{!filterForm.category ? 'active' : ''}}" bindtap="onCategoryFilter" data-category="">
+            <text>全部</text>
+          </view>
+          <view class="tag-item {{filterForm.category === 'companion' ? 'active' : ''}}" bindtap="onCategoryFilter" data-category="companion">
+            <text>陪诊服务</text>
+          </view>
+          <view class="tag-item {{filterForm.category === 'agency' ? 'active' : ''}}" bindtap="onCategoryFilter" data-category="agency">
+            <text>代办服务</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+    
+    <view class="filter-footer">
+      <view class="footer-btn reset-btn" bindtap="resetFilter">
+        <text>重置</text>
+      </view>
+      <view class="footer-btn confirm-btn" bindtap="applyFilter">
+        <text>确定</text>
+      </view>
+    </view>
+  </view>
+</view>

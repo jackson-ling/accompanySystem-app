@@ -1,0 +1,7 @@
+<!-- pages/recharge/recharge.wxml -->
+<view class="container">
+  <view class="content">
+    <text class="title">账户充值</text>
+    <text class="desc">功能开发中...</text>
+  </view>
+</view>

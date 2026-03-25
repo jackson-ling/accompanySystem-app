@@ -1,0 +1,145 @@
+<!-- pages/profile/profile.wxml -->
+<view class="container">
+  <!-- 头部区域 -->
+  <view class="header-section">
+    <view class="user-card" bindtap="handleUserInfoClick">
+      <image class="avatar" src="{{userInfo.avatar || '/static/icons/default-avatar.png'}}" mode="aspectFill" />
+      <view class="info-content">
+        <view class="nickname-row">
+          <text class="nickname">{{isLogin ? userInfo.nickname : '点击登录/注册'}}</text>
+        </view>
+        <text class="phone" wx:if="{{isLogin}}">{{userInfo.phone}}</text>
+        <text class="desc" wx:else>登录后享受更多权益</text>
+      </view>
+      <van-icon name="arrow" size="16" color="#fff" />
+    </view>
+
+    <!-- 余额卡片 -->
+    <view class="balance-card">
+      <view class="balance-info">
+        <text class="label">账户余额</text>
+        <view class="amount-row">
+          <text class="amount">¥{{isLogin ? userInfo.balance : '0.00'}}</text>
+        </view>
+      </view>
+      <view class="recharge-btn" bindtap="handleRecharge">
+        <text>立即充值</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 订单卡片 -->
+  <view class="section-card">
+    <view class="card-header" bindtap="goToOrderList">
+      <text class="title">我的订单</text>
+      <view class="more">
+        <text>全部订单</text>
+        <van-icon name="arrow" size="14" color="#999" />
+      </view>
+    </view>
+    <view class="order-grid">
+      <view class="grid-item" bindtap="goToOrderList" data-status="2">
+        <view class="icon-wrapper">
+          <van-icon name="clock-o" size="28" color="#409eff" />
+          <view class="badge" wx:if="{{pendingServiceCount > 0}}">{{pendingServiceCount}}</view>
+        </view>
+        <text class="label">待服务</text>
+      </view>
+      <view class="grid-item" bindtap="goToOrderList" data-status="3">
+        <view class="icon-wrapper">
+          <van-icon name="play-circle-o" size="28" color="#e6a23c" />
+        </view>
+        <text class="label">服务中</text>
+      </view>
+      <view class="grid-item" bindtap="goToOrderList" data-status="4">
+        <view class="icon-wrapper">
+          <van-icon name="passed" size="28" color="#67c23a" />
+        </view>
+        <text class="label">已完成</text>
+      </view>
+      <view class="grid-item" bindtap="goToOrderList" data-status="5">
+        <view class="icon-wrapper">
+          <van-icon name="replay" size="28" color="#909399" />
+        </view>
+        <text class="label">退款/售后</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 常用功能菜单 -->
+  <view class="section-card menu-list">
+    <view class="card-header">
+      <text class="title">常用功能</text>
+    </view>
+
+    <view class="menu-item" bindtap="handlePatientManagement">
+      <view class="left">
+        <van-icon name="user-o" size="20" color="#409eff" />
+        <text class="text">就诊人管理</text>
+      </view>
+      <van-icon name="arrow" size="14" color="#c0c4cc" />
+    </view>
+
+    <view class="menu-item" bindtap="handleFavorites">
+      <view class="left">
+        <van-icon name="star-o" size="20" color="#f56c6c" />
+        <text class="text">我的收藏</text>
+      </view>
+      <van-icon name="arrow" size="14" color="#c0c4cc" />
+    </view>
+
+    <view class="menu-item" bindtap="handleWorkbench">
+      <view class="left">
+        <van-icon name="bag-o" size="20" color="#409eff" />
+        <text class="text">陪诊师工作台</text>
+      </view>
+      <van-icon name="arrow" size="14" color="#c0c4cc" />
+    </view>
+
+    <view class="menu-item" bindtap="handleContactService">
+      <view class="left">
+        <van-icon name="service-o" size="20" color="#e6a23c" />
+        <text class="text">联系客服</text>
+      </view>
+      <van-icon name="arrow" size="14" color="#c0c4cc" />
+    </view>
+
+    <view class="menu-item" bindtap="handleFeedback">
+      <view class="left">
+        <van-icon name="chat-o" size="20" color="#409eff" />
+        <text class="text">意见反馈</text>
+      </view>
+      <van-icon name="arrow" size="14" color="#c0c4cc" />
+    </view>
+  </view>
+
+  <!-- 其他功能 -->
+  <view class="section-card menu-list">
+    <view class="card-header">
+      <text class="title">其他</text>
+    </view>
+
+    <view class="menu-item" bindtap="handleSettings">
+      <view class="left">
+        <van-icon name="setting-o" size="20" color="#409eff" />
+        <text class="text">设置</text>
+      </view>
+      <van-icon name="arrow" size="14" color="#c0c4cc" />
+    </view>
+
+    <view class="menu-item" bindtap="handleAbout">
+      <view class="left">
+        <van-icon name="info-o" size="20" color="#409eff" />
+        <text class="text">关于我们</text>
+      </view>
+      <van-icon name="arrow" size="14" color="#c0c4cc" />
+    </view>
+  </view>
+
+  <!-- 退出登录按钮 -->
+  <view class="logout-section" wx:if="{{isLogin}}">
+    <view class="logout-btn" bindtap="handleLogout">
+      <text>退出登录</text>
+    </view>
+  </view>
+</view>

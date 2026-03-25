@@ -1,0 +1,1 @@
+{"navigationBarTitleText": "陪诊服务", "enablePullDownRefresh": true, "backgroundColor": "#f7f8fa", "backgroundTextStyle": "dark", "usingComponents": {"van-icon": "@vant/weapp/icon/index", "van-button": "@vant/weapp/button/index", "van-tag": "@vant/weapp/tag/index"}}

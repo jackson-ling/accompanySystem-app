@@ -1,0 +1,102 @@
+<!-- pages/register/register.wxml -->
+<view class="container">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="back-btn" bindtap="goBack">
+      <van-icon name="arrow-left" size="24" color="#333" />
+    </view>
+    <view class="logo">
+      <van-icon name="service-o" size="64" color="#409eff" />
+    </view>
+    <text class="title">注册账号</text>
+  </view>
+
+  <!-- 注册表单 -->
+  <view class="form-section">
+    <!-- 手机号输入 -->
+    <view class="input-group">
+      <view class="input-wrapper">
+        <text class="label-text">手机号码</text>
+        <input 
+          class="input-field" 
+          placeholder="请输入手机号" 
+          type="number" 
+          maxlength="11"
+          value="{{phone}}"
+          bindinput="onPhoneInput"
+        />
+        <van-icon name="phone-o" size="20" color="#409eff" class="input-icon" />
+      </view>
+    </view>
+
+    <!-- 验证码输入 -->
+    <view class="input-group">
+      <view class="input-wrapper code-wrapper">
+        <text class="label-text">验证码</text>
+        <input 
+          class="input-field" 
+          placeholder="请输入验证码" 
+          type="number" 
+          maxlength="6"
+          value="{{verifyCode}}"
+          bindinput="onVerifyCodeInput"
+        />
+        <view class="code-btn {{canSendCode ? '' : 'disabled'}}" bindtap="sendVerifyCode">
+          <text>{{codeButtonText}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 密码输入 -->
+    <view class="input-group">
+      <view class="input-wrapper">
+        <text class="label-text">设置密码</text>
+        <input 
+          class="input-field" 
+          placeholder="请输入密码(6-20位)" 
+          password="{{!showPassword}}"
+          value="{{password}}"
+          bindinput="onPasswordInput"
+        />
+        <van-icon name="eye-o" size="20" color="{{showPassword ? '#409eff' : '#999'}}" class="input-icon" bindtap="togglePassword" />
+      </view>
+    </view>
+
+    <!-- 确认密码输入 -->
+    <view class="input-group">
+      <view class="input-wrapper">
+        <text class="label-text">确认密码</text>
+        <input 
+          class="input-field" 
+          placeholder="请再次输入密码" 
+          password="{{!showConfirmPassword}}"
+          value="{{confirmPassword}}"
+          bindinput="onConfirmPasswordInput"
+        />
+        <van-icon name="eye-o" size="20" color="{{showConfirmPassword ? '#409eff' : '#999'}}" class="input-icon" bindtap="toggleConfirmPassword" />
+      </view>
+    </view>
+
+    <!-- 注册按钮 -->
+    <view class="register-btn {{canRegister ? '' : 'disabled'}}" bindtap="handleRegister">
+      <text>注册</text>
+    </view>
+
+    <!-- 登录链接 -->
+    <view class="login-link">
+      <text>已有账号？</text>
+      <text class="link" bindtap="goToLogin">立即登录</text>
+    </view>
+
+    <!-- 协议 -->
+    <view class="agreement">
+      <checkbox class="agreement-checkbox" checked="{{agreed}}" bindtap="toggleAgreement" color="#409eff" />
+      <view class="agreement-text" bindtap="handleAgreementClick">
+        <text>我已阅读并同意</text>
+        <text class="link">《用户协议》</text>
+        <text>和</text>
+        <text class="link">《隐私政策》</text>
+      </view>
+    </view>
+  </view>
+</view>

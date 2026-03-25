@@ -1,0 +1,7 @@
+<!-- pages/message-detail/message-detail.wxml -->
+<view class="container">
+  <view class="content">
+    <text class="title">消息详情</text>
+    <text class="desc">功能开发中...</text>
+  </view>
+</view>

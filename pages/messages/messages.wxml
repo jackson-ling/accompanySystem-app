@@ -1,0 +1,30 @@
+<!-- pages/messages/messages.wxml -->
+<view class="container">
+  <!-- 消息列表 -->
+  <view class="message-list">
+    <view class="message-item" wx:for="{{messageList}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+      <view class="icon-box-wrapper" style="background-color: {{item.bgColor}}">
+        <view class="icon-box">
+          <van-icon name="{{item.iconName}}" size="28" color="#fff" />
+        </view>
+        <view class="unread-badge" wx:if="{{item.unreadCount > 0}}">
+          <text>{{item.unreadCount > 99 ? '99+' : item.unreadCount}}</text>
+        </view>
+      </view>
+      <view class="content-box">
+        <view class="title-row">
+          <text class="name">{{item.name}}</text>
+          <text class="time">{{item.time}}</text>
+        </view>
+        <text class="message-preview">{{item.preview}}</text>
+      </view>
+      <van-icon name="arrow" size="16" color="#c0c4cc" />
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{messageList.length === 0}}">
+    <van-icon name="envelop-o" size="80" color="#ddd" />
+    <text class="empty-text">暂无消息</text>
+  </view>
+</view>

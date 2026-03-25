@@ -1,0 +1,7 @@
+<!-- pages/patient-add/patient-add.wxml -->
+<view class="container">
+  <view class="content">
+    <text class="title">添加就诊人</text>
+    <text class="desc">功能开发中...</text>
+  </view>
+</view>

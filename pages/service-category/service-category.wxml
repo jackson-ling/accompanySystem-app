@@ -1,0 +1,7 @@
+<!-- pages/service-category/service-category.wxml -->
+<view class="container">
+  <view class="content">
+    <text class="title">服务分类</text>
+    <text class="desc">功能开发中...</text>
+  </view>
+</view>

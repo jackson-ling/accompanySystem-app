@@ -1,0 +1,65 @@
+<!-- pages/ai-chat/ai-chat.wxml -->
+<view class="container">
+  <!-- 顶部导航 -->
+  <view class="chat-header" style="padding-top: calc(20rpx + env(safe-area-inset-top))">
+    <van-icon name="chat-o" size="24" color="#409eff" />
+    <text class="header-title">AI助手</text>
+    <view class="header-actions">
+      <van-icon name="ellipsis" size="20" color="#666" />
+    </view>
+  </view>
+
+  <!-- 消息列表 -->
+  <scroll-view class="message-list" scroll-y="{{true}}" scroll-into-view="{{scrollToView}}" scroll-with-animation="{{true}}">
+    <view class="message-row" wx:for="{{messages}}" wx:key="index" id="msg-{{index}}">
+      <!-- AI消息 -->
+      <view class="message-bubble ai-bubble" wx:if="{{!item.isMe}}">
+        <view class="ai-avatar">
+          <van-icon name="user-circle-o" size="48" color="#409eff" />
+        </view>
+        <view class="bubble-content">
+          <text>{{item.text}}</text>
+        </view>
+      </view>
+      
+      <!-- 用户消息 -->
+      <view class="message-bubble user-bubble" wx:else>
+        <view class="bubble-content">
+          <text>{{item.text}}</text>
+        </view>
+        <view class="user-avatar">
+          <image src="{{userInfo.avatar || '/static/icons/default-avatar.png'}}" mode="aspectFill" />
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 建议问题 -->
+  <view class="suggestions" wx:if="{{suggestions.length > 0 && !hasStarted}}">
+    <text class="suggestions-title">猜你想问</text>
+    <view class="suggestion-list">
+      <view class="suggestion-item" wx:for="{{suggestions}}" wx:key="index" bindtap="sendSuggestion" data-text="{{item}}">
+        <van-icon name="question-o" size="14" color="#409eff" />
+        <text>{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 输入框 -->
+  <view class="input-area">
+    <view class="input-wrapper">
+      <van-icon name="chat-o" size="20" color="#999" />
+      <input 
+        class="input-field" 
+        placeholder="请输入您的问题..." 
+        value="{{inputText}}"
+        bindinput="onInput"
+        bindconfirm="sendMessage"
+        confirm-type="send"
+      />
+      <view class="send-btn {{canSend ? '' : 'disabled'}}" bindtap="sendMessage">
+        <van-icon name="send-gift-o" size="20" color="{{canSend ? '#fff' : '#ccc'}}" />
+      </view>
+    </view>
+  </view>
+</view>

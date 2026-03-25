@@ -1,0 +1,187 @@
+<!-- pages/index/index.wxml -->
+<view class="container">
+  <!-- 位置选择栏 -->
+  <view class="location-bar">
+    <view class="location-info" bindtap="chooseLocation">
+      <van-icon name="location-o" size="16" color="#ff6b6b" />
+      <text class="location-name">{{locationName || '获取位置中...'}}</text>
+      <van-icon name="arrow-down" size="12" color="#999" />
+    </view>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-bar" bindtap="goToSearch">
+    <van-icon name="search" size="20" color="#999" />
+    <text class="search-placeholder">搜索您需要的服务</text>
+  </view>
+
+  <!-- 轮播图 -->
+  <view class="carousel-section">
+    <swiper class="carousel" indicator-dots="{{true}}" autoplay="{{true}}" interval="{{3000}}" duration="{{500}}" circular="{{true}}" indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#ffffff">
+      <swiper-item wx:for="{{carouselImages}}" wx:key="index">
+        <image class="carousel-image" src="{{item}}" mode="aspectFill" />
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <!-- 功能导航 -->
+  <view class="nav-grid">
+    <view class="nav-item" bindtap="goToServiceCategory" data-type="companion">
+      <view class="nav-content">
+        <view class="nav-icon-wrapper companion-icon">
+          <van-icon name="medal-o" size="36" color="#fff" />
+        </view>
+        <text class="nav-text">陪诊服务</text>
+      </view>
+    </view>
+    <view class="nav-item" bindtap="goToServiceCategory" data-type="agency">
+      <view class="nav-content">
+        <view class="nav-icon-wrapper agency-icon">
+          <van-icon name="notes-o" size="36" color="#fff" />
+        </view>
+        <text class="nav-text">代办服务</text>
+      </view>
+    </view>
+    <view class="nav-item" bindtap="goToCompanionList">
+      <view class="nav-content">
+        <view class="nav-icon-wrapper doctor-icon">
+          <van-icon name="user-o" size="36" color="#fff" />
+        </view>
+        <text class="nav-text">找陪诊师</text>
+      </view>
+    </view>
+    <view class="nav-item" bindtap="goToOrderList">
+      <view class="nav-content">
+        <view class="nav-icon-wrapper order-icon">
+          <van-icon name="todo-list-o" size="36" color="#fff" />
+        </view>
+        <text class="nav-text">我的订单</text>
+      </view>
+    </view>
+  </view>
+
+<!-- 医院列表 -->
+  <view class="hospital-section">
+    <view class="section-header">
+      <view class="header-left">
+        <van-icon name="hospital-o" size="20" color="#409eff" />
+        <text class="section-title">附近医院</text>
+      </view>
+      <view class="more-link" bindtap="goToHospitalList">
+        <text>查看全部</text>
+        <van-icon name="arrow" size="14" color="#999" />
+      </view>
+    </view>
+    
+    <scroll-view class="hospital-scroll" scroll-x="{{true}}" show-scrollbar="{{false}}">
+      <view class="hospital-list">
+        <view class="hospital-card" wx:for="{{hospitalList}}" wx:key="id" bindtap="goToHospitalDetail" data-hospital="{{item}}">
+          <view class="hospital-icon-wrapper">
+            <van-icon name="shop-o" size="40" color="#409eff" />
+          </view>
+          <text class="hospital-name">{{item.name}}</text>
+          <van-tag type="primary" size="medium">{{item.level}}</van-tag>
+          <text class="hospital-distance">{{item.distance}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 服务列表 -->
+  <view class="service-list-section">
+    <view class="section-header">
+      <view class="header-left">
+        <van-icon name="fire-o" size="20" color="#ff6b6b" />
+        <text class="section-title">热门服务</text>
+      </view>
+      <view class="more-link" bindtap="goToServiceCategory">
+        <text>查看全部</text>
+        <van-icon name="arrow" size="14" color="#999" />
+      </view>
+    </view>
+
+    <view class="service-list">
+      <view class="service-card" wx:for="{{serviceList}}" wx:key="id" bindtap="goToServiceDetail" data-service="{{item}}">
+        <image class="service-image" src="{{item.image}}" mode="aspectFill" lazy-load="{{true}}" />
+        <view class="service-info">
+          <view class="info-top">
+            <text class="service-name">{{item.name}}</text>
+            <view class="service-tags">
+              <van-tag wx:if="{{item.tag}}" type="primary" size="mini">{{item.tag}}</van-tag>
+            </view>
+          </view>
+          <text class="service-desc">{{item.description}}</text>
+          <view class="info-bottom">
+            <view class="service-meta">
+              <text class="service-price">¥{{item.price}}</text>
+              <view class="meta-row">
+                <van-icon name="bag-o" size="12" color="#999" />
+                <text class="service-sales">已售 {{item.sales}}</text>
+                <view class="divider"></view>
+                <van-icon name="clock-o" size="12" color="#999" />
+                <text class="service-duration">{{item.duration}}</text>
+              </view>
+            </view>
+            <view class="book-btn" catchtap="openCompanionDrawer" data-service="{{item}}">
+              立刻预约
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+</view>
+
+<!-- 陪诊师选择抽屉 -->
+<view class="drawer-mask" wx:if="{{showCompanionDrawer}}" bindtap="closeCompanionDrawer">
+  <view class="drawer-content" catchtap="stopPropagation">
+    <view class="drawer-header">
+      <view class="header-left"></view>
+      <text class="drawer-title">选择陪诊师</text>
+      <view class="header-right" bindtap="closeCompanionDrawer">
+        <van-icon name="cross" size="24" color="#333" />
+      </view>
+    </view>
+    
+    <view class="drawer-body">
+      <scroll-view class="companion-scroll" scroll-y="{{true}}">
+        <view class="companion-card" wx:for="{{companionList}}" wx:key="id" bindtap="selectCompanion" data-companion="{{item}}">
+          <image class="companion-avatar" src="{{item.avatar}}" mode="aspectFill" />
+          <view class="companion-info">
+            <view class="info-row">
+              <text class="name">{{item.name}}</text>
+              <view class="tags">
+                <van-tag type="primary" size="mini" wx:if="{{item.gender === 'male'}}">男</van-tag>
+                <van-tag type="danger" size="mini" wx:else>女</van-tag>
+                <van-tag type="success" size="mini">{{item.age}}岁</van-tag>
+                <van-tag type="warning" size="mini" wx:if="{{item.experience}}">{{item.experience}}</van-tag>
+              </view>
+            </view>
+            <view class="stats-row">
+              <view class="stat-item">
+                <van-icon name="todo-list-o" size="12" color="#666" />
+                <text>{{item.orders}}单</text>
+              </view>
+              <view class="stat-item">
+                <van-icon name="star-o" size="12" color="#f7ba2a" />
+                <text>{{item.score}}</text>
+              </view>
+              <view class="stat-item">
+                <van-icon name="chat-o" size="12" color="#666" />
+                <text>{{item.comments}}</text>
+              </view>
+            </view>
+            <text class="intro">{{item.intro}}</text>
+          </view>
+          <van-icon name="arrow" size="16" color="#999" />
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>
