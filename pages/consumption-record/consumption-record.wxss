@@ -1,0 +1,143 @@
+/* pages/consumption-record/consumption-record.wxss */
+
+.consumption-record-page {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+}
+
+/* 头部导航 */
+.header {
+  background-color: #fff;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+  border-bottom: 1rpx solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.back-icon {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: 34rpx;
+  font-weight: 500;
+  color: #333;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.placeholder {
+  width: 48rpx;
+}
+
+/* 内容区域 */
+.content {
+  padding: 32rpx;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+  gap: 16rpx;
+  color: #999;
+}
+
+.empty-state {
+  padding: 80rpx 0;
+}
+
+/* 记录列表 */
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+/* 记录项 */
+.record-item {
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.item-main {
+  padding: 32rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.type {
+  font-size: 24rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  display: inline-block;
+  width: fit-content;
+}
+
+.type.recharge {
+  background: #f0f9ff;
+  color: #67c23a;
+}
+
+.type.order {
+  background: #f0f9ff;
+  color: #409eff;
+}
+
+.title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8rpx;
+}
+
+.amount {
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.amount.income {
+  color: #67c23a;
+}
+
+.amount.expense {
+  color: #333;
+}
+
+.balance {
+  font-size: 24rpx;
+  color: #999;
+}

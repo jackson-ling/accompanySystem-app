@@ -1,7 +1,73 @@
 <!-- pages/patient-list/patient-list.wxml -->
-<view class="container">
-  <view class="content">
-    <text class="title">就诊人管理</text>
-    <text class="desc">功能开发中...</text>
+<view class="patient-list-page">
+  <!-- 头部导航 -->
+  <view class="header-nav">
+    <view class="back-icon" bindtap="goBack">
+      <van-icon name="arrow-left" size="20" />
+    </view>
+    <text class="title">{{translations.title}}</text>
+    <view class="placeholder"></view>
   </view>
+
+  <!-- 就诊人列表 -->
+  <view class="patient-list" wx:if="{{!isEmpty && !loading}}">
+    <view 
+      wx:for="{{patients}}" 
+      wx:key="id" 
+      class="patient-card {{selectedPatientId === item.id ? 'is-selected' : ''}}"
+      data-patient="{{item}}"
+      bindtap="handleSelect"
+    >
+      <view class="card-left">
+        <view class="row-1">
+          <text class="name">{{item.name}}</text>
+          <text class="phone">{{item.phone}}</text>
+          <text wx:if="{{item.default}}" class="tag">{{translations.default}}</text>
+        </view>
+        <view class="row-2">
+          <text class="address-label">{{translations.address}}：</text>
+          <text class="address">{{item.address || translations.noAddress}}</text>
+        </view>
+      </view>
+      <view class="card-right">
+        <van-icon wx:if="{{selectedPatientId === item.id}}" name="success" size="20" color="#409eff" class="check-icon" />
+        <view class="edit-btn" data-patient="{{item}}" catchtap="openDrawer">
+          <van-icon name="edit" size="20" color="#999" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{isEmpty && !loading}}" class="empty-state">
+    <van-empty description="{{translations.emptyTip}}" />
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-state">
+    <van-loading type="spinner" size="24" />
+    <text>加载中...</text>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-action-bar">
+    <van-button 
+      type="primary" 
+      round 
+      block 
+      icon="plus" 
+      bindclick="handleAdd"
+    >
+      {{translations.addPatient}}
+    </van-button>
+  </view>
+
+  <!-- 操作抽屉 -->
+  <van-action-sheet
+    show="{{showDrawer}}"
+    actions="{{drawerActions}}"
+    cancel-text=""
+    bind:close="closeDrawer"
+    bind:select="handleActionSelect"
+  />
 </view>

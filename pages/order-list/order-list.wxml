@@ -1,7 +1,192 @@
 <!-- pages/order-list/order-list.wxml -->
-<view class="container">
-  <view class="content">
-    <text class="title">订单列表</text>
-    <text class="desc">功能开发中...</text>
+<view class="order-list-page">
+  <!-- 头部导航 -->
+  <view class="header-nav">
+    <view class="back-icon" bindtap="goBack">
+      <van-icon name="arrow-left" size="20" />
+    </view>
+    <text class="title">{{translations.title}}</text>
+    <view class="placeholder"></view>
+  </view>
+
+  <!-- 标签页 -->
+  <view class="tabs-wrapper">
+    <scroll-view scroll-x class="tabs-scroll" scroll-anchoring enable-flex>
+      <view class="tabs-container">
+        <view 
+          class="tab-item {{activeTab === 0 ? 'active' : ''}}" 
+          data-index="0" 
+          bindtap="handleTabClick"
+        >
+          {{translations.all}}
+        </view>
+        <view 
+          class="tab-item {{activeTab === 1 ? 'active' : ''}}" 
+          data-index="1" 
+          bindtap="handleTabClick"
+        >
+          {{translations.pendingPayment}}
+        </view>
+        <view 
+          class="tab-item {{activeTab === 2 ? 'active' : ''}}" 
+          data-index="2" 
+          bindtap="handleTabClick"
+        >
+          {{translations.pendingService}}
+        </view>
+        <view 
+          class="tab-item {{activeTab === 3 ? 'active' : ''}}" 
+          data-index="3" 
+          bindtap="handleTabClick"
+        >
+          {{translations.inService}}
+        </view>
+        <view 
+          class="tab-item {{activeTab === 4 ? 'active' : ''}}" 
+          data-index="4" 
+          bindtap="handleTabClick"
+        >
+          {{translations.completed}}
+        </view>
+        <view 
+          class="tab-item {{activeTab === 5 ? 'active' : ''}}" 
+          data-index="5" 
+          bindtap="handleTabClick"
+        >
+          {{translations.refund}}
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 订单列表内容 -->
+  <view class="order-content">
+    <!-- 空状态 -->
+    <view wx:if="{{isEmpty && !loading}}" class="empty-state">
+      <van-empty description="{{translations.noData}}" />
+    </view>
+
+    <!-- 加载状态 -->
+    <view wx:if="{{loading}}" class="loading-state">
+      <van-loading type="spinner" size="24" />
+      <text>{{translations.loading}}</text>
+    </view>
+
+    <!-- 订单卡片列表 -->
+    <view wx:else class="order-list">
+      <view 
+        wx:for="{{filteredOrders}}" 
+        wx:key="id" 
+        class="order-card"
+        data-order="{{item}}"
+        bindtap="goToDetail"
+      >
+        <!-- 卡片头部 -->
+        <view class="card-header">
+          <view class="header-left">
+            <text class="service-title">{{item.serviceName}}</text>
+          </view>
+          <view class="header-right">
+            <text class="status {{getStatusClass(item.status)}}">
+              {{getStatusText(item.status)}}
+            </text>
+          </view>
+        </view>
+
+        <!-- 卡片主体 -->
+        <view class="card-body">
+          <image class="service-img" src="{{item.image}}" mode="aspectFill" />
+          <view class="info">
+            <view class="info-top">
+              <view class="companion-info">
+                <view class="companion-row">
+                  <text class="label">{{translations.companion}}：</text>
+                  <text class="value">{{item.companionName || translations.noData}}</text>
+                </view>
+                <view class="companion-row">
+                  <text class="label">{{translations.contactPhone}}：</text>
+                  <text class="value">{{item.companionPhone || translations.noData}}</text>
+                </view>
+              </view>
+              <view class="view-details">
+                <text>{{translations.viewDetail}}</text>
+                <van-icon name="arrow" size="12" />
+              </view>
+            </view>
+            <view class="time-row">
+              <van-icon name="clock-o" size="14" />
+              <text>{{item.appointmentTime}}</text>
+            </view>
+            <view class="price-row">
+              <text class="label">{{translations.totalPrice}}</text>
+              <text class="price">¥{{item.price}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 卡片底部操作按钮 -->
+        <view class="card-footer" wx:if="{{item.status === 1 || item.status === 2 || item.status === 3 || item.status === 4}}">
+          <view class="actions">
+            <!-- 待付款状态 -->
+            <block wx:if="{{item.status === 1}}">
+              <van-button 
+                size="small" 
+                round 
+                data-order="{{item}}"
+                catchtap="handleCancel"
+              >
+                {{translations.cancelOrder}}
+              </van-button>
+              <van-button 
+                size="small" 
+                type="primary" 
+                round 
+                data-order="{{item}}"
+                catchtap="handlePay"
+              >
+                {{translations.pay}}
+              </van-button>
+            </block>
+
+            <!-- 待服务状态 -->
+            <block wx:if="{{item.status === 2}}">
+              <van-button 
+                size="small" 
+                round 
+                data-order="{{item}}"
+                catchtap="handleContact"
+              >
+                {{translations.contact}}
+              </van-button>
+            </block>
+
+            <!-- 服务中状态 -->
+            <block wx:if="{{item.status === 3}}">
+              <van-button 
+                size="small" 
+                type="primary" 
+                round 
+                data-order="{{item}}"
+                catchtap="handleConfirm"
+              >
+                {{translations.confirm}}
+              </van-button>
+            </block>
+
+            <!-- 已完成状态 -->
+            <block wx:if="{{item.status === 4}}">
+              <van-button 
+                size="small" 
+                round 
+                data-order="{{item}}"
+                catchtap="handleRefund"
+              >
+                {{translations.afterSales}}
+              </van-button>
+            </block>
+          </view>
+        </view>
+      </view>
+    </view>
   </view>
 </view>

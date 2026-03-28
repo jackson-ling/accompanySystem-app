@@ -1,0 +1,97 @@
+<!-- pages/companion-profile-edit/companion-profile-edit.wxml -->
+<view class="profile-edit-page">
+  <!-- 头部导航 -->
+  <view class="header">
+    <view class="back-icon" bindtap="goBack">
+      <van-icon name="arrow-left" size="20" color="#333" />
+    </view>
+    <text class="title">{{translations.title}}</text>
+    <view class="save-btn" bindtap="handleSave">
+      <text>{{translations.save}}</text>
+    </view>
+  </view>
+
+  <!-- 表单内容 -->
+  <view class="form-content">
+    <!-- 头像区域 -->
+    <view class="avatar-section">
+      <view class="avatar-wrapper" bindtap="handleAvatarUpload">
+        <image class="avatar" src="{{avatar || 'https://placehold.co/160x160/409eff/ffffff?text=陪'}}" mode="aspectFill" />
+        <view class="edit-overlay">
+          <van-icon name="photograph" size="20" color="#fff" />
+        </view>
+      </view>
+      <text class="tip">{{translations.avatarTip}}</text>
+    </view>
+
+    <!-- 基本信息表单 -->
+    <view class="form-group">
+      <!-- 昵称 -->
+      <view class="form-item">
+        <text class="label">{{translations.nickname}}</text>
+        <input 
+          class="custom-input" 
+          placeholder="{{translations.nicknamePlaceholder}}"
+          value="{{formData.nickname}}"
+          bindinput="handleNicknameInput"
+        />
+      </view>
+
+      <!-- 手机号 -->
+      <view class="form-item">
+        <text class="label">{{translations.phone}}</text>
+        <input 
+          class="custom-input" 
+          placeholder="{{translations.phonePlaceholder}}"
+          value="{{formData.phone}}"
+          bindinput="handlePhoneInput"
+          type="number"
+          maxlength="11"
+        />
+      </view>
+
+      <!-- 年龄 -->
+      <view class="form-item">
+        <text class="label">{{translations.age}}</text>
+        <input 
+          class="custom-input" 
+          placeholder="{{translations.agePlaceholder}}"
+          value="{{formData.age}}"
+          bindinput="handleAgeInput"
+          type="number"
+        />
+      </view>
+
+      <!-- 从业年限 -->
+      <view class="form-item">
+        <text class="label">{{translations.experience}}</text>
+        <input 
+          class="custom-input" 
+          placeholder="{{translations.experiencePlaceholder}}"
+          value="{{formData.experience}}"
+          bindinput="handleExperienceInput"
+        />
+      </view>
+    </view>
+
+    <!-- 个人介绍 -->
+    <view class="form-group">
+      <view class="form-item vertical">
+        <text class="label">{{translations.introduction}}</text>
+        <textarea 
+          class="custom-textarea" 
+          placeholder="{{translations.introductionPlaceholder}}"
+          value="{{formData.introduction}}"
+          bindinput="handleIntroductionInput"
+          maxlength="200"
+          auto-height
+        />
+        <view class="word-count">
+          <text>{{formData.introduction.length}}</text>
+          <text>{{translations.wordCount}}</text>
+          <text>200</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

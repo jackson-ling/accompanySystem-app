@@ -3,7 +3,7 @@
   <!-- 顶部导航 -->
   <view class="chat-header" style="padding-top: calc(20rpx + env(safe-area-inset-top))">
     <van-icon name="chat-o" size="24" color="#409eff" />
-    <text class="header-title">AI助手</text>
+    <text class="header-title">{{translations.title}}</text>
     <view class="header-actions">
       <van-icon name="ellipsis" size="20" color="#666" />
     </view>
@@ -36,7 +36,7 @@
 
   <!-- 建议问题 -->
   <view class="suggestions" wx:if="{{suggestions.length > 0 && !hasStarted}}">
-    <text class="suggestions-title">猜你想问</text>
+    <text class="suggestions-title">{{translations.youWantToAsk}}</text>
     <view class="suggestion-list">
       <view class="suggestion-item" wx:for="{{suggestions}}" wx:key="index" bindtap="sendSuggestion" data-text="{{item}}">
         <van-icon name="question-o" size="14" color="#409eff" />
@@ -51,7 +51,7 @@
       <van-icon name="chat-o" size="20" color="#999" />
       <input 
         class="input-field" 
-        placeholder="请输入您的问题..." 
+        placeholder="{{translations.placeholder}}" 
         value="{{inputText}}"
         bindinput="onInput"
         bindconfirm="sendMessage"

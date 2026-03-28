@@ -1,5 +1,6 @@
 // pages/search/search.js
 const mock = require('../../mock/index.js')
+const i18n = require('../../utils/i18n.js')
 
 Page({
   data: {
@@ -9,17 +10,52 @@ Page({
     isSearching: false,
     allServices: [],
     loading: false,
-    filteredServices: []
+    filteredServices: [],
+    translations: {
+      placeholder: '',
+      search: '',
+      history: '',
+      clear: '',
+      guessYouLike: '',
+      noResults: '',
+      bookNow: '',
+      loading: ''
+    }
   },
 
   onLoad(options) {
     console.log('搜索页面加载', options)
+    this.updateTranslations()
     this.loadHistory()
     this.loadServices()
+    
+    // 监听语言变化
+    const app = getApp()
+    if (app.onLanguageChange) {
+      app.onLanguageChange(() => {
+        this.updateTranslations()
+      })
+    }
   },
 
   onShow() {
     console.log('搜索页面显示')
+  },
+  
+  // 更新翻译文本
+  updateTranslations() {
+    this.setData({
+      translations: {
+        placeholder: i18n.t('index.searchPlaceholder'),
+        search: i18n.t('common.search'),
+        history: i18n.t('search.history'),
+        clear: i18n.t('search.clear'),
+        guessYouLike: i18n.t('search.guessYouLike'),
+        noResults: i18n.t('search.noResults'),
+        bookNow: i18n.t('search.bookNow'),
+        loading: i18n.t('common.loading')
+      }
+    })
   },
 
   // 加载历史搜索

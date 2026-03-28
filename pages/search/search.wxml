@@ -7,11 +7,11 @@
     </view>
     <view class="search-input-wrapper">
       <van-icon name="search" size="16" color="#999" />
-      <input class="search-input" placeholder="搜索您需要的服务" value="{{searchText}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="performSearch" />
+      <input class="search-input" placeholder="{{translations.placeholder}}" value="{{searchText}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="performSearch" />
       <van-icon wx:if="{{searchText}}" name="clear" size="16" color="#999" bindtap="clearSearch" />
     </view>
     <view class="header-right" bindtap="performSearch">
-      <text class="search-btn">搜索</text>
+      <text class="search-btn">{{translations.search}}</text>
     </view>
   </view>
 
@@ -22,8 +22,8 @@
       <!-- 历史搜索 -->
       <view wx:if="{{historyList.length > 0}}" class="section">
         <view class="section-header">
-          <text class="title">历史搜索</text>
-          <text class="clear-btn" bindtap="clearHistory">清空</text>
+          <text class="title">{{translations.history}}</text>
+          <text class="clear-btn" bindtap="clearHistory">{{translations.clear}}</text>
         </view>
         <view class="tags-container">
           <view wx:for="{{historyList}}" wx:key="index" class="tag-item" bindtap="performSearch" data-text="{{item}}">
@@ -35,7 +35,7 @@
       <!-- 猜你喜欢 -->
       <view class="section">
         <view class="section-header">
-          <text class="title">猜你喜欢</text>
+          <text class="title">{{translations.guessYouLike}}</text>
         </view>
         <view class="tags-container">
           <view wx:for="{{allServices}}" wx:key="id" class="tag-item" bindtap="performSearch" data-text="{{item.name}}">
@@ -49,7 +49,7 @@
     <view wx:else class="results-view">
       <view wx:if="{{filteredServices.length === 0 && !loading}}" class="empty-state">
         <van-icon name="search" size="80" color="#ddd" />
-        <text class="empty-text">暂无相关服务</text>
+        <text class="empty-text">{{translations.noResults}}</text>
       </view>
       <view wx:else class="service-list">
         <view class="service-card" wx:for="{{filteredServices}}" wx:key="id" bindtap="goToServiceDetail" data-service="{{item}}">
@@ -64,7 +64,7 @@
                 <text class="service-price">¥{{item.price}}</text>
               </view>
               <view class="select-btn">
-                <text>去预约</text>
+                <text>{{translations.bookNow}}</text>
               </view>
             </view>
           </view>
@@ -72,7 +72,7 @@
       </view>
       <view wx:if="{{loading}}" class="loading">
         <view class="loading-spinner"></view>
-        <text class="loading-text">加载中...</text>
+        <text class="loading-text">{{translations.loading}}</text>
       </view>
     </view>
   </view>

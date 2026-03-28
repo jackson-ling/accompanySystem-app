@@ -5,7 +5,7 @@
     <view class="logo">
       <van-icon name="service-o" size="64" color="#409eff" />
     </view>
-    <text class="title">陪诊服务平台</text>
+    <text class="title">{{translations.platformTitle}}</text>
   </view>
 
   <!-- 登录表单 -->
@@ -13,10 +13,10 @@
     <!-- 手机号输入 -->
     <view class="input-group">
       <view class="input-wrapper">
-        <text class="label-text">手机号码</text>
+        <text class="label-text">{{translations.phoneNumber}}</text>
         <input 
           class="input-field" 
-          placeholder="请输入手机号" 
+          placeholder="{{translations.pleaseEnterPhone}}" 
           type="number" 
           maxlength="11"
           value="{{phone}}"
@@ -29,38 +29,38 @@
     <!-- 密码输入 -->
     <view class="input-group">
       <view class="input-wrapper">
-        <text class="label-text">密码</text>
+        <text class="label-text">{{translations.password}}</text>
         <input 
           class="input-field" 
-          placeholder="请输入密码" 
+          placeholder="{{translations.pleaseEnterPassword}}" 
           password="{{!showPassword}}"
           value="{{password}}"
           bindinput="onPasswordInput"
         />
         <van-icon name="eye-o" size="20" color="{{showPassword ? '#409eff' : '#999'}}" class="input-icon" bindtap="togglePassword" />
       </view>
-      <text class="forgot-pwd" bindtap="goToForgotPassword">忘记密码?</text>
+      <text class="forgot-pwd" bindtap="goToForgotPassword">{{translations.forgotPassword}}</text>
     </view>
 
     <!-- 登录按钮 -->
     <view class="login-btn {{canLogin ? '' : 'disabled'}}" bindtap="handleLogin">
-      <text>登录</text>
+      <text>{{translations.loginButton}}</text>
     </view>
 
     <!-- 注册链接 -->
     <view class="register-link">
-      <text>还没有账号？</text>
-      <text class="link" bindtap="goToRegister">立即注册</text>
+      <text>{{translations.noAccount}}</text>
+      <text class="link" bindtap="goToRegister">{{translations.registerNow}}</text>
     </view>
 
     <!-- 协议 -->
     <view class="agreement">
       <checkbox class="agreement-checkbox" checked="{{agreed}}" bindtap="toggleAgreement" color="#409eff" />
       <view class="agreement-text" bindtap="handleAgreementClick">
-        <text>我已阅读并同意</text>
-        <text class="link">《用户协议》</text>
-        <text>和</text>
-        <text class="link">《隐私政策》</text>
+        <text>{{translations.haveReadAgreed}}</text>
+        <text class="link">《{{translations.userAgreement}}》</text>
+        <text>{{translations.and}}</text>
+        <text class="link">《{{translations.privacyPolicy}}》</text>
       </view>
     </view>
   </view>

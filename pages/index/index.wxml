@@ -4,7 +4,7 @@
   <view class="location-bar">
     <view class="location-info" bindtap="chooseLocation">
       <van-icon name="location-o" size="16" color="#ff6b6b" />
-      <text class="location-name">{{locationName || '获取位置中...'}}</text>
+      <text class="location-name">{{locationName || translations.getLocation}}</text>
       <van-icon name="arrow-down" size="12" color="#999" />
     </view>
   </view>
@@ -12,7 +12,7 @@
   <!-- 搜索栏 -->
   <view class="search-bar" bindtap="goToSearch">
     <van-icon name="search" size="20" color="#999" />
-    <text class="search-placeholder">搜索您需要的服务</text>
+    <text class="search-placeholder">{{translations.searchPlaceholder}}</text>
   </view>
 
   <!-- 轮播图 -->
@@ -31,7 +31,7 @@
         <view class="nav-icon-wrapper companion-icon">
           <van-icon name="medal-o" size="36" color="#fff" />
         </view>
-        <text class="nav-text">陪诊服务</text>
+        <text class="nav-text">{{translations.companionService}}</text>
       </view>
     </view>
     <view class="nav-item" bindtap="goToServiceCategory" data-type="agency">
@@ -39,7 +39,7 @@
         <view class="nav-icon-wrapper agency-icon">
           <van-icon name="notes-o" size="36" color="#fff" />
         </view>
-        <text class="nav-text">代办服务</text>
+        <text class="nav-text">{{translations.agencyService}}</text>
       </view>
     </view>
     <view class="nav-item" bindtap="goToCompanionList">
@@ -47,7 +47,7 @@
         <view class="nav-icon-wrapper doctor-icon">
           <van-icon name="user-o" size="36" color="#fff" />
         </view>
-        <text class="nav-text">找陪诊师</text>
+        <text class="nav-text">{{translations.findCompanion}}</text>
       </view>
     </view>
     <view class="nav-item" bindtap="goToOrderList">
@@ -55,7 +55,7 @@
         <view class="nav-icon-wrapper order-icon">
           <van-icon name="todo-list-o" size="36" color="#fff" />
         </view>
-        <text class="nav-text">我的订单</text>
+        <text class="nav-text">{{translations.myOrders}}</text>
       </view>
     </view>
   </view>
@@ -65,10 +65,10 @@
     <view class="section-header">
       <view class="header-left">
         <van-icon name="hospital-o" size="20" color="#409eff" />
-        <text class="section-title">附近医院</text>
+        <text class="section-title">{{translations.nearbyHospitals}}</text>
       </view>
       <view class="more-link" bindtap="goToHospitalList">
-        <text>查看全部</text>
+        <text>{{translations.viewAll}}</text>
         <van-icon name="arrow" size="14" color="#999" />
       </view>
     </view>
@@ -92,10 +92,10 @@
     <view class="section-header">
       <view class="header-left">
         <van-icon name="fire-o" size="20" color="#ff6b6b" />
-        <text class="section-title">热门服务</text>
+        <text class="section-title">{{translations.popularServices}}</text>
       </view>
       <view class="more-link" bindtap="goToServiceCategory">
-        <text>查看全部</text>
+        <text>{{translations.viewAll}}</text>
         <van-icon name="arrow" size="14" color="#999" />
       </view>
     </view>
@@ -116,14 +116,14 @@
               <text class="service-price">¥{{item.price}}</text>
               <view class="meta-row">
                 <van-icon name="bag-o" size="12" color="#999" />
-                <text class="service-sales">已售 {{item.sales}}</text>
+                <text class="service-sales">{{translations.sold}} {{item.sales}}</text>
                 <view class="divider"></view>
                 <van-icon name="clock-o" size="12" color="#999" />
                 <text class="service-duration">{{item.duration}}</text>
               </view>
             </view>
             <view class="book-btn" catchtap="openCompanionDrawer" data-service="{{item}}">
-              立刻预约
+              {{translations.bookNow}}
             </view>
           </view>
         </view>
@@ -134,7 +134,7 @@
   <!-- 加载状态 -->
   <view class="loading" wx:if="{{loading}}">
     <view class="loading-spinner"></view>
-    <text class="loading-text">加载中...</text>
+    <text class="loading-text">{{translations.loading}}</text>
   </view>
 </view>
 
@@ -143,7 +143,7 @@
   <view class="drawer-content" catchtap="stopPropagation">
     <view class="drawer-header">
       <view class="header-left"></view>
-      <text class="drawer-title">选择陪诊师</text>
+      <text class="drawer-title">{{translations.selectCompanion}}</text>
       <view class="header-right" bindtap="closeCompanionDrawer">
         <van-icon name="cross" size="24" color="#333" />
       </view>
@@ -157,16 +157,16 @@
             <view class="info-row">
               <text class="name">{{item.name}}</text>
               <view class="tags">
-                <van-tag type="primary" size="mini" wx:if="{{item.gender === 'male'}}">男</van-tag>
-                <van-tag type="danger" size="mini" wx:else>女</van-tag>
-                <van-tag type="success" size="mini">{{item.age}}岁</van-tag>
+                <van-tag type="primary" size="mini" wx:if="{{item.gender === 'male'}}">{{translations.male}}</van-tag>
+                <van-tag type="danger" size="mini" wx:else>{{translations.female}}</van-tag>
+                <van-tag type="success" size="mini">{{item.age}}{{translations.yearsOld}}</van-tag>
                 <van-tag type="warning" size="mini" wx:if="{{item.experience}}">{{item.experience}}</van-tag>
               </view>
             </view>
             <view class="stats-row">
               <view class="stat-item">
                 <van-icon name="todo-list-o" size="12" color="#666" />
-                <text>{{item.orders}}单</text>
+                <text>{{item.orders}}{{translations.orders}}</text>
               </view>
               <view class="stat-item">
                 <van-icon name="star-o" size="12" color="#f7ba2a" />

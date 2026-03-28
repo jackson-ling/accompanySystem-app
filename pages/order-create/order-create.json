@@ -1,1 +1,1 @@
-{"navigationBarTitleText": "创建订单"}
+{"navigationBarTitleText": "创建订单", "usingComponents": {"van-icon": "@vant/weapp/icon/index", "van-button": "@vant/weapp/button/index"}}

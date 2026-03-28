@@ -1,0 +1,98 @@
+<!-- pages/settings/settings.wxml -->
+<view class="settings-page">
+  <!-- 头部导航 -->
+  <view class="header">
+    <view class="back-icon" bindtap="goBack">
+      <van-icon name="arrow-left" size="24" color="#333" />
+    </view>
+    <text class="title">{{translations.title}}</text>
+    <view class="placeholder"></view>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="content">
+    <!-- 账户设置组 -->
+    <view class="menu-group">
+      <view class="menu-item" bindtap="handleChangeAvatar">
+        <view class="left">{{translations.changeAvatar}}</view>
+        <view class="right">
+          <image class="avatar" src="{{userInfo.avatar || 'https://placehold.co/32x32/409eff/ffffff?text=U'}}" mode="aspectFill" />
+          <van-icon name="arrow" size="16" color="#c0c4cc" />
+        </view>
+      </view>
+      <view class="menu-item" bindtap="handleChangeNickname">
+        <view class="left">{{translations.changeNickname}}</view>
+        <view class="right">
+          <text class="value">{{userInfo.nickname || ''}}</text>
+          <van-icon name="arrow" size="16" color="#c0c4cc" />
+        </view>
+      </view>
+      <view class="menu-item" bindtap="handleChangePassword">
+        <view class="left">{{translations.changePassword}}</view>
+        <van-icon name="arrow" size="16" color="#c0c4cc" />
+      </view>
+    </view>
+
+    <!-- 语言设置组 -->
+    <view class="menu-group">
+      <view class="menu-item" bindtap="handleLanguage">
+        <view class="left">{{translations.languageSwitch}}</view>
+        <view class="right">
+          <text class="value">{{currentLanguage === 'zh-CN' ? translations.chinese : translations.english}}</text>
+          <van-icon name="arrow" size="16" color="#c0c4cc" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 关于组 -->
+    <view class="menu-group">
+      <view class="menu-item" bindtap="handleAbout">
+        <view class="left">{{translations.about}}</view>
+        <van-icon name="arrow" size="16" color="#c0c4cc" />
+      </view>
+    </view>
+
+    <!-- 退出登录 -->
+    <view class="menu-group">
+      <view class="menu-item center-text" bindtap="handleLogout">
+        {{translations.logout}}
+      </view>
+    </view>
+
+    <!-- 注销账号 -->
+    <view class="menu-group">
+      <view class="menu-item center-text danger-text" bindtap="handleDeleteAccount">
+        {{translations.deleteAccount}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 语言选择器 -->
+  <van-action-sheet
+    show="{{showLanguagePicker}}"
+    actions="{{languageOptions}}"
+    cancel-text="{{translations.commonCancel}}"
+    bind:select="onLanguageSelect"
+    bind:cancel="onLanguageCancel"
+  />
+
+  <!-- 昵称修改弹窗 -->
+  <van-dialog
+    show="{{showNicknameDialog}}"
+    title="{{translations.changeNickname}}"
+    show-cancel-button
+    confirm-button-text="{{translations.commonConfirm}}"
+    cancel-button-text="{{translations.commonCancel}}"
+    bind:confirm="submitNicknameChange"
+    bind:cancel="handleNicknameDialogCancel"
+  >
+    <view class="dialog-content">
+      <van-field
+        value="{{newNickname}}"
+        placeholder="{{translations.nicknamePlaceholder}}"
+        bind:change="handleNicknameInput"
+        border="{{false}}"
+      />
+    </view>
+  </van-dialog>
+</view>

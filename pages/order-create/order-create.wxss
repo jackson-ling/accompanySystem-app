@@ -1,20 +1,572 @@
 /* pages/order-create/order-create.wxss */
-.container {
+.order-create-page {
   min-height: 100vh;
+  background-color: #f7f8fa;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 头部导航 */
+.header-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 30rpx;
+  background-color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.back-icon {
+  width: 44rpx;
+  height: 44rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f7f8fa;
 }
-.content {
-  text-align: center;
-}
+
 .title {
   font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.placeholder {
+  width: 44rpx;
+}
+
+/* 滚动容器 */
+.scroll-container {
+  flex: 1;
+  padding-bottom: 120rpx;
+}
+
+/* 区块卡片 */
+.section-card {
+  background-color: #fff;
+  margin: 20rpx 30rpx;
+  padding: 30rpx;
+  border-radius: 16rpx;
+}
+
+.card-title {
+  font-size: 28rpx;
+  font-weight: 600;
   color: #333;
   margin-bottom: 20rpx;
 }
-.desc {
-  font-size: 28rpx;
+
+/* 陪诊师卡片 */
+.companion-card-inner {
+  display: flex;
+  gap: 20rpx;
+}
+
+.card-left {
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+}
+
+.card-right {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+}
+
+.info-content {
+  flex: 1;
+}
+
+.top-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
+}
+
+.name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.gender-icon {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+}
+
+.gender-icon.male {
+  background-color: #409eff;
+}
+
+.gender-icon.female {
+  background-color: #f56c6c;
+}
+
+.age {
+  font-size: 24rpx;
   color: #999;
+}
+
+.experience-tag {
+  padding: 4rpx 12rpx;
+  background-color: #409eff;
+  color: #fff;
+  font-size: 20rpx;
+  border-radius: 8rpx;
+}
+
+.stats-row {
+  display: flex;
+  gap: 24rpx;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  font-size: 24rpx;
+  color: #909399;
+}
+
+.score {
+  color: #f7ba2a;
+  font-weight: 600;
+}
+
+.action-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-left: 12rpx;
+}
+
+.view-details {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  font-size: 24rpx;
+  color: #909399;
+}
+
+/* 空选择状态 */
+.empty-selection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 就诊人信息 */
+.patient-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 20rpx 0;
+}
+
+.patient-info .info-content {
+  flex: 1;
+}
+
+.row-1 {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 12rpx;
+}
+
+.row-1 .name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.row-1 .phone {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.row-2 {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.switch-action {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  font-size: 24rpx;
+  color: #409eff;
+}
+
+/* 服务卡片 */
+.selected-service-card {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 20rpx 0;
+}
+
+.service-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  flex-shrink: 0;
+}
+
+.service-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.service-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.service-desc {
+  font-size: 24rpx;
+  color: #999;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.service-price {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #f56c6c;
+}
+
+/* 服务时间 */
+.service-time-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+}
+
+.right-content {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.selected-time {
+  font-size: 28rpx;
+  color: #409eff;
+}
+
+.select-prompt {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.action-text {
+  color: #409eff;
+}
+
+/* 接送选项 */
+.pickup-options {
+  display: flex;
+  gap: 16rpx;
+  padding: 10rpx 0;
+}
+
+.pickup-option {
+  flex: 1;
+  padding: 16rpx 20rpx;
+  background-color: #f5f7fa;
+  border: 2rpx solid transparent;
+  border-radius: 8rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #606266;
+  transition: all 0.3s;
+}
+
+.pickup-option.active {
+  background-color: #ecf5ff;
+  border-color: #409eff;
+  color: #409eff;
+}
+
+/* 接送地址 */
+.address-section {
+  margin-top: 24rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid #eee;
+}
+
+.address-label {
+  font-size: 26rpx;
+  color: #333;
+  margin-bottom: 12rpx;
+  font-weight: 500;
+}
+
+.address-input {
+  width: 100%;
+  min-height: 100rpx;
+  padding: 16rpx;
+  background-color: #f5f7fa;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* 订单备注 */
+.remarks-card {
+  padding-bottom: 20rpx;
+}
+
+.remarks-input {
+  width: 100%;
+  min-height: 120rpx;
+  padding: 16rpx;
+  background-color: #f5f7fa;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+}
+
+.char-count {
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+/* 支付方式 */
+.payment-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.payment-radio {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx;
+  background-color: #f5f7fa;
+  border-radius: 12rpx;
+}
+
+.payment-radio.active {
+  background-color: #ecf5ff;
+  border: 2rpx solid #409eff;
+}
+
+.payment-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.label-left {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.balance-info {
+  font-size: 24rpx;
+  color: #e6a23c;
+}
+
+/* 底部支付栏 */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 30rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background-color: #fff;
+  border-top: 1rpx solid #eee;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.price-section {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+}
+
+.price-section .label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.price {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #f56c6c;
+}
+
+.pay-btn {
+  padding: 16rpx 48rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+/* 时间选择器抽屉 */
+.drawer-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+}
+
+.time-selector-content {
+  width: 100%;
+  max-height: 70vh;
+  background-color: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.drawer-header .title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.close-btn {
+  width: 44rpx;
+  height: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.time-selector-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.date-sidebar {
+  width: 200rpx;
+  background-color: #f5f7fa;
+  border-right: 1rpx solid #eee;
+}
+
+.date-tab {
+  padding: 30rpx 20rpx;
+  text-align: center;
+  border-left: 4rpx solid transparent;
+}
+
+.date-tab.active {
+  background-color: #fff;
+  border-left-color: #409eff;
+}
+
+.date-tab .week {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+}
+
+.date-tab.active .week {
+  color: #409eff;
+  font-weight: 600;
+}
+
+.date-tab .day {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.time-content {
+  flex: 1;
+  padding: 30rpx;
+}
+
+.time-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+}
+
+.time-slot {
+  padding: 24rpx 16rpx;
+  background-color: #f5f7fa;
+  border-radius: 8rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.time-slot.active {
+  background-color: #409eff;
+  color: #fff;
+}
+
+.time-slot.disabled {
+  background-color: #e4e7ed;
+  color: #999;
+}
+
+.empty-times {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400rpx;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 阻止冒泡 */
+.stopPropagation {
+  /* 阻止点击抽屉内容时关闭抽屉 */
 }

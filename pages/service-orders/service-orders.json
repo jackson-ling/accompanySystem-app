@@ -1,0 +1,1 @@
+{"navigationBarTitleText": "全部订单", "enablePullDownRefresh": true, "usingComponents": {"van-icon": "@vant/weapp/icon/index", "van-button": "@vant/weapp/button/index", "van-loading": "@vant/weapp/loading/index", "van-empty": "@vant/weapp/empty/index"}}

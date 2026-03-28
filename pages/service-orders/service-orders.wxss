@@ -1,0 +1,182 @@
+/* pages/service-orders/service-orders.wxss */
+
+.service-orders-page {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+}
+
+/* 头部导航 */
+.header {
+  background-color: #fff;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+  border-bottom: 1rpx solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.back-icon {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: 34rpx;
+  font-weight: 500;
+  color: #333;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.placeholder {
+  width: 48rpx;
+}
+
+/* 筛选标签 */
+.filter-tabs {
+  display: flex;
+  background: #fff;
+  border-bottom: 1rpx solid #eee;
+  position: sticky;
+  top: 88rpx;
+  z-index: 9;
+}
+
+.tab-item {
+  flex: 1;
+  padding: 32rpx 0;
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #409eff;
+  font-weight: 500;
+}
+
+.indicator {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 4rpx;
+  background: #409eff;
+  border-radius: 2rpx;
+}
+
+/* 订单列表 */
+.order-list {
+  padding: 32rpx;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+  gap: 16rpx;
+  color: #999;
+}
+
+.empty-state {
+  padding: 80rpx 0;
+}
+
+.order-list-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+/* 订单卡片 */
+.order-card {
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.service-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+}
+
+.status {
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.status.pending {
+  background: #ecf5ff;
+  color: #409eff;
+}
+
+.status.process {
+  background: #fdf6ec;
+  color: #e6a23c;
+}
+
+.status.completed {
+  background: #f0f9ff;
+  color: #67c23a;
+}
+
+.card-body {
+  padding: 32rpx;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+  font-size: 28rpx;
+  color: #666;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.card-footer {
+  padding: 24rpx 32rpx;
+  background: #f9f9f9;
+  display: flex;
+  gap: 16rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 64rpx !important;
+  font-size: 26rpx !important;
+}
+
+.action-btn.primary {
+  background: #409eff !important;
+  border-color: #409eff !important;
+  color: #fff !important;
+}

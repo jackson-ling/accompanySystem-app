@@ -1,0 +1,67 @@
+<!-- pages/income-details/income-details.wxml -->
+<view class="income-details-page">
+  <!-- 头部导航 -->
+  <view class="header">
+    <view class="back-icon" bindtap="goBack">
+      <van-icon name="arrow-left" size="20" color="#333" />
+    </view>
+    <text class="title">{{translations.title}}</text>
+    <view class="placeholder"></view>
+  </view>
+
+  <!-- 概览卡片 -->
+  <view class="overview-card">
+    <text class="total-label">{{translations.totalIncome}}</text>
+    <text class="total-amount">{{totalIncome.toFixed(2)}}</text>
+    <view class="stats-row">
+      <view class="stat">
+        <text class="label">{{translations.todayIncome}}</text>
+        <text class="value">{{todayIncome.toFixed(2)}}</text>
+      </view>
+      <view class="stat">
+        <text class="label">{{translations.totalCumulative}}</text>
+        <text class="value">{{totalCumulativeIncome.toFixed(2)}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 收入记录列表 -->
+  <view class="record-list">
+    <text class="list-title">{{translations.recentDetails}}</text>
+    
+    <!-- 加载状态 -->
+    <view wx:if="{{loading}}" class="loading-state">
+      <van-loading type="spinner" size="24" />
+      <text>{{translations.loading}}</text>
+    </view>
+    
+    <!-- 空状态 -->
+    <view wx:elif="{{isEmpty}}" class="empty-state">
+      <van-empty description="{{translations.noRecords}}" />
+    </view>
+    
+    <!-- 收入记录 -->
+    <view wx:else class="record-list-content">
+      <view class="record-item" wx:for="{{incomeRecords}}" wx:key="id">
+        <view class="icon-box">
+          <van-icon name="gold-coin" size="24" color="#67c23a" />
+        </view>
+        <view class="content">
+          <view class="top">
+            <text class="type">{{item.serviceName}}</text>
+            <text wx:if="{{item.status === 'completed'}}" class="status completed">{{translations.completed}}</text>
+            <text wx:elif="{{item.status === 'pending'}}" class="status pending">{{translations.pending}}</text>
+            <text wx:else class="status cancelled">{{translations.cancelled}}</text>
+          </view>
+          <view class="bottom">
+            <text class="time">{{item.time}}</text>
+          </view>
+        </view>
+        <view class="right-column">
+          <text class="view-detail" data-order-id="{{item.orderId}}" bindtap="handleViewDetail">{{translations.viewDetail}} ></text>
+          <text class="amount">+{{item.amount.toFixed(2)}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

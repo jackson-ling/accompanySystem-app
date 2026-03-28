@@ -1,0 +1,134 @@
+/* pages/order-hall/order-hall.wxss */
+
+.order-hall-page {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+}
+
+/* 头部导航 */
+.header {
+  background-color: #fff;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+  border-bottom: 1rpx solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.back-icon {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: 34rpx;
+  font-weight: 500;
+  color: #333;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.placeholder {
+  width: 48rpx;
+}
+
+/* 订单列表 */
+.order-list {
+  padding: 32rpx;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+  gap: 16rpx;
+  color: #999;
+}
+
+.empty-state {
+  padding: 80rpx 0;
+}
+
+.order-list-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+/* 订单卡片 */
+.order-card {
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
+}
+
+.order-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
+
+.card-main {
+  display: flex;
+  padding: 32rpx;
+}
+
+.left-info {
+  flex: 1;
+}
+
+.service-tag {
+  display: inline-block;
+  padding: 8rpx 16rpx;
+  background: linear-gradient(135deg, #409eff 0%, #66b1ff 100%);
+  color: #fff;
+  font-size: 24rpx;
+  border-radius: 8rpx;
+  margin-bottom: 20rpx;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 12rpx;
+  font-size: 28rpx;
+  color: #666;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.right-price {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  padding-left: 24rpx;
+  border-left: 1rpx solid #f0f0f0;
+}
+
+.right-price .price {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #f56c6c;
+}
+
+.card-footer {
+  padding: 24rpx 32rpx;
+  background: #f9f9f9;
+  display: flex;
+  justify-content: flex-end;
+}

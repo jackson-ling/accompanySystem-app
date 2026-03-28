@@ -1,5 +1,6 @@
 // pages/index/index.js
 const mock = require('../../mock/index.js')
+const i18n = require('../../utils/i18n.js')
 
 Page({
   data: {
@@ -31,13 +32,38 @@ Page({
     showCompanionDrawer: false,
     
     // 当前选择的服务
-    selectedService: null
+    selectedService: null,
+    
+    // 翻译文本
+    translations: {
+      getLocation: '',
+      searchPlaceholder: '',
+      companionService: '',
+      agencyService: '',
+      findCompanion: '',
+      nearbyHospitals: '',
+      recommendedServices: '',
+      popularCompanions: '',
+      companion: '',
+      orders: '',
+      rating: '',
+      book: ''
+    }
   },
 
   onLoad(options) {
     console.log('首页加载', options)
+    this.updateTranslations()
     this.getCurrentLocation()
     this.fetchData()
+    
+    // 监听语言变化
+    const app = getApp()
+    if (app.onLanguageChange) {
+      app.onLanguageChange(() => {
+        this.updateTranslations()
+      })
+    }
   },
 
   onShow() {
@@ -47,6 +73,37 @@ Page({
         selected: 0
       })
     }
+    // 每次显示页面时重新更新翻译，确保语言切换后立即生效
+    this.updateTranslations()
+  },
+  
+  // 更新翻译文本
+  updateTranslations() {
+    this.setData({
+      translations: {
+        getLocation: i18n.t('index.getLocation'),
+        searchPlaceholder: i18n.t('index.searchPlaceholder'),
+        companionService: i18n.t('index.companionService'),
+        agencyService: i18n.t('index.agencyService'),
+        findCompanion: i18n.t('index.findCompanion'),
+        myOrders: i18n.t('index.myOrders'),
+        nearbyHospitals: i18n.t('index.nearbyHospitals'),
+        popularServices: i18n.t('index.popularServices'),
+        popularCompanions: i18n.t('index.popularCompanions'),
+        companion: i18n.t('index.companion'),
+        orders: i18n.t('index.orders'),
+        rating: i18n.t('index.rating'),
+        book: i18n.t('index.book'),
+        bookNow: i18n.t('index.bookNow'),
+        sold: i18n.t('index.sold'),
+        male: i18n.t('index.male'),
+        female: i18n.t('index.female'),
+        yearsOld: i18n.t('index.yearsOld'),
+        selectCompanion: i18n.t('index.selectCompanion'),
+        viewAll: i18n.t('index.viewAll'),
+        loading: i18n.t('common.loading')
+      }
+    })
   },
 
   onPullDownRefresh() {

@@ -1,7 +1,80 @@
 <!-- pages/recharge/recharge.wxml -->
-<view class="container">
+<view class="recharge-page">
+  <!-- 头部导航 -->
+  <view class="header">
+    <view class="back-icon" bindtap="goBack">
+      <van-icon name="arrow-left" size="24" color="#333" />
+    </view>
+    <text class="title">{{translations.title}}</text>
+    <view class="header-right">
+      <view class="more-btn" bindtap="goToRechargeRecords">
+        <van-icon name="ellipsis" size="20" color="#666" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 内容区域 -->
   <view class="content">
-    <text class="title">账户充值</text>
-    <text class="desc">功能开发中...</text>
+    <!-- 余额卡片 -->
+    <view class="balance-card">
+      <text class="label">{{translations.currentBalance}}</text>
+      <text class="amount">¥{{userInfo.balance || '0.00'}}</text>
+    </view>
+
+    <!-- 充值金额选择 -->
+    <view class="recharge-section">
+      <text class="section-title">{{translations.rechargeAmount}}</text>
+      <view class="amount-grid">
+        <view 
+          wx:for="{{amounts}}" 
+          wx:key="*this" 
+          class="amount-item {{selectedAmount === item && !isCustomAmount ? 'active' : ''}}"
+          data-amount="{{item}}"
+          bindtap="selectAmount"
+        >
+          <text class="value">¥{{item}}</text>
+        </view>
+        <view 
+          class="amount-item custom {{isCustomAmount ? 'active' : ''}}"
+          bindtap="selectCustom"
+        >
+          <view wx:if="{{isCustomAmount}}" class="custom-input-wrapper">
+            <input 
+              class="custom-input" 
+              type="digit" 
+              placeholder="{{translations.inputAmount}}"
+              value="{{customAmount}}"
+              bindinput="handleCustomAmountInput"
+            />
+          </view>
+          <text wx:else class="value">{{translations.otherAmount}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 支付方式 -->
+    <view class="pay-method">
+      <text class="section-title">{{translations.payMethod}}</text>
+      <view class="method-item">
+        <view class="left">
+          <van-icon name="wechat" size="24" color="#09bb07" />
+          <text class="text">{{translations.wechatPay}}</text>
+        </view>
+        <van-radio value="wechat" checked-color="#409eff" disabled />
+      </view>
+    </view>
+
+    <!-- 充值按钮 -->
+    <view class="btn-container">
+      <van-button 
+        type="primary" 
+        round 
+        block 
+        bindclick="handleRecharge"
+        custom-class="submit-btn"
+      >
+        {{translations.rechargeNow}}
+      </van-button>
+    </view>
   </view>
 </view>

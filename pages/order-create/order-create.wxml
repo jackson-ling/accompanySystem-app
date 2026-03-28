@@ -1,7 +1,265 @@
 <!-- pages/order-create/order-create.wxml -->
-<view class="container">
-  <view class="content">
-    <text class="title">创建订单</text>
-    <text class="desc">功能开发中...</text>
+<view class="order-create-page">
+  <!-- 头部导航 -->
+  <view class="header-nav">
+    <view class="back-icon" bindtap="goBack">
+      <van-icon name="arrow-left" size="20" />
+    </view>
+    <text class="title">{{translations.title}}</text>
+    <view class="placeholder"></view>
+  </view>
+
+  <scroll-view class="scroll-container" scroll-y="{{true}}">
+    <!-- 陪诊师信息 -->
+    <view class="section-card" bindtap="goToCompanionDetail">
+      <view class="card-title">{{translations.companion}}</view>
+      <view wx:if="{{selectedCompanion}}" class="companion-card-inner">
+        <view class="card-left">
+          <image class="avatar" src="{{selectedCompanion.avatar}}" mode="aspectFill" />
+        </view>
+        <view class="card-right">
+          <view class="info-content">
+            <view class="top-row">
+              <text class="name">{{selectedCompanion.name}}</text>
+              <view class="gender-icon {{selectedCompanion.gender}}">
+                <van-icon wx:if="{{selectedCompanion.gender === 'male'}}" name="passed" size="12" color="#fff" />
+                <van-icon wx:else name="passed" size="12" color="#fff" />
+              </view>
+              <text class="age" wx:if="{{selectedCompanion.age}}">{{selectedCompanion.age}}岁</text>
+              <view class="experience-tag" wx:if="{{selectedCompanion.experience}}">{{selectedCompanion.experience}}</view>
+            </view>
+            <view class="stats-row">
+              <view class="stat-item">
+                <van-icon name="orders-o" size="14" color="#999" />
+                <text>{{selectedCompanion.orders}}单</text>
+              </view>
+              <view class="stat-item">
+                <van-icon name="star" size="14" color="#f7ba2a" />
+                <text class="score">{{selectedCompanion.score}}</text>
+              </view>
+              <view class="stat-item">
+                <van-icon name="chat-o" size="14" color="#999" />
+                <text>{{selectedCompanion.comments}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="action-column">
+            <view class="view-details">
+              <text>查看详情</text>
+              <van-icon name="arrow" size="12" />
+            </view>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="empty-selection">
+        <text>{{translations.pleaseSelectCompanion}}</text>
+        <van-icon name="arrow" size="20" />
+      </view>
+    </view>
+
+    <!-- 就诊人信息 -->
+    <view class="section-card" bindtap="goToPatientSelect">
+      <view class="card-title">{{translations.patient}}</view>
+      <view wx:if="{{selectedPatient}}" class="patient-info">
+        <view class="info-content">
+          <view class="row-1">
+            <text class="name">{{selectedPatient.name}}</text>
+            <text class="phone">{{selectedPatient.phone}}</text>
+          </view>
+          <view class="row-2">
+            <van-icon name="location-o" size="14" color="#999" />
+            <text class="address">{{selectedPatient.address || '暂无地址'}}</text>
+          </view>
+        </view>
+        <view class="switch-action">
+          <text>重新选择</text>
+          <van-icon name="arrow" size="12" />
+        </view>
+      </view>
+      <view wx:else class="empty-selection">
+        <text>{{translations.pleaseSelectPatient}}</text>
+        <van-icon name="arrow" size="20" />
+      </view>
+    </view>
+
+    <!-- 服务项目 -->
+    <view class="section-card" bindtap="goToServiceDetail">
+      <view class="card-title">{{translations.service}}</view>
+      <view wx:if="{{selectedService}}" class="selected-service-card">
+        <image class="service-image" src="{{selectedService.image}}" mode="aspectFill" />
+        <view class="service-info">
+          <text class="service-name">{{selectedService.name}}</text>
+          <text class="service-desc">{{selectedService.description}}</text>
+          <text class="service-price">¥{{selectedService.price}}</text>
+        </view>
+        <van-icon name="arrow" size="20" color="#409eff" />
+      </view>
+      <view wx:else class="empty-selection">
+        <text>{{translations.pleaseSelectService}}</text>
+        <van-icon name="arrow" size="20" />
+      </view>
+    </view>
+
+    <!-- 服务时间 -->
+    <view class="section-card" bindtap="openTimeSelector">
+      <view class="service-time-container">
+        <view class="card-title" style="margin-bottom: 0">{{translations.serviceTime}}</view>
+        <view class="right-content">
+          <text wx:if="{{appointmentTime}}" class="selected-time">{{appointmentTime}}</text>
+          <view class="select-prompt">
+            <text class="action-text"> {{translations.selectTime}}</text>
+            <van-icon name="arrow" size="12" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 接送选项 -->
+    <view class="section-card">
+      <view class="card-title">{{translations.pickup}}</view>
+      <view class="pickup-options">
+        <view
+          class="pickup-option {{pickupOption === item.value ? 'active' : ''}}"
+          wx:for="{{pickupOptions}}"
+          wx:key="value"
+          bindtap="onPickupOptionChange"
+          data-value="{{item.value}}"
+        >
+          <text>{{item.label}}</text>
+        </view>
+      </view>
+
+      <!-- 接送地址 -->
+      <view wx:if="{{pickupOption === 'pick' || pickupOption === 'both'}}" class="address-section">
+        <view class="address-label">{{translations.pickupAddress}}</view>
+        <textarea
+          class="address-input"
+          placeholder="{{translations.pickupAddressPlaceholder}}"
+          value="{{pickupAddress}}"
+          bindinput="onPickupAddressInput"
+          maxlength="100"
+          show-confirm-bar="{{false}}"
+        />
+      </view>
+
+      <view wx:if="{{pickupOption === 'drop' || pickupOption === 'both'}}" class="address-section">
+        <view class="address-label">{{translations.dropoffAddress}}</view>
+        <textarea
+          class="address-input"
+          placeholder="{{translations.dropoffAddressPlaceholder}}"
+          value="{{dropoffAddress}}"
+          bindinput="onDropoffAddressInput"
+          maxlength="100"
+          show-confirm-bar="{{false}}"
+        />
+      </view>
+    </view>
+
+    <!-- 订单备注 -->
+    <view class="section-card remarks-card">
+      <view class="card-title">{{translations.remarks}}</view>
+      <textarea 
+        class="remarks-input" 
+        placeholder="{{translations.remarksPlaceholder}}" 
+        value="{{remarks}}" 
+        bindinput="onRemarksInput"
+        maxlength="100"
+        show-confirm-bar="{{false}}"
+      />
+      <view class="char-count">{{remarks.length}}/100</view>
+    </view>
+
+    <!-- 支付方式 -->
+    <view class="section-card">
+      <view class="card-title">{{translations.paymentMethod}}</view>
+      <view class="payment-group">
+        <view 
+          class="payment-radio {{paymentMethod === 'wechat' ? 'active' : ''}}" 
+          bindtap="onPaymentMethodChange"
+          data-method="wechat"
+        >
+          <view class="payment-label">
+            <view class="label-left">
+              <van-icon name="chat" size="20" color="#09BB07" />
+              <text>{{translations.wechatPay}}</text>
+            </view>
+          </view>
+          <van-icon wx:if="{{paymentMethod === 'wechat'}}" name="checked" size="20" color="#409eff" />
+          <van-icon wx:else name="circle" size="20" color="#ccc" />
+        </view>
+        <view 
+          class="payment-radio {{paymentMethod === 'balance' ? 'active' : ''}}" 
+          bindtap="onPaymentMethodChange"
+          data-method="balance"
+        >
+          <view class="payment-label">
+            <view class="label-left">
+              <van-icon name="balance-o" size="20" color="#E6A23C" />
+              <text>{{translations.balance}}</text>
+            </view>
+            <text class="balance-info">{{translations.balanceInfo}} {{userInfo.balance || 0}} 元</text>
+          </view>
+          <van-icon wx:if="{{paymentMethod === 'balance'}}" name="checked" size="20" color="#409eff" />
+          <van-icon wx:else name="circle" size="20" color="#ccc" />
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部支付栏 -->
+  <view class="bottom-bar">
+    <view class="price-section">
+      <text class="label">{{translations.total}}:</text>
+      <text class="price">¥{{totalPrice}}</text>
+    </view>
+    <van-button type="primary" round class="pay-btn" bindtap="handleSubmit">
+      {{translations.payNow}}
+    </van-button>
+  </view>
+
+  <!-- 时间选择器抽屉 -->
+  <view class="drawer-mask" wx:if="{{showTimeSelector}}" bindtap="closeTimeSelector">
+    <view class="time-selector-content" catchtap="stopPropagation">
+      <view class="drawer-header">
+        <view style="width: 24px"></view>
+        <text class="title">{{translations.selectTime}}</text>
+        <view class="close-btn" bindtap="closeTimeSelector">
+          <van-icon name="cross" size="20" color="#999" />
+        </view>
+      </view>
+      <view class="time-selector-body">
+        <!-- 左侧日期列表 -->
+        <scroll-view class="date-sidebar" scroll-y="{{true}}">
+          <view 
+            class="date-tab {{selectedDateIndex === index ? 'active' : ''}}" 
+            wx:for="{{dateList}}" 
+            wx:key="index"
+            bindtap="selectDate"
+            data-index="{{index}}"
+          >
+            <text class="week">{{item.week}}</text>
+            <text class="day">{{item.dateStr}}</text>
+          </view>
+        </scroll-view>
+
+        <!-- 右侧时间段 -->
+        <scroll-view class="time-content" scroll-y="{{true}}">
+          <view class="time-grid">
+            <view 
+              class="time-slot {{selectedTimeSlot && selectedTimeSlot.time === item.time ? 'active' : ''}} {{item.status === 'booked' ? 'disabled' : ''}}" 
+              wx:for="{{availableTimes}}" 
+              wx:key="time"
+              bindtap="selectTime"
+              data-slot="{{item}}"
+            >
+              <text class="time-text">{{item.time}}</text>
+            </view>
+          </view>
+          <view wx:if="{{availableTimes.length === 0}}" class="empty-times">
+            <text>暂无可用时段</text>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
   </view>
 </view>

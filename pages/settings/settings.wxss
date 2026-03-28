@@ -1,0 +1,111 @@
+/* pages/settings/settings.wxss */
+.settings-page {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 头部导航 */
+.header {
+  background-color: #fff;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.back-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.title {
+  font-size: 17px;
+  font-weight: 500;
+  flex: 1;
+  text-align: center;
+}
+
+.placeholder {
+  width: 24px;
+}
+
+/* 内容区域 */
+.content {
+  padding: 12px;
+}
+
+/* 菜单组 */
+.menu-group {
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid #f5f7fa;
+  font-size: 15px;
+  color: #333;
+  cursor: pointer;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item:active {
+  background-color: #f9f9f9;
+}
+
+.menu-item .left {
+  display: flex;
+  align-items: center;
+}
+
+.menu-item .right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.menu-item .value {
+  color: #909399;
+  font-size: 14px;
+}
+
+.menu-item.center-text {
+  justify-content: center;
+  font-weight: 500;
+}
+
+.menu-item.danger-text {
+  color: #f56c6c;
+}
+
+/* 头像 */
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f5f7fa;
+}
+
+/* 对话框内容 */
+.dialog-content {
+  padding: 20px;
+}

@@ -8,15 +8,48 @@ Page({
     isLogin: false,
     
     // 待服务订单数
-    pendingServiceCount: 0
+    pendingServiceCount: 0,
+    
+    // 是否是陪诊师
+    isCompanion: false,
+    
+    // 翻译文本
+    translations: {
+      loginPrompt: '',
+      loginDesc: '',
+      accountBalance: '',
+      recharge: '',
+      myOrders: '',
+      allOrders: '',
+      pendingService: '',
+      inService: '',
+      completed: '',
+      refund: '',
+      commonFunctions: '',
+      patientManagement: '',
+      myFavorites: '',
+      workbench: '',
+      contactService: '',
+      feedback: '',
+      applyCompanion: '',
+      about: '',
+      settings: '',
+      logout: '',
+      logoutConfirm: '',
+      loggedOut: '',
+      apply: '',
+      applyCompanionRequired: ''
+    }
   },
 
   onLoad(options) {
     console.log('个人中心加载', options)
+    this.updateTranslations()
     this.checkLogin()
     this.loadUserData()
   },
 
+// 显示页面
   onShow() {
     console.log('个人中心显示')
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -26,6 +59,53 @@ Page({
     }
     this.checkLogin()
     this.loadUserData()
+    this.updateTranslations()
+    
+    const app = getApp()
+    console.log('当前用户信息:', app.globalData.userInfo)
+    console.log('是否是陪诊师:', app.globalData.userInfo?.isCompanion)
+  },
+
+  // 语言切换回调
+  onLanguageChange() {
+    this.updateTranslations()
+    // 重新渲染页面
+    this.checkLogin()
+    this.loadUserData()
+  },
+
+  // 更新翻译文本
+  updateTranslations() {
+    const app = getApp()
+    this.setData({
+      translations: {
+        loginPrompt: app.t('profile.loginPrompt'),
+        loginDesc: app.t('profile.loginDesc'),
+        accountBalance: app.t('profile.accountBalance'),
+        recharge: app.t('profile.recharge'),
+        myOrders: app.t('profile.myOrders'),
+        allOrders: app.t('profile.allOrders'),
+        pendingService: app.t('order.pendingService'),
+        inService: app.t('order.inService'),
+        completed: app.t('order.completed'),
+        refund: app.t('order.refund'),
+        commonFunctions: app.t('profile.commonFunctions'),
+        patientManagement: app.t('profile.patientManagement'),
+        myFavorites: app.t('profile.myFavorites'),
+        workbench: app.t('profile.workbench'),
+        contactService: app.t('profile.contactService'),
+        feedback: app.t('profile.feedback'),
+        applyCompanion: app.t('profile.applyCompanion'),
+        about: app.t('settings.about'),
+        settings: app.t('settings.title'),
+        logout: app.t('settings.logout'),
+        logoutConfirm: app.t('profile.logoutConfirm'),
+        loggedOut: app.t('profile.loggedOut'),
+        apply: app.t('profile.apply'),
+        applyCompanionRequired: app.t('profile.applyCompanionRequired')
+      },
+      isCompanion: app.globalData.userInfo?.isCompanion || false
+    })
   },
 
   // 检查登录状态
@@ -33,7 +113,8 @@ Page({
     const app = getApp()
     this.setData({
       isLogin: app.globalData.isLogin,
-      userInfo: app.globalData.userInfo
+      userInfo: app.globalData.userInfo,
+      isCompanion: app.globalData.userInfo?.isCompanion || false
     })
   },
 
@@ -51,7 +132,8 @@ Page({
         )
         
         this.setData({
-          pendingServiceCount: pendingOrders.length
+          pendingServiceCount: pendingOrders.length,
+          isCompanion: app.globalData.userInfo?.isCompanion || false
         })
       } catch (error) {
         console.error('加载用户数据失败:', error)
@@ -72,7 +154,7 @@ Page({
   handleRecharge() {
     if (!this.data.isLogin) {
       wx.showToast({
-        title: '请先登录',
+        title: this.getApp().t('common.loading'),
         icon: 'none'
       })
       setTimeout(() => {
@@ -92,7 +174,7 @@ Page({
   goToOrderList(e) {
     if (!this.data.isLogin) {
       wx.showToast({
-        title: '请先登录',
+        title: this.getApp().t('common.loading'),
         icon: 'none'
       })
       setTimeout(() => {
@@ -119,7 +201,7 @@ Page({
   handlePatientManagement() {
     if (!this.data.isLogin) {
       wx.showToast({
-        title: '请先登录',
+        title: this.getApp().t('common.loading'),
         icon: 'none'
       })
       setTimeout(() => {
@@ -139,7 +221,7 @@ Page({
   handleFavorites() {
     if (!this.data.isLogin) {
       wx.showToast({
-        title: '请先登录',
+        title: this.getApp().t('common.loading'),
         icon: 'none'
       })
       setTimeout(() => {
@@ -159,7 +241,7 @@ Page({
   handleWorkbench() {
     if (!this.data.isLogin) {
       wx.showToast({
-        title: '请先登录',
+        title: this.getApp().t('common.loading'),
         icon: 'none'
       })
       setTimeout(() => {
@@ -170,24 +252,47 @@ Page({
       return
     }
     
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
+    const app = getApp()
+    const userInfo = app.globalData.userInfo
+    
+    // 检查是否是陪诊师
+    if (!userInfo || !userInfo.isCompanion) {
+      wx.showModal({
+        title: app.t('common.confirm'),
+        content: app.t('profile.applyCompanionRequired'),
+        confirmText: app.t('profile.apply'),
+        cancelText: app.t('common.cancel'),
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({
+              url: '/pages/apply-companion/apply-companion'
+            })
+          }
+        }
+      })
+      return
+    }
+    
+    // 跳转到陪诊师工作台页面（如果存在）
+    wx.navigateTo({
+      url: '/pages/companion-workbench/companion-workbench'
     })
   },
 
   // 联系客服
   handleContactService() {
+    const t = this.getApp().t
+    
     wx.showModal({
-      title: '联系客服',
-      content: '客服电话：400-123-4567\n工作时间：9:00-18:00',
+      title: t('customerService.title'),
+      content: `${t('customerService.phone')}: ${t('customerService.phoneValue')}\n${t('customerService.workTime')}: ${t('customerService.workTimeValue')}`,
       showCancel: true,
-      cancelText: '取消',
-      confirmText: '拨打',
+      cancelText: t('customerService.cancel'),
+      confirmText: t('customerService.call'),
       success: (res) => {
         if (res.confirm) {
           wx.makePhoneCall({
-            phoneNumber: '400-123-4567'
+            phoneNumber: t('customerService.phoneValue')
           })
         }
       }
@@ -198,7 +303,7 @@ Page({
   handleFeedback() {
     if (!this.data.isLogin) {
       wx.showToast({
-        title: '请先登录',
+        title: this.getApp().t('common.loading'),
         icon: 'none'
       })
       setTimeout(() => {
@@ -218,7 +323,7 @@ Page({
   handleSettings() {
     if (!this.data.isLogin) {
       wx.showToast({
-        title: '请先登录',
+        title: this.getApp().t('common.loading'),
         icon: 'none'
       })
       setTimeout(() => {
@@ -229,38 +334,42 @@ Page({
       return
     }
     
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
+    wx.navigateTo({
+      url: '/pages/settings/settings'
     })
   },
 
   // 关于我们
   handleAbout() {
     wx.showModal({
-      title: '关于我们',
-      content: '陪诊服务小程序\n版本：1.0.0\n\n专业陪诊，贴心服务',
+      title: this.getApp().t('settings.about'),
+      content: this.getApp().t('settings.aboutContent'),
       showCancel: false,
-      confirmText: '确定'
+      confirmText: this.getApp().t('common.confirm')
     })
   },
 
   // 退出登录
   handleLogout() {
     wx.showModal({
-      title: '提示',
-      content: '确定要退出登录吗？',
+      title: this.getApp().t('common.confirm'),
+      content: this.getApp().t('profile.logoutConfirm'),
       success: (res) => {
         if (res.confirm) {
           const app = getApp()
           app.logout()
           
           wx.showToast({
-            title: '已退出登录',
+            title: this.getApp().t('profile.loggedOut'),
             icon: 'success'
           })
         }
       }
     })
+  },
+
+  // 获取app实例
+  getApp() {
+    return getApp()
   }
 })

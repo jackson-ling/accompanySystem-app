@@ -1,20 +1,302 @@
 /* pages/order-list/order-list.wxss */
-.container {
+.order-list-page {
   min-height: 100vh;
+  background-color: #f5f7fa;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 头部导航 */
+.header-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background-color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.back-icon {
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f7f8fa;
+  cursor: pointer;
 }
-.content {
+
+.title {
+  flex: 1;
   text-align: center;
 }
-.title {
-  font-size: 36rpx;
-  color: #333;
-  margin-bottom: 20rpx;
+
+.placeholder {
+  width: 24px;
 }
-.desc {
-  font-size: 28rpx;
-  color: #999;
+
+/* 标签页 */
+.tabs-wrapper {
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 48px;
+  z-index: 99;
+}
+
+.tabs-scroll {
+  white-space: nowrap;
+  width: 100%;
+}
+
+.tabs-container {
+  display: flex;
+  padding: 0 15px;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 12px 8px;
+  font-size: 14px;
+  color: #606266;
+  position: relative;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.tab-item.active {
+  color: #409eff;
+  font-weight: 500;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  background-color: #409eff;
+  border-radius: 2px;
+}
+
+/* 订单列表内容 */
+.order-content {
+  flex: 1;
+  padding: 12px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+}
+
+/* 空状态 */
+.empty-state {
+  padding-top: 60px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 加载状态 */
+.loading-state {
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: #909399;
+  font-size: 14px;
+}
+
+/* 订单卡片 */
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 12px;
+  transition: all 0.2s;
+}
+
+.order-card:active {
+  background-color: #f9f9f9;
+}
+
+/* 卡片头部 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f5f7fa;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  padding-top: 2px;
+}
+
+.service-title {
+  font-size: 17px;
+  font-weight: bold;
+  color: #303133;
+}
+
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.status {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.status.status-pending {
+  color: #ff9500;
+}
+
+.status.status-wait {
+  color: #409eff;
+}
+
+.status.status-process {
+  color: #e6a23c;
+}
+
+.status.status-success {
+  color: #67c23a;
+}
+
+.status.status-refund {
+  color: #909399;
+}
+
+.status.status-cancel {
+  color: #c0c4cc;
+}
+
+/* 卡片主体 */
+.card-body {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.service-img {
+  width: 70px;
+  height: 70px;
+  border-radius: 6px;
+  background-color: #f5f7fa;
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.info-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.companion-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.companion-row {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #303133;
+  margin-bottom: 4px;
+}
+
+.companion-row .label {
+  color: #606266;
+  margin-right: 4px;
+}
+
+.companion-row .value {
+  font-weight: 500;
+}
+
+.view-details {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #909399;
+  flex-shrink: 0;
+  margin-left: 8px;
+  margin-top: 2px;
+}
+
+.view-details text {
+  margin-right: 2px;
+}
+
+.time-row {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #909399;
+  margin-bottom: 4px;
+}
+
+.time-row text {
+  margin-left: 4px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+}
+
+.price-row .label {
+  font-size: 12px;
+  color: #909399;
+  margin-right: 4px;
+}
+
+.price-row .price {
+  font-size: 16px;
+  color: #333;
+  font-weight: bold;
+  font-family: DINAlternate-Bold, sans-serif;
+}
+
+/* 卡片底部 */
+.card-footer {
+  padding-top: 8px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.actions button {
+  margin: 0;
 }

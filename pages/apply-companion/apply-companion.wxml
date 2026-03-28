@@ -1,0 +1,192 @@
+<!-- pages/apply-companion/apply-companion.wxml -->
+<view class="apply-page">
+  <!-- 头部导航 -->
+  <view class="header">
+    <view class="back-icon" bindtap="goBack">
+      <van-icon name="arrow-left" size="24" color="#333" />
+    </view>
+    <text class="title">{{translations.title}}</text>
+    <view class="placeholder"></view>
+  </view>
+
+  <!-- 表单内容 -->
+  <scroll-view scroll-y class="content">
+    <!-- 头像上传 -->
+    <view class="section avatar-section" id="avatar-field">
+      <view class="avatar-upload" bindtap="handleAvatarUpload">
+        <image wx:if="{{avatar}}" class="avatar-img" src="{{avatar}}" mode="aspectFill" />
+        <view wx:else class="avatar-placeholder">
+          <van-icon name="photograph" size="48" color="#999" />
+          <text class="avatar-text">{{translations.uploadAvatar}} *</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="section">
+      <text class="section-title">{{translations.basicInfo}}</text>
+      
+      <!-- 姓名 -->
+      <view class="form-item" id="name-field">
+        <text class="label">{{translations.name}} *</text>
+        <input 
+          class="input" 
+          placeholder="{{translations.namePlaceholder}}" 
+          value="{{formData.name}}"
+          bindinput="handleNameInput"
+        />
+      </view>
+
+      <!-- 手机号 -->
+      <view class="form-item" id="phone-field">
+        <text class="label">{{translations.phone}} *</text>
+        <input 
+          class="input" 
+          placeholder="{{translations.phonePlaceholder}}" 
+          value="{{formData.phone}}"
+          bindinput="handlePhoneInput"
+          type="number"
+          maxlength="11"
+        />
+      </view>
+
+      <!-- 性别 -->
+      <view class="form-item">
+        <text class="label">{{translations.gender}}</text>
+        <view class="gender-options">
+          <view 
+            class="gender-option {{formData.gender === 'male' ? 'active' : ''}}"
+            data-value="male"
+            bindtap="handleGenderSelect"
+          >
+            <van-icon name="male" size="24" color="#409eff" />
+            <text>{{translations.male}}</text>
+          </view>
+          <view 
+            class="gender-option {{formData.gender === 'female' ? 'active' : ''}}"
+            data-value="female"
+            bindtap="handleGenderSelect"
+          >
+            <van-icon name="female" size="24" color="#f56c6c" />
+            <text>{{translations.female}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 年龄 -->
+      <view class="form-item" id="age-field">
+        <text class="label">{{translations.age}} *</text>
+        <input 
+          class="input" 
+          placeholder="{{translations.agePlaceholder}}" 
+          value="{{formData.age}}"
+          bindinput="handleAgeInput"
+          type="number"
+        />
+      </view>
+
+      <!-- 工作经验 -->
+      <view class="form-item" id="experience-field">
+        <text class="label">{{translations.experience}} *</text>
+        <input 
+          class="input" 
+          placeholder="{{translations.experiencePlaceholder}}" 
+          value="{{formData.experience}}"
+          bindinput="handleExperienceInput"
+        />
+      </view>
+
+      <!-- 个人简介 -->
+      <view class="form-item">
+        <text class="label">{{translations.intro}}</text>
+        <textarea 
+          class="textarea" 
+          placeholder="{{translations.introPlaceholder}}" 
+          value="{{formData.intro}}"
+          bindinput="handleIntroInput"
+          maxlength="200"
+          auto-height
+        />
+      </view>
+    </view>
+
+    <!-- 擅长领域 -->
+    <view class="section">
+      <text class="section-title">{{translations.tags}}</text>
+      <view class="tags-container">
+        <view 
+          wx:for="{{availableTags}}" 
+          wx:key="id"
+          class="tag-item {{item.selected ? 'selected' : ''}}"
+          data-index="{{index}}"
+          bindtap="handleTagSelect"
+        >
+          {{item.name}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 可提供的服务 -->
+    <view class="section">
+      <text class="section-title">{{translations.services}}</text>
+      <view class="tags-container">
+        <view 
+          wx:for="{{availableServices}}" 
+          wx:key="id"
+          class="tag-item {{item.selected ? 'selected' : ''}}"
+          data-index="{{index}}"
+          bindtap="handleServiceSelect"
+        >
+          {{item.name}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 证件上传 -->
+    <view class="section">
+      <text class="section-title">{{translations.uploadIdCard}} *</text>
+      <view class="upload-grid">
+        <view class="upload-item" id="idcard-front-field" bindtap="handleIdCardFrontUpload">
+          <image wx:if="{{idCardFront}}" class="upload-img" src="{{idCardFront}}" mode="aspectFill" />
+          <view wx:else class="upload-placeholder">
+            <van-icon name="photograph" size="32" color="#999" />
+            <text class="upload-text">正面 *</text>
+          </view>
+        </view>
+        <view class="upload-item" id="idcard-back-field" bindtap="handleIdCardBackUpload">
+          <image wx:if="{{idCardBack}}" class="upload-img" src="{{idCardBack}}" mode="aspectFill" />
+          <view wx:else class="upload-placeholder">
+            <van-icon name="photograph" size="32" color="#999" />
+            <text class="upload-text">背面 *</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 健康证上传 -->
+    <view class="section">
+      <text class="section-title">{{translations.uploadHealthCert}} *</text>
+      <view class="upload-item full-width" id="health-cert-field" bindtap="handleHealthCertificateUpload">
+        <image wx:if="{{healthCertificate}}" class="upload-img" src="{{healthCertificate}}" mode="aspectFill" />
+        <view wx:else class="upload-placeholder">
+          <van-icon name="photograph" size="32" color="#999" />
+          <text class="upload-text">点击上传健康证 *</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="submit-section">
+      <van-button 
+        type="primary" 
+        round 
+        block 
+        loading="{{submitting}}"
+        bindclick="handleSubmit"
+        custom-class="submit-btn"
+      >
+        {{submitting ? translations.submitting : translations.submit}}
+      </van-button>
+    </view>
+  </scroll-view>
+</view>

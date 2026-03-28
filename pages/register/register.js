@@ -1,5 +1,6 @@
 // pages/register/register.js
 const mock = require('../../mock/index.js')
+const i18n = require('../../utils/i18n.js')
 
 Page({
   data: {
@@ -32,13 +33,59 @@ Page({
     canSendCode: true,
     
     // 验证码按钮文字
-    codeButtonText: '获取验证码'
+    codeButtonText: '获取验证码',
+    
+    // 翻译文本
+    translations: {
+      title: '',
+      phoneNumber: '',
+      verifyCode: '',
+      setPassword: '',
+      confirmPassword: '',
+      register: '',
+      hasAccount: '',
+      loginNow: '',
+      haveReadAgreed: '',
+      userAgreement: '',
+      privacyPolicy: '',
+      and: ''
+    }
   },
 
   onLoad(options) {
     console.log('注册页面加载', options)
+    this.updateTranslations()
     // 初始化检查
     this.checkCanRegister()
+    
+    // 监听语言变化
+    const app = getApp()
+    if (app.onLanguageChange) {
+      app.onLanguageChange(() => {
+        this.updateTranslations()
+      })
+    }
+  },
+  
+  // 更新翻译文本
+  updateTranslations() {
+    this.setData({
+      translations: {
+        title: i18n.t('register.title'),
+        phoneNumber: i18n.t('register.phoneNumber'),
+        verifyCode: i18n.t('register.verifyCode'),
+        setPassword: i18n.t('register.setPassword'),
+        confirmPassword: i18n.t('register.confirmPassword'),
+        register: i18n.t('register.register'),
+        hasAccount: i18n.t('register.hasAccount'),
+        loginNow: i18n.t('register.loginNow'),
+        haveReadAgreed: i18n.t('register.haveReadAgreed'),
+        userAgreement: i18n.t('register.userAgreement'),
+        privacyPolicy: i18n.t('register.privacyPolicy'),
+        and: i18n.t('common.and')
+      },
+      codeButtonText: i18n.t('register.getCode')
+    })
   },
 
   // 手机号输入

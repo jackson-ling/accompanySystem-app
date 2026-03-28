@@ -17,7 +17,9 @@ module.exports = [
     intro: '三甲医院资深医师，5年陪诊经验，专业可靠',
     services: [1, 2, 3, 4, 8],
     rating: 4.9,
-    collected: false
+    collected: true, // 已收藏
+    latitude: 39.9042, // 北京东城区附近
+    longitude: 116.4074
   },
   {
     id: 2,
@@ -35,7 +37,9 @@ module.exports = [
     intro: '资深护士，亲和力强，服务周到',
     services: [1, 2, 8],
     rating: 4.8,
-    collected: false
+    collected: false,
+    latitude: 39.9142, // 北京东城区附近，距离第一个约1.1km
+    longitude: 116.4174
   },
   {
     id: 3,
@@ -53,7 +57,9 @@ module.exports = [
     intro: '骨科专家，专业陪诊，值得信赖',
     services: [1, 2, 3, 4],
     rating: 4.7,
-    collected: false
+    collected: true, // 已收藏
+    latitude: 39.8842, // 北京东城区附近，距离第一个约2.2km
+    longitude: 116.3974
   },
   {
     id: 4,
@@ -71,7 +77,9 @@ module.exports = [
     intro: '护士长级别，经验丰富，服务专业',
     services: [1, 2, 3, 4, 8],
     rating: 4.9,
-    collected: false
+    collected: false,
+    latitude: 39.9242, // 北京东城区附近，距离第一个约2.2km
+    longitude: 116.4274
   },
   {
     id: 5,
@@ -89,7 +97,9 @@ module.exports = [
     intro: '年轻有为，服务热情，好评如潮',
     services: [1, 2, 8],
     rating: 4.6,
-    collected: false
+    collected: false,
+    latitude: 39.8942, // 北京东城区附近，距离第一个约1.1km
+    longitude: 116.4174
   },
   {
     id: 6,

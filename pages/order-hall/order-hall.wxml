@@ -1,0 +1,69 @@
+<!-- pages/order-hall/order-hall.wxml -->
+<view class="order-hall-page">
+  <!-- 头部导航 -->
+  <view class="header">
+    <view class="back-icon" bindtap="goBack">
+      <van-icon name="arrow-left" size="20" color="#333" />
+    </view>
+    <text class="title">{{translations.title}}</text>
+    <view class="placeholder"></view>
+  </view>
+
+  <!-- 订单列表 -->
+  <view class="order-list">
+    <!-- 加载状态 -->
+    <view wx:if="{{loading}}" class="loading-state">
+      <van-loading type="spinner" size="24" />
+      <text>{{translations.loading}}</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:elif="{{isEmpty}}" class="empty-state">
+      <van-empty description="{{translations.noOrders}}" />
+    </view>
+
+    <!-- 订单卡片 -->
+    <view wx:else class="order-list-content">
+      <view 
+        class="order-card" 
+        wx:for="{{availableOrders}}" 
+        wx:key="id"
+        data-order="{{item}}"
+        bindtap="handleGrab"
+      >
+        <view class="card-main">
+          <view class="left-info">
+            <view class="service-tag">{{item.serviceName}}</view>
+            <view class="info-row">
+              <van-icon name="user-o" size="16" color="#666" />
+              <text>{{item.patientName || translations.patient}}</text>
+            </view>
+            <view class="info-row">
+              <van-icon name="location-o" size="16" color="#666" />
+              <text>{{item.hospital}}{{item.department ? '(' + item.department + ')' : ''}}</text>
+            </view>
+            <view class="info-row">
+              <van-icon name="clock-o" size="16" color="#666" />
+              <text>{{item.appointmentTime}}</text>
+            </view>
+          </view>
+          <view class="right-price">
+            <text class="price">¥{{item.amount}}</text>
+          </view>
+        </view>
+        <view class="card-footer">
+          <van-button 
+            type="primary" 
+            round 
+            size="small"
+            data-order="{{item}}"
+            bindclick="handleGrab"
+            catchtap
+          >
+            {{translations.grabNow}}
+          </van-button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

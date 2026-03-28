@@ -1,15 +1,31 @@
 // pages/messages/messages.js
 const mock = require('../../mock/index.js')
+const i18n = require('../../utils/i18n.js')
 
 Page({
   data: {
     // 消息列表
-    messageList: []
+    messageList: [],
+    
+    // 翻译文本
+    translations: {
+      title: '',
+      noMessages: ''
+    }
   },
 
   onLoad(options) {
     console.log('消息列表加载', options)
+    this.updateTranslations()
     this.loadMessages()
+    
+    // 监听语言变化
+    const app = getApp()
+    if (app.onLanguageChange) {
+      app.onLanguageChange(() => {
+        this.updateTranslations()
+      })
+    }
   },
 
   onShow() {
@@ -19,7 +35,19 @@ Page({
         selected: 3
       })
     }
+    // 每次显示页面时重新更新翻译，确保语言切换后立即生效
+    this.updateTranslations()
     this.loadMessages()
+  },
+  
+  // 更新翻译文本
+  updateTranslations() {
+    this.setData({
+      translations: {
+        title: i18n.t('messages.title'),
+        noMessages: i18n.t('messages.noMessages')
+      }
+    })
   },
 
   // 加载消息列表

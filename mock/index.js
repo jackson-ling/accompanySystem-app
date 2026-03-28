@@ -15,7 +15,9 @@ let mockUser = {
   avatar: '',
   phone: '138****8888',
   balance: 1000.00,
-  createTime: '2024-01-01'
+  createTime: '2024-01-01',
+  isCompanion: false,
+  companionInfo: null
 }
 
 // 模拟患者数据
@@ -27,6 +29,14 @@ let mockPatients = [
     address: '北京市朝阳区',
     relationship: '本人',
     default: true
+  },
+  {
+    id: 2,
+    name: '李四',
+    phone: '13800138002',
+    address: '北京市海淀区',
+    relationship: '家属',
+    default: false
   }
 ]
 

@@ -1,7 +1,65 @@
 <!-- pages/feedback/feedback.wxml -->
-<view class="container">
+<view class="feedback-page">
+  <!-- 头部导航 -->
+  <view class="header">
+    <view class="back-icon" bindtap="goBack">
+      <van-icon name="arrow-left" size="20" color="#333" />
+    </view>
+    <text class="title">{{translations.title}}</text>
+    <view class="placeholder"></view>
+  </view>
+
+  <!-- 内容区域 -->
   <view class="content">
-    <text class="title">意见反馈</text>
-    <text class="desc">功能开发中...</text>
+    <!-- 反馈内容 -->
+    <view class="form-group">
+      <text class="label">{{translations.question}}</text>
+      <textarea
+        class="custom-textarea"
+        value="{{content}}"
+        placeholder="{{translations.questionPlaceholder}}"
+        maxlength="500"
+        show-confirm-bar="{{false}}"
+        bindinput="handleContentInput"
+        auto-height
+      />
+      <view class="char-count">{{content.length}}/500</view>
+    </view>
+
+    <!-- 订单编号 -->
+    <view class="form-group">
+      <text class="label">{{translations.orderNo}}</text>
+      <input
+        class="custom-input"
+        type="text"
+        value="{{orderNo}}"
+        placeholder="{{translations.orderNoPlaceholder}}"
+        bindinput="handleOrderNoInput"
+      />
+    </view>
+
+    <!-- 联系方式 -->
+    <view class="form-group">
+      <text class="label">{{translations.contact}}</text>
+      <input
+        class="custom-input"
+        type="text"
+        value="{{contact}}"
+        placeholder="{{translations.contactPlaceholder}}"
+        bindinput="handleContactInput"
+      />
+    </view>
+
+    <!-- 提交按钮 -->
+    <van-button
+      type="primary"
+      round
+      block
+      loading="{{submitting}}"
+      bindclick="handleSubmit"
+      custom-class="submit-btn"
+    >
+      {{translations.submit}}
+    </van-button>
   </view>
 </view>

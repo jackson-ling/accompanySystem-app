@@ -1,0 +1,116 @@
+<!-- pages/service-orders/service-orders.wxml -->
+<view class="service-orders-page">
+  <!-- 头部导航 -->
+  <view class="header">
+    <view class="back-icon" bindtap="goBack">
+      <van-icon name="arrow-left" size="20" color="#333" />
+    </view>
+    <text class="title">{{translations.title}}</text>
+    <view class="placeholder"></view>
+  </view>
+
+  <!-- 筛选标签 -->
+  <view class="filter-tabs">
+    <view 
+      class="tab-item {{activeTab === 'pending' ? 'active' : ''}}"
+      data-tab="pending"
+      bindtap="handleTabChange"
+    >
+      <text>{{translations.pendingOrders}}</text>
+      <view class="indicator" wx:if="{{activeTab === 'pending'}}"></view>
+    </view>
+    <view 
+      class="tab-item {{activeTab === 'completed' ? 'active' : ''}}"
+      data-tab="completed"
+      bindtap="handleTabChange"
+    >
+      <text>{{translations.completedOrders}}</text>
+      <view class="indicator" wx:if="{{activeTab === 'completed'}}"></view>
+    </view>
+  </view>
+
+  <!-- 订单列表 -->
+  <view class="order-list">
+    <!-- 加载状态 -->
+    <view wx:if="{{loading}}" class="loading-state">
+      <van-loading type="spinner" size="24" />
+      <text>{{translations.loading}}</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:elif="{{orders.length === 0}}" class="empty-state">
+      <van-empty description="{{translations.noOrders}}" />
+    </view>
+
+    <!-- 订单卡片 -->
+    <view wx:else class="order-list-content">
+      <view 
+        class="order-card" 
+        wx:for="{{orders}}" 
+        wx:key="id"
+        data-order="{{item}}"
+      >
+        <view class="card-header" data-order="{{item}}" bindtap="handleViewDetail">
+          <text class="service-name">{{item.serviceName}}</text>
+          <view class="status {{item.status === 2 ? 'pending' : item.status === 3 ? 'process' : 'completed'}}">
+            {{item.status === 2 ? translations.pending : item.status === 3 ? translations.process : translations.completed}}
+          </view>
+        </view>
+        
+        <view class="card-body" data-order="{{item}}" bindtap="handleViewDetail">
+          <view class="info-row">
+            <van-icon name="clock-o" size="16" color="#666" />
+            <text>{{item.appointmentTime}}</text>
+          </view>
+          <view class="info-row">
+            <van-icon name="location-o" size="16" color="#666" />
+            <text>{{item.hospital}}</text>
+          </view>
+          <view class="info-row">
+            <van-icon name="user-o" size="16" color="#666" />
+            <text>{{item.patientName}} ({{item.phone}})</text>
+          </view>
+        </view>
+        
+        <view class="card-footer" wx:if="{{item.status === 2}}">
+          <van-button 
+            class="action-btn" 
+            plain 
+            round 
+            size="small"
+            data-order="{{item}}"
+            bindclick="handleContactCustomer"
+            catchtap
+          >
+            {{translations.contactCustomer}}
+          </van-button>
+          <van-button 
+            class="action-btn primary" 
+            round 
+            size="small" 
+            type="primary"
+            data-order="{{item}}"
+            bindclick="handleStartService"
+            catchtap
+          >
+            {{translations.startService}}
+          </van-button>
+        </view>
+        
+        <view class="card-footer" wx:if="{{item.status === 3}}">
+          <van-button 
+            class="action-btn primary" 
+            round 
+            size="small" 
+            type="primary"
+            data-order="{{item}}"
+            bindclick="handleCompleteService"
+            catchtap
+          >
+            {{translations.completeService}}
+          </van-button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

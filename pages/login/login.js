@@ -1,5 +1,6 @@
 // pages/login/login.js
 const mock = require('../../mock/index.js')
+const i18n = require('../../utils/i18n.js')
 
 Page({
   data: {
@@ -26,11 +27,41 @@ Page({
     loading: false,
     
     // 协议
-    agreed: false
+    agreed: false,
+    
+    // 翻译文本
+    translations: {
+      platformTitle: '',
+      phoneNumber: '',
+      pleaseEnterPhone: '',
+      password: '',
+      pleaseEnterPassword: '',
+      forgotPassword: '',
+      loginButton: '',
+      noAccount: '',
+      registerNow: '',
+      haveReadAgreed: '',
+      userAgreement: '',
+      and: '',
+      privacyPolicy: '',
+      getCode: '',
+      resend: '',
+      verifyCodeSent: '',
+      pleaseEnterPhone: '',
+      loginNow: '',
+      perfectInfo: '',
+      loggingIn: '',
+      loginSuccess: '',
+      loginFailed: '',
+      agreeFirst: '',
+      featureInDev: '',
+      wechatLoginInDev: ''
+    }
   },
 
   onLoad(options) {
     console.log('登录页加载', options)
+    this.updateTranslations()
     
     // 检查是否已登录
     const app = getApp()
@@ -41,6 +72,47 @@ Page({
     
     // 初始化检查是否可以登录（不依赖协议）
     this.checkCanLogin()
+    
+    // 监听语言变化
+    if (app.onLanguageChange) {
+      app.onLanguageChange(() => {
+        this.updateTranslations()
+      })
+    }
+  },
+  
+  // 更新翻译文本
+  updateTranslations() {
+    this.setData({
+      translations: {
+        platformTitle: i18n.t('login.platformTitle'),
+        phoneNumber: i18n.t('login.phoneNumber'),
+        pleaseEnterPhone: i18n.t('login.pleaseEnterPhone'),
+        password: i18n.t('login.password'),
+        pleaseEnterPassword: i18n.t('login.pleaseEnterPassword'),
+        forgotPassword: i18n.t('login.forgotPassword'),
+        loginButton: i18n.t('login.loginBtn'),
+        noAccount: i18n.t('login.noAccount'),
+        registerNow: i18n.t('login.registerNow'),
+        haveReadAgreed: i18n.t('login.haveReadAgreed'),
+        userAgreement: i18n.t('login.userAgreement'),
+        and: i18n.t('login.and') || '和',
+        privacyPolicy: i18n.t('login.privacyPolicy'),
+        getCode: i18n.t('login.getCode') || 'Get Code',
+        resend: i18n.t('login.resend') || 'Resend',
+        verifyCodeSent: i18n.t('login.verifyCodeSent') || 'Verification code sent',
+        pleaseEnterPhone: i18n.t('login.pleaseEnterPhone'),
+        loginNow: i18n.t('login.loginNow') || 'Login',
+        perfectInfo: i18n.t('login.perfectInfo'),
+        loggingIn: i18n.t('login.loggingIn'),
+        loginSuccess: i18n.t('login.loginSuccess'),
+        loginFailed: i18n.t('login.loginFailed'),
+        agreeFirst: i18n.t('login.agreeFirst'),
+        featureInDev: i18n.t('common.featureInDev') || 'Feature under development',
+        wechatLoginInDev: i18n.t('login.wechatLoginInDev') || 'WeChat login under development'
+      },
+      codeButtonText: i18n.t('login.getCode') || 'Get Code'
+    })
   },
 
   onUnload() {
@@ -106,7 +178,7 @@ Page({
     
     this.setData({
       canLogin,
-      loginButtonText: canLogin ? '登录' : '请完善信息'
+      loginButtonText: canLogin ? this.data.translations.loginButton : this.data.translations.perfectInfo
     })
   },
 
@@ -121,7 +193,7 @@ Page({
     // 验证手机号
     if (!/^1[3-9]\d{9}$/.test(phone)) {
       wx.showToast({
-        title: '请输入正确的手机号',
+        title: this.data.translations.pleaseEnterPhone,
         icon: 'none'
       })
       return
@@ -141,7 +213,7 @@ Page({
         clearInterval(this.data.codeTimer)
         this.setData({
           canSendCode: true,
-          codeButtonText: '获取验证码'
+          codeButtonText: this.data.translations.getCode
         })
       } else {
         this.setData({
@@ -153,7 +225,7 @@ Page({
     
     // 模拟发送验证码
     wx.showToast({
-      title: '验证码已发送',
+      title: this.data.translations.verifyCodeSent,
       icon: 'success'
     })
     
@@ -173,7 +245,7 @@ Page({
     // 检查协议
     if (!this.data.agreed) {
       wx.showToast({
-        title: '请先阅读并同意用户协议和隐私政策',
+        title: this.data.translations.agreeFirst,
         icon: 'none',
         duration: 2000
       })
@@ -182,7 +254,7 @@ Page({
 
     this.setData({
       loading: true,
-      loginButtonText: '登录中...'
+      loginButtonText: this.data.translations.loggingIn
     })
     
     try {
@@ -201,7 +273,7 @@ Page({
       app.setLoginInfo('mock_token_' + Date.now(), userInfo)
       
       wx.showToast({
-        title: '登录成功',
+        title: this.data.translations.loginSuccess,
         icon: 'success'
       })
       
@@ -221,13 +293,13 @@ Page({
     } catch (error) {
       console.error('登录失败:', error)
       wx.showToast({
-        title: '登录失败，请重试',
+        title: this.data.translations.loginFailed,
         icon: 'none'
       })
     } finally {
       this.setData({
         loading: false,
-        loginButtonText: '登录'
+        loginButtonText: this.data.translations.loginButton
       })
     }
   },
@@ -249,7 +321,7 @@ Page({
   // 忘记密码
   goToForgotPassword() {
     wx.showToast({
-      title: '功能开发中',
+      title: this.data.translations.featureInDev,
       icon: 'none'
     })
   },
@@ -257,7 +329,7 @@ Page({
   // 微信登录
   handleWechatLogin() {
     wx.showToast({
-      title: '微信登录开发中',
+      title: this.data.translations.wechatLoginInDev,
       icon: 'none'
     })
   },
@@ -265,7 +337,7 @@ Page({
   // 打开用户协议
   openAgreement() {
     wx.showModal({
-      title: '用户协议',
+      title: this.data.translations.userAgreement,
       content: '这里显示用户协议内容...',
       showCancel: false
     })
@@ -274,7 +346,7 @@ Page({
   // 打开隐私政策
   openPrivacy() {
     wx.showModal({
-      title: '隐私政策',
+      title: this.data.translations.privacyPolicy,
       content: '这里显示隐私政策内容...',
       showCancel: false
     })

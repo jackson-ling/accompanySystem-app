@@ -1,0 +1,175 @@
+<!-- pages/companion-workbench/companion-workbench.wxml -->
+<view class="workbench-page">
+  <!-- 头部导航 -->
+  <view class="header">
+    <view class="back-icon" bindtap="goBack">
+      <van-icon name="arrow-left" size="20" color="#333" />
+    </view>
+    <text class="title">{{translations.title}}</text>
+    <view class="placeholder"></view>
+  </view>
+
+  <!-- 状态卡片 -->
+  <view class="status-card">
+    <view class="card-content">
+      <view class="avatar-box" bindtap="handleEditProfile">
+        <image class="avatar" src="{{companionInfo.avatar || 'https://placehold.co/120x120/409eff/ffffff?text=陪'}}" mode="aspectFill" />
+        <view class="edit-badge">
+          <van-icon name="edit" size="12" color="#fff" />
+        </view>
+      </view>
+      <view class="info-box" bindtap="handleEditProfile">
+        <view class="name-row">
+          <text class="name">{{companionInfo.name || translations.companionName}}</text>
+          <view class="status-indicator {{isOnline ? 'online' : ''}}" bindtap="toggleStatus" catchtap>
+            <view class="dot"></view>
+            <text>{{isOnline ? translations.online : translations.offline}}</text>
+          </view>
+        </view>
+        <view class="detail-row">
+          <text class="info-text">{{companionInfo.phone || translations.phoneNotSet}}</text>
+          <text class="divider">|</text>
+          <text class="info-text">{{companionInfo.experience || translations.experienceUnknown}}</text>
+        </view>
+        <view class="edit-hint-row">
+          <text>{{translations.clickToEdit}}</text>
+          <van-icon name="arrow" size="14" color="#999" />
+        </view>
+      </view>
+      <view class="toggle-box">
+        <van-switch 
+          checked="{{isOnline}}" 
+          size="24" 
+          active-color="#13ce66" 
+          inactive-color="#ff4949"
+          bindchange="toggleStatus"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 统计网格 -->
+  <view class="stats-grid">
+    <view class="stat-item">
+      <text class="value">{{statistics.todayIncome.toFixed(2)}}</text>
+      <text class="label">{{translations.todayIncome}}</text>
+    </view>
+    <view class="stat-item">
+      <text class="value">{{statistics.todayOrders}}</text>
+      <text class="label">{{translations.todayOrders}}</text>
+    </view>
+    <view class="stat-item">
+      <text class="value">{{statistics.rating.toFixed(1)}}</text>
+      <text class="label">{{translations.rating}}</text>
+    </view>
+    <view class="stat-item">
+      <text class="value">{{statistics.followers}}</text>
+      <text class="label">{{translations.followers}}</text>
+    </view>
+    <view class="stat-item">
+      <text class="value">{{statistics.totalOrders}}</text>
+      <text class="label">{{translations.totalOrders}}</text>
+    </view>
+    <view class="stat-item">
+      <text class="value">{{statistics.workDays}}<text class="unit">{{translations.dayUnit}}</text></text>
+      <text class="label">{{translations.workDays}}</text>
+    </view>
+  </view>
+
+  <!-- 菜单网格 -->
+  <view class="menu-grid">
+    <view class="menu-item" bindtap="handleIncomeDetails">
+      <view class="icon-box green">
+        <van-icon name="gold-coin" size="24" color="#67c23a" />
+      </view>
+      <text class="label">{{translations.incomeDetails}}</text>
+    </view>
+    <view class="menu-item" bindtap="handleOrderHall">
+      <view class="icon-box blue">
+        <van-icon name="todo-list" size="24" color="#409eff" />
+      </view>
+      <text class="label">{{translations.orderHall}}</text>
+    </view>
+    <view class="menu-item" bindtap="handleAllOrders">
+      <view class="icon-box orange">
+        <van-icon name="clock" size="24" color="#e6a23c" />
+      </view>
+      <text class="label">{{translations.allOrders}}</text>
+    </view>
+  </view>
+
+  <!-- 待处理订单 -->
+  <view class="recent-orders">
+    <view class="section-title">
+      <text>{{translations.pendingOrders}}</text>
+      <view class="more" bindtap="handleAllOrders">
+        <text>{{translations.viewAll}}</text>
+        <van-icon name="arrow" size="14" color="#999" />
+      </view>
+    </view>
+
+    <view wx:if="{{pendingOrders.length > 0}}" class="order-list">
+      <view class="order-card" wx:for="{{pendingOrders}}" wx:key="id" data-order="{{item}}">
+        <view class="card-body">
+          <view class="info-row">
+            <text class="label">{{translations.serviceItem}}</text>
+            <text class="value">{{item.serviceName}}</text>
+          </view>
+          <view class="info-row time-row">
+            <text class="label">{{translations.serviceTime}}</text>
+            <text class="value time-highlight">{{item.appointmentTime}}</text>
+          </view>
+          <view class="info-row">
+            <text class="label">{{translations.patientName}}</text>
+            <text class="value">{{item.patientName || translations.notSet}}</text>
+          </view>
+          <view class="info-row">
+            <text class="label">{{translations.phone}}</text>
+            <text class="value">{{item.phone || translations.notSet}}</text>
+          </view>
+          <view class="info-row">
+            <text class="label">{{translations.serviceLocation}}</text>
+            <text class="value">{{item.hospital}} {{item.department ? '(' + item.department + ')' : ''}}</text>
+          </view>
+        </view>
+        <view class="card-footer">
+          <van-button 
+            class="action-btn" 
+            plain 
+            round 
+            size="small" 
+            data-order="{{item}}"
+            bindclick="handleContactCustomer"
+          >
+            {{translations.contactCustomer}}
+          </van-button>
+          <van-button 
+            class="action-btn" 
+            plain 
+            round 
+            size="small" 
+            type="danger"
+            data-order="{{item}}"
+            bindclick="handleReject"
+          >
+            {{translations.rejectOrder}}
+          </van-button>
+          <van-button 
+            class="action-btn primary" 
+            round 
+            size="small" 
+            type="primary"
+            data-order="{{item}}"
+            bindclick="handleAccept"
+          >
+            {{translations.acceptOrder}}
+          </van-button>
+        </view>
+      </view>
+    </view>
+
+    <view wx:else class="empty-state">
+      <van-empty description="{{translations.noOrders}}" />
+    </view>
+  </view>
+</view>
