@@ -1,7 +1,129 @@
-<!-- pages/companion-detail/companion-detail.wxml -->
 <view class="container">
-  <view class="content">
-    <text class="title">陪诊师详情</text>
-    <text class="desc">功能开发中...</text>
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-left"></view>
+    <text class="page-title">陪诊师详情</text>
+    <view class="header-right"></view>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="content" wx:if="{{companion}}">
+    <!-- 封面图 -->
+    <view class="cover-image-container">
+      <image class="cover-image" src="{{companion.avatar}}" mode="aspectFill" bindtap="previewImage" />
+    </view>
+
+    <!-- 个人信息卡片 -->
+    <view class="profile-section">
+      <view class="info-card">
+        <view class="card-top">
+          <view class="left-avatar">
+            <image class="avatar" src="{{companion.avatar}}" mode="aspectFill" />
+          </view>
+          <view class="center-info">
+            <view class="name-row">
+              <text class="name">{{companion.name}}</text>
+              <view class="gender-icon {{companion.gender}}">
+                <van-icon name="passed" size="12" color="#fff" />
+              </view>
+              <text class="age" wx:if="{{companion.age}}">{{companion.age}}{{translations.yearsOld}}</text>
+            </view>
+            <view class="tags-row">
+              <text class="experience-tag" wx:if="{{companion.experience}}">{{companion.experience}}</text>
+            </view>
+          </view>
+          <view class="right-action">
+            <view class="heart-action" bindtap="toggleCollection">
+              <text class="heart-icon {{isCollected ? 'active' : ''}}">♥</text>
+            </view>
+          </view>
+        </view>
+        <view class="card-stats">
+          <view class="stat-item">
+            <text class="stat-value">{{companion.orders || '0'}}</text>
+            <text class="stat-label">{{translations.totalOrders}}</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item">
+            <text class="stat-value">{{companion.score || '5.0'}}</text>
+            <text class="stat-label">{{translations.rating}}</text>
+          </view>
+          <view class="stat-divider"></view>
+          <view class="stat-item">
+            <text class="stat-value">{{companion.collected || 0}}</text>
+            <text class="stat-label">{{translations.collected}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 个人介绍 -->
+    <view class="intro-section">
+      <view class="section-title">{{translations.intro}}</view>
+      <view class="intro-box">
+        <text class="intro-content {{!isExpanded ? 'collapsed' : ''}}">{{companion.intro}}</text>
+        <view class="expand-btn" bindtap="toggleExpand" wx:if="{{shouldShowExpand}}">
+          {{isExpanded ? translations.collapse : translations.expand}}
+          <van-icon name="arrow-down" size="12" class="{{isExpanded ? 'is-expanded' : ''}}" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 标签页 -->
+    <view class="detail-tabs">
+      <view class="tab-item {{currentTab === 'services' ? 'active' : ''}}" bindtap="switchTab" data-tab="services">
+        {{translations.selectService}}
+      </view>
+      <view class="tab-item {{currentTab === 'comments' ? 'active' : ''}}" bindtap="switchTab" data-tab="comments">
+        {{translations.comments}}
+      </view>
+    </view>
+
+    <!-- 标签内容 -->
+    <view class="tab-content">
+      <!-- 服务列表 -->
+      <view wx:if="{{currentTab === 'services'}}" class="service-list">
+        <view class="service-card" wx:for="{{serviceList}}" wx:key="id" bindtap="goToServiceDetail" data-service="{{item}}">
+          <image class="service-image" src="{{item.image}}" mode="aspectFill" />
+          <view class="service-info">
+            <text class="service-name">{{item.name}}</text>
+            <text class="service-desc">{{item.description}}</text>
+            <view class="service-meta">
+              <text class="service-price">¥{{item.price}}</text>
+              <view class="book-btn" catchtap="goToOrder" data-service="{{item}}">
+                {{translations.bookNow}}
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 评论列表 -->
+      <view wx:if="{{currentTab === 'comments'}}" class="comment-list">
+        <view class="comment-item" wx:for="{{comments}}" wx:key="id">
+          <view class="comment-header">
+            <image class="user-avatar" src="{{item.userAvatar}}" mode="aspectFill" />
+            <text class="username">{{item.userName}}</text>
+            <view class="score-display">
+              <van-icon name="star" size="14" color="#f7ba2a" />
+              <text class="score-text">{{item.score.toFixed(1)}}</text>
+            </view>
+          </view>
+          <text class="comment-content">{{item.content}}</text>
+          <text class="comment-date">{{item.time}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:else class="loading-container">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">{{translations.loading}}</text>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-bar" wx:if="{{companion}}">
+    <view class="action-btn" bindtap="openBooking">{{translations.selectCompanion}}</view>
   </view>
 </view>

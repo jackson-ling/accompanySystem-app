@@ -19,12 +19,9 @@
   position: relative;
 }
 
-.back-btn {
-  position: absolute;
-  left: 0;
-  top: 20rpx;
-  padding: 8rpx;
-  margin-left: -8rpx;
+.header-left {
+  width: 40rpx;
+  height: 40rpx;
 }
 
 .logo {

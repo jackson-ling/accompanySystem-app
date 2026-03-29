@@ -32,11 +32,6 @@ Page({
       contactService: '',
       feedback: '',
       applyCompanion: '',
-      about: '',
-      settings: '',
-      logout: '',
-      logoutConfirm: '',
-      loggedOut: '',
       apply: '',
       applyCompanionRequired: ''
     }
@@ -96,11 +91,6 @@ Page({
         contactService: app.t('profile.contactService'),
         feedback: app.t('profile.feedback'),
         applyCompanion: app.t('profile.applyCompanion'),
-        about: app.t('settings.about'),
-        settings: app.t('settings.title'),
-        logout: app.t('settings.logout'),
-        logoutConfirm: app.t('profile.logoutConfirm'),
-        loggedOut: app.t('profile.loggedOut'),
         apply: app.t('profile.apply'),
         applyCompanionRequired: app.t('profile.applyCompanionRequired')
       },
@@ -336,35 +326,6 @@ Page({
     
     wx.navigateTo({
       url: '/pages/settings/settings'
-    })
-  },
-
-  // 关于我们
-  handleAbout() {
-    wx.showModal({
-      title: this.getApp().t('settings.about'),
-      content: this.getApp().t('settings.aboutContent'),
-      showCancel: false,
-      confirmText: this.getApp().t('common.confirm')
-    })
-  },
-
-  // 退出登录
-  handleLogout() {
-    wx.showModal({
-      title: this.getApp().t('common.confirm'),
-      content: this.getApp().t('profile.logoutConfirm'),
-      success: (res) => {
-        if (res.confirm) {
-          const app = getApp()
-          app.logout()
-          
-          wx.showToast({
-            title: this.getApp().t('profile.loggedOut'),
-            icon: 'success'
-          })
-        }
-      }
     })
   },
 

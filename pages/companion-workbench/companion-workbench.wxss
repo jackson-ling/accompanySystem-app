@@ -21,12 +21,8 @@
   z-index: 10;
 }
 
-.back-icon {
+.header-left {
   width: 48rpx;
-  height: 48rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .title {

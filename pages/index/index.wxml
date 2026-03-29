@@ -94,7 +94,7 @@
         <van-icon name="fire-o" size="20" color="#ff6b6b" />
         <text class="section-title">{{translations.popularServices}}</text>
       </view>
-      <view class="more-link" bindtap="goToServiceCategory">
+      <view class="more-link" bindtap="goToServiceCategory" data-type="all">
         <text>{{translations.viewAll}}</text>
         <van-icon name="arrow" size="14" color="#999" />
       </view>

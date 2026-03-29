@@ -7,6 +7,9 @@
       <input class="search-field" placeholder="{{translations.searchPlaceholder}}" value="{{searchText}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearchConfirm" />
       <van-icon wx:if="{{searchText}}" name="clear" size="16" color="#999" bindtap="onClearSearch" />
     </view>
+    <view class="cancel-btn" wx:if="{{searchText}}" bindtap="onClearSearch">
+      <text>{{translations.reset}}</text>
+    </view>
   </view>
 
   <!-- 筛选栏 -->

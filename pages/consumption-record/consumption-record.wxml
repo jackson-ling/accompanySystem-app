@@ -2,9 +2,7 @@
 <view class="consumption-record-page">
   <!-- 头部导航 -->
   <view class="header">
-    <view class="back-icon" bindtap="goBack">
-      <van-icon name="arrow-left" size="24" color="#333" />
-    </view>
+    <view class="header-left"></view>
     <text class="title">{{translations.title}}</text>
     <view class="placeholder"></view>
   </view>

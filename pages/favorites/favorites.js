@@ -152,11 +152,6 @@ Page({
     }
   },
 
-  // 返回上一页
-  goBack() {
-    wx.navigateBack()
-  },
-
   // 获取app实例
   getApp() {
     return getApp()

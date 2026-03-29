@@ -48,6 +48,7 @@ Page({
       translations: {
         placeholder: i18n.t('index.searchPlaceholder'),
         search: i18n.t('common.search'),
+        cancel: i18n.t('common.cancel'),
         history: i18n.t('search.history'),
         clear: i18n.t('search.clear'),
         guessYouLike: i18n.t('search.guessYouLike'),
@@ -103,28 +104,25 @@ Page({
     })
   },
 
-  // 返回
-  goBack() {
-    if (this.data.showResults) {
-      this.setData({
-        showResults: false,
-        searchText: ''
-      })
-    } else {
-      wx.navigateBack()
-    }
-  },
-
   // 执行搜索
   async performSearch(e) {
     let text = ''
-    if (e && e.currentTarget && e.currentTarget.dataset) {
+
+    // 如果点击的是标签项（带 data-text 属性），则使用标签的文本
+    if (e && e.currentTarget && e.currentTarget.dataset && e.currentTarget.dataset.text) {
       text = e.currentTarget.dataset.text
     } else {
+      // 否则使用输入框中的文本
       text = this.data.searchText
     }
 
-    if (!text || !text.trim()) return
+    if (!text || !text.trim()) {
+      wx.showToast({
+        title: '请输入搜索内容',
+        icon: 'none'
+      })
+      return
+    }
 
     this.setData({
       searchText: text,
@@ -146,19 +144,25 @@ Page({
 
       this.setData({
         filteredServices: filtered,
-        loading: false
+        loading: false,
+        isSearching: false
       })
     } catch (error) {
       console.error('搜索服务失败:', error)
       this.setData({
         filteredServices: [],
-        loading: false
-      })
-    } finally {
-      this.setData({
+        loading: false,
         isSearching: false
       })
     }
+  },
+
+  // 取消搜索（返回首页）
+  cancelSearch() {
+    console.log('取消搜索被调用，返回首页')
+    wx.navigateBack({
+      delta: 1
+    })
   },
 
   // 保存到历史搜索

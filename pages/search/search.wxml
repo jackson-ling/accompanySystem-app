@@ -2,7 +2,7 @@
 <view class="container">
   <!-- 搜索头部 -->
   <view class="search-header">
-    <view class="header-left" bindtap="goBack">
+    <view class="header-left" bindtap="cancelSearch">
       <van-icon name="arrow-left" size="20" color="#333" />
     </view>
     <view class="search-input-wrapper">
@@ -10,8 +10,8 @@
       <input class="search-input" placeholder="{{translations.placeholder}}" value="{{searchText}}" bindinput="onSearchInput" confirm-type="search" bindconfirm="performSearch" />
       <van-icon wx:if="{{searchText}}" name="clear" size="16" color="#999" bindtap="clearSearch" />
     </view>
-    <view class="header-right" bindtap="performSearch">
-      <text class="search-btn">{{translations.search}}</text>
+    <view class="header-right" wx:if="{{searchText}}">
+      <text class="search-btn" bindtap="performSearch">{{translations.search}}</text>
     </view>
   </view>
 

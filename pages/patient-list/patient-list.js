@@ -252,11 +252,6 @@ Page({
     })
   },
 
-  // 返回上一页
-  goBack() {
-    wx.navigateBack()
-  },
-
   // 处理Action Sheet选择
   handleActionSelect(e) {
     const index = e.detail.index

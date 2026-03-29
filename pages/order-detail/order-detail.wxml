@@ -1,7 +1,139 @@
-<!-- pages/order-detail/order-detail.wxml -->
 <view class="container">
-  <view class="content">
+  <!-- 页面头部 -->
+  <view class="nav-header">
+    <view class="header-left"></view>
     <text class="title">订单详情</text>
-    <text class="desc">功能开发中...</text>
+    <view class="placeholder"></view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="content" wx:if="{{order && !loading}}">
+    <!-- 状态卡片 -->
+    <view class="status-card {{statusClass}}">
+      <view class="status-text">
+        <van-icon name="info-o" size="18" color="#fff" />
+        <text>{{statusText}}</text>
+      </view>
+      <text class="status-desc">{{statusDesc}}</text>
+    </view>
+
+    <!-- 服务信息 -->
+    <view class="section-card">
+      <view class="card-title">服务信息</view>
+      <view class="service-info" bindtap="navigateToService" data-id="{{order.serviceId}}">
+        <image class="service-img" src="{{order.image}}" mode="aspectFill" />
+        <view class="info-middle">
+          <text class="service-name">{{order.serviceName}}</text>
+          <text class="service-intro">{{serviceDetail.description || '暂无服务简介'}}</text>
+          <view class="service-meta">
+            <text class="meta-item">
+              <van-icon name="clock-o" size="12" />
+              {{serviceDetail.duration || '暂无时长'}}
+            </text>
+            <text class="meta-item">销量 {{serviceDetail.sales || 0}}</text>
+          </view>
+        </view>
+        <view class="view-detail">
+          <text class="tip">查看详情</text>
+          <van-icon name="arrow" size="12" />
+        </view>
+        <text class="price">¥{{order.price}}</text>
+      </view>
+    </view>
+
+    <!-- 陪诊师信息 -->
+    <view class="section-card">
+      <view class="card-title">陪诊师信息</view>
+      <view class="info-list">
+        <view class="info-item">
+          <text class="label">陪诊人</text>
+          <view class="value" bindtap="navigateToCompanion" wx:if="{{order.companionId}}">
+            <image class="companion-avatar" src="{{order.companionAvatar}}" mode="aspectFill" />
+            <text>{{order.companionName}}</text>
+            <van-icon name="arrow" size="12" />
+          </view>
+          <text class="value" wx:else>待分配</text>
+        </view>
+        <view class="info-item">
+          <text class="label">联系电话</text>
+          <text class="value">{{order.companionPhone || (order.companionName ? '暂无' : '等待系统分配')}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 就诊人信息 -->
+    <view class="section-card">
+      <view class="card-title">就诊人信息</view>
+      <view class="info-list">
+        <view class="info-item">
+          <text class="label">就诊人</text>
+          <text class="value">{{order.patientName}}</text>
+        </view>
+        <view class="info-item">
+          <text class="label">联系电话</text>
+          <text class="value">{{order.phone}}</text>
+        </view>
+        <view class="info-item">
+          <text class="label">接送方式</text>
+          <text class="value">{{order.pickupOption || '自行前往'}}</text>
+        </view>
+        <view class="info-item" wx:if="{{order.remarks}}">
+          <text class="label">备注</text>
+          <text class="value">{{order.remarks}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 订单信息 -->
+    <view class="section-card">
+      <view class="card-title">订单信息</view>
+      <view class="info-list">
+        <view class="info-item">
+          <text class="label">订单编号</text>
+          <view class="value copy-row">
+            <text>{{order.id}}</text>
+            <text class="copy-btn" catchtap="copyText" data-text="{{order.id}}">复制</text>
+          </view>
+        </view>
+        <view class="info-item">
+          <text class="label">创建时间</text>
+          <text class="value">{{order.createTime}}</text>
+        </view>
+        <view class="info-item" wx:if="{{order.payTime}}">
+          <text class="label">支付时间</text>
+          <text class="value">{{order.payTime}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部操作栏 -->
+    <view class="bottom-actions" wx:if="{{order.status === 1 || order.status === 2 || order.status === 3 || order.status === 4}}">
+      <!-- 待付款 -->
+      <view wx:if="{{order.status === 1}}" class="actions">
+        <view class="action-btn secondary" catchtap="handleCancel">取消订单</view>
+        <view class="action-btn primary" catchtap="handlePay">去支付</view>
+      </view>
+
+      <!-- 待服务 -->
+      <view wx:if="{{order.status === 2}}" class="actions">
+        <view class="action-btn secondary" catchtap="handleContact">联系陪诊师</view>
+      </view>
+
+      <!-- 服务中 -->
+      <view wx:if="{{order.status === 3}}" class="actions">
+        <view class="action-btn primary" catchtap="handleConfirm">确认完成</view>
+      </view>
+
+      <!-- 已完成 -->
+      <view wx:if="{{order.status === 4}}" class="actions">
+        <view class="action-btn secondary" catchtap="handleRefund">申请售后</view>
+      </view>
+    </view>
   </view>
 </view>

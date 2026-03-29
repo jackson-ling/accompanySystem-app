@@ -2,9 +2,7 @@
 <view class="order-list-page">
   <!-- 头部导航 -->
   <view class="header-nav">
-    <view class="back-icon" bindtap="goBack">
-      <van-icon name="arrow-left" size="20" />
-    </view>
+    <view class="header-left"></view>
     <text class="title">{{translations.title}}</text>
     <view class="placeholder"></view>
   </view>

@@ -162,11 +162,6 @@ Page({
     }
   },
 
-  // 返回上一页
-  goBack() {
-    wx.navigateBack()
-  },
-
   // 下拉刷新
   onPullDownRefresh() {
     this.loadAvailableOrders().then(() => {

@@ -2,14 +2,26 @@
 <view class="recharge-page">
   <!-- 头部导航 -->
   <view class="header">
-    <view class="back-icon" bindtap="goBack">
-      <van-icon name="arrow-left" size="24" color="#333" />
-    </view>
+    <view class="header-left"></view>
     <text class="title">{{translations.title}}</text>
     <view class="header-right">
-      <view class="more-btn" bindtap="goToRechargeRecords">
+      <view class="more-btn" bindtap="toggleMenu">
         <van-icon name="ellipsis" size="20" color="#666" />
       </view>
+    </view>
+  </view>
+
+  <!-- 菜单遮罩 -->
+  <view class="menu-mask" wx:if="{{showMenu}}" bindtap="toggleMenu"></view>
+
+  <!-- 菜单 -->
+  <view class="dropdown-menu" wx:if="{{showMenu}}">
+    <view class="menu-item" bindtap="handleMenuAction" data-action="recharge">
+      <text>充值记录</text>
+    </view>
+    <view class="menu-divider"></view>
+    <view class="menu-item" bindtap="handleMenuAction" data-action="consumption">
+      <text>消费记录</text>
     </view>
   </view>
 

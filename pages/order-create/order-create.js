@@ -348,9 +348,12 @@ Page({
 
   // 切换接送选项
   onPickupOptionChange(e) {
+    const value = e.currentTarget.dataset.value
     this.setData({
-      pickupOption: e.detail.value
+      pickupOption: value
     })
+    // 更新总价
+    this.updateTotalPrice()
   },
 
   // 备注输入
@@ -376,8 +379,9 @@ Page({
 
   // 切换支付方式
   onPaymentMethodChange(e) {
+    const method = e.currentTarget.dataset.method
     this.setData({
-      paymentMethod: e.detail.value
+      paymentMethod: method
     })
   },
 
@@ -476,8 +480,4 @@ Page({
     }, 1000)
   },
 
-  // 返回
-  goBack() {
-    wx.navigateBack()
-  }
-})
+  })

@@ -1,7 +1,82 @@
-<!-- pages/message-detail/message-detail.wxml -->
 <view class="container">
-  <view class="content">
-    <text class="title">消息详情</text>
-    <text class="desc">功能开发中...</text>
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-left"></view>
+    <text class="header-title">{{pageTitle}}</text>
+    <view class="header-right" wx:if="{{chatType !== 'system'}}" bindtap="toggleMenu">
+      <van-icon name="ellipsis" size="24" color="#333" />
+    </view>
+  </view>
+
+  <!-- 菜单遮罩 -->
+  <view class="menu-mask" wx:if="{{showMenu}}" bindtap="toggleMenu"></view>
+
+  <!-- 菜单 -->
+  <view class="custom-menu" wx:if="{{showMenu}}">
+    <view class="menu-item" wx:if="{{chatType === 'companion'}}" bindtap="handleMenuAction" data-action="delete">
+      删除该聊天
+    </view>
+    <view class="menu-item" bindtap="handleMenuAction" data-action="clear">
+      清空聊天记录
+    </view>
+  </view>
+
+  <!-- 聊天区域 -->
+  <scroll-view class="chat-container" scroll-y="{{true}}" scroll-top="{{scrollTop}}" scroll-into-view="{{scrollIntoView}}">
+    <view wx:for="{{messages}}" wx:key="index">
+      <!-- 时间分隔符 -->
+      <view class="time-divider" wx:if="{{item.time}}">
+        <text>{{item.time}}</text>
+      </view>
+
+      <!-- 消息行 -->
+      <view class="message-row {{item.isMe ? 'right' : 'left'}}" id="msg-{{index}}">
+        <!-- 对方头像 -->
+        <image 
+          wx:if="{{!item.isMe}}" 
+          class="avatar {{chatType === 'service' ? 'service-avatar' : chatType === 'system' ? 'system-avatar' : 'companion-avatar'}}"
+          src="{{chatType === 'service' ? 'https://placehold.co/100x100/409eff/fff?text=客服' : chatType === 'system' ? 'https://placehold.co/100x100/67c23a/fff?text=系统' : otherAvatar}}"
+          mode="aspectFill"
+        />
+
+        <!-- 用户头像 -->
+        <image 
+          wx:else 
+          class="avatar user-avatar"
+          src="{{userAvatar}}"
+          mode="aspectFill"
+        />
+
+        <!-- 消息气泡 -->
+        <view class="bubble">
+          <text>{{item.text}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{messages.length === 0}}" class="empty-state">
+      <text>暂无消息</text>
+    </view>
+  </scroll-view>
+
+  <!-- 输入区域 -->
+  <view class="chat-input-area" wx:if="{{chatType === 'service' || chatType === 'companion'}}">
+    <view class="input-box">
+      <input 
+        class="chat-input" 
+        placeholder="请输入消息..." 
+        value="{{inputText}}" 
+        bindinput="onInput"
+        bindconfirm="sendMessage"
+        confirm-type="send"
+      />
+    </view>
+    <view 
+      class="send-btn {{inputText.trim() ? '' : 'disabled'}}" 
+      bindtap="sendMessage"
+    >
+      <text>发送</text>
+    </view>
   </view>
 </view>

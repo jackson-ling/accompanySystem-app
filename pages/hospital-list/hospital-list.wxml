@@ -1,0 +1,42 @@
+<view class="hospital-list-page">
+  <!-- 医院列表 -->
+  <view class="hospital-card" wx:for="{{hospitalList}}" wx:key="id" bindtap="goToHospitalDetail" data-hospital="{{item}}">
+    <view class="hospital-main">
+      <view class="hospital-icon-wrapper">
+        <van-icon name="shop-o" size="48" color="#409eff" />
+      </view>
+      <view class="hospital-info">
+        <view class="info-top">
+          <text class="hospital-name">{{item.name}}</text>
+          <van-tag type="primary" size="medium">{{item.level}}</van-tag>
+        </view>
+        <text class="hospital-address">{{item.address}}</text>
+        <view class="hospital-meta">
+          <view class="meta-item">
+            <van-icon name="star-o" size="14" color="#f7ba2a" />
+            <text class="meta-text">{{item.rating}}</text>
+          </view>
+          <view class="meta-item">
+            <van-icon name="location-o" size="14" color="#666" />
+            <text class="meta-text">{{item.distance}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="hospital-footer">
+      <van-icon name="arrow" size="16" color="#999" />
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{hospitalList.length === 0 && !loading}}">
+    <van-icon name="shop-o" size="80" color="#dcdfe6" />
+    <text class="empty-text">{{translations.noHospitals}}</text>
+  </view>
+
+  <!-- 加载状态 -->
+<view class="loading" wx:if="{{loading}}">
+  <view class="loading-spinner"></view>
+  <text class="loading-text">{{translations.loading}}</text>
+</view>
+</view>

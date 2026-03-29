@@ -239,9 +239,8 @@ Page({
 
   // 修改密码
   handleChangePassword() {
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
+    wx.navigateTo({
+      url: '/pages/change-password/change-password'
     })
   },
 
@@ -334,11 +333,6 @@ Page({
         }
       }
     })
-  },
-
-  // 返回上一页
-  goBack() {
-    wx.navigateBack()
   },
 
   // 获取app实例

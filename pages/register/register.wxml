@@ -2,9 +2,7 @@
 <view class="container">
   <!-- 头部 -->
   <view class="header">
-    <view class="back-btn" bindtap="goBack">
-      <van-icon name="arrow-left" size="24" color="#333" />
-    </view>
+    <view class="header-left"></view>
     <view class="logo">
       <van-icon name="service-o" size="64" color="#409eff" />
     </view>

@@ -117,7 +117,9 @@ module.exports = [
     intro: '细心耐心，特别擅长儿科陪诊',
     services: [1, 2, 8],
     rating: 4.8,
-    collected: false
+    collected: false,
+    latitude: 39.9042,
+    longitude: 116.4174
   },
   {
     id: 7,
@@ -135,7 +137,9 @@ module.exports = [
     intro: '主任医师级别，专业权威',
     services: [1, 2, 3, 4],
     rating: 4.9,
-    collected: false
+    collected: false,
+    latitude: 39.9242,
+    longitude: 116.4274
   },
   {
     id: 8,
@@ -153,6 +157,8 @@ module.exports = [
     intro: '专业护士，服务贴心',
     services: [1, 2, 8],
     rating: 4.7,
-    collected: false
+    collected: false,
+    latitude: 39.8842,
+    longitude: 116.3974
   }
 ]

@@ -13,6 +13,7 @@ module.exports = {
     service: '服务',
     message: '消息',
     my: '我的',
+    search: '搜索',
     languageChanged: '语言已切换',
     noRecords: '暂无记录',
     noContacts: '暂无联系方式',
@@ -215,7 +216,25 @@ module.exports = {
     avatarError: '请选择图片文件',
     avatarSizeError: '图片大小不能超过 2MB'
   },
-  
+
+  changePassword: {
+    title: '修改密码',
+    oldPassword: '旧密码',
+    oldPasswordPlaceholder: '请输入旧密码',
+    newPassword: '新密码',
+    newPasswordPlaceholder: '请输入新密码',
+    confirmPassword: '确认密码',
+    confirmPasswordPlaceholder: '请再次输入新密码',
+    submit: '确认修改',
+    oldPasswordRequired: '请输入旧密码',
+    newPasswordRequired: '请输入新密码',
+    confirmPasswordRequired: '请再次输入密码',
+    passwordMismatch: '两次输入密码不一致',
+    passwordLength: '密码长度在 6 到 20 个字符',
+    passwordChangeSuccess: '密码修改成功',
+    passwordChangeFailed: '修改密码失败，请检查旧密码是否正确'
+  },
+
   feedback: {
     title: '意见反馈',
     question: '问题和意见',
@@ -240,7 +259,12 @@ module.exports = {
     call: '拨打',
     cancel: '取消'
   },
-  
+
+  hospitalList: {
+    title: '附近医院',
+    noHospitals: '暂无医院信息'
+  },
+
   recharge: {
     title: '充值中心',
     currentBalance: '当前余额 (元)',
@@ -449,7 +473,19 @@ module.exports = {
     selectCompanion: '选择陪诊师',
     viewAll: '查看全部'
   },
-  
+
+  serviceCategory: {
+    companionService: '陪诊服务',
+    agencyService: '代办服务',
+    smartSort: '智能排序',
+    salesFirst: '销量优先',
+    priceFirst: '低价优先',
+    selectCompanion: '选择陪诊人',
+    sold: '已售',
+    noServices: '暂无服务',
+    loading: '加载中...'
+  },
+
   companion: {
     title: '陪诊师',
     allCompanions: '全部陪诊师',
@@ -498,10 +534,14 @@ module.exports = {
   search: {
     title: '搜索',
     placeholder: '搜索服务、医院、陪诊师...',
+    history: '搜索历史',
+    clear: '清空',
+    guessYouLike: '猜你喜欢',
     searchHistory: '搜索历史',
     clearHistory: '清空历史',
     hotSearch: '热门搜索',
     noResults: '没有匹配的结果',
+    bookNow: '立即预约',
     loading: '加载中...',
     serviceDetails: '服务详情',
     companionDetails: '陪诊师详情'

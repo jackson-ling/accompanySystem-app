@@ -305,11 +305,6 @@ Page({
     }
   },
 
-  // 返回
-  goBack() {
-    wx.navigateBack()
-  },
-
   // 跳转登录
   goToLogin() {
     wx.navigateBack()

@@ -11,7 +11,11 @@
         <text class="phone" wx:if="{{isLogin}}">{{userInfo.phone}}</text>
         <text class="desc" wx:else>{{translations.loginDesc}}</text>
       </view>
-      <van-icon name="arrow" size="16" color="#fff" />
+      <!-- 设置图标：已登录用户显示设置图标，未登录显示箭头 -->
+      <view class="settings-icon-wrapper" wx:if="{{isLogin}}" catchtap="handleSettings">
+        <van-icon name="setting-o" size="24" color="#fff" />
+      </view>
+      <van-icon wx:else name="arrow" size="16" color="#fff" />
     </view>
 
     <!-- 余额卡片 -->
@@ -110,36 +114,6 @@
         <text class="text">{{translations.feedback}}</text>
       </view>
       <van-icon name="arrow" size="14" color="#c0c4cc" />
-    </view>
-  </view>
-
-  <!-- 其他功能 -->
-  <view class="section-card menu-list">
-    <view class="card-header">
-      <text class="title">{{translations.about}}</text>
-    </view>
-
-    <view class="menu-item" bindtap="handleSettings">
-      <view class="left">
-        <van-icon name="setting-o" size="20" color="#409eff" />
-        <text class="text">{{translations.settings}}</text>
-      </view>
-      <van-icon name="arrow" size="14" color="#c0c4cc" />
-    </view>
-
-    <view class="menu-item" bindtap="handleAbout">
-      <view class="left">
-        <van-icon name="info-o" size="20" color="#409eff" />
-        <text class="text">{{translations.about}}</text>
-      </view>
-      <van-icon name="arrow" size="14" color="#c0c4cc" />
-    </view>
-  </view>
-
-  <!-- 退出登录按钮 -->
-  <view class="logout-section" wx:if="{{isLogin}}">
-    <view class="logout-btn" bindtap="handleLogout">
-      <text>{{translations.logout}}</text>
     </view>
   </view>
 </view>

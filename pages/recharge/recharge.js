@@ -20,6 +20,9 @@ Page({
     // 支付方式
     payMethod: 'wechat',
     
+    // 是否显示菜单
+    showMenu: false,
+    
     // 翻译文本
     translations: {
       title: '',
@@ -122,30 +125,29 @@ Page({
     })
   },
 
-  // 返回上一页
-  goBack() {
-    wx.navigateBack()
-  },
-
-  // 查看充值记录
-  goToRechargeRecords() {
-    wx.navigateTo({
-      url: '/pages/recharge-record/recharge-record'
+  // 切换菜单
+  toggleMenu() {
+    this.setData({
+      showMenu: !this.data.showMenu
     })
   },
 
-  // 查看消费记录
-  goToConsumptionRecords() {
-    wx.navigateTo({
-      url: '/pages/consumption-record/consumption-record'
+  // 菜单操作
+  handleMenuAction(e) {
+    const action = e.currentTarget.dataset.action
+    this.setData({
+      showMenu: false
     })
-  },
 
-  // 查看消费记录
-  goToConsumptionRecords() {
-    wx.navigateTo({
-      url: '/pages/consumption-record/consumption-record'
-    })
+    if (action === 'recharge') {
+      wx.navigateTo({
+        url: '/pages/recharge-record/recharge-record'
+      })
+    } else if (action === 'consumption') {
+      wx.navigateTo({
+        url: '/pages/consumption-record/consumption-record'
+      })
+    }
   },
 
   // 立即充值

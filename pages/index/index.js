@@ -254,11 +254,24 @@ Page({
     })
   },
 
+  // 跳转到陪诊师列表
+  goToCompanionList() {
+    wx.switchTab({
+      url: '/pages/companion/companion'
+    })
+  },
+
+  // 跳转到订单列表
+  goToOrderList() {
+    wx.navigateTo({
+      url: '/pages/order-list/order-list'
+    })
+  },
+
   // 跳转到医院列表
   goToHospitalList() {
-    wx.showToast({
-      title: '医院列表开发中',
-      icon: 'none'
+    wx.navigateTo({
+      url: '/pages/hospital-list/hospital-list'
     })
   },
 

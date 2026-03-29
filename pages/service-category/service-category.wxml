@@ -1,7 +1,136 @@
-<!-- pages/service-category/service-category.wxml -->
 <view class="container">
-  <view class="content">
-    <text class="title">服务分类</text>
-    <text class="desc">功能开发中...</text>
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="header-left"></view>
+    <text class="page-title">{{pageTitle}}</text>
+    <view class="header-right"></view>
+  </view>
+
+  <!-- Banner -->
+  <view class="banner-section">
+    <view class="banner-content">
+      <view class="banner-text">
+        <text class="main-title">{{bannerTitle}}</text>
+        <text class="sub-title">{{bannerSubtitle}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 排序栏 -->
+  <view class="sort-bar">
+    <view 
+      class="sort-item {{currentSort === 'smart' ? 'active' : ''}}" 
+      bindtap="changeSort" 
+      data-sort="smart"
+    >
+      {{translations.smartSort}}
+    </view>
+    <view 
+      class="sort-item {{currentSort === 'sales' ? 'active' : ''}}" 
+      bindtap="changeSort" 
+      data-sort="sales"
+    >
+      {{translations.salesFirst}}
+    </view>
+    <view 
+      class="sort-item {{currentSort === 'price' ? 'active' : ''}}" 
+      bindtap="changeSort" 
+      data-sort="price"
+    >
+      {{translations.priceFirst}}
+    </view>
+  </view>
+
+  <!-- 服务列表 -->
+  <view class="service-list">
+    <view 
+      class="service-item" 
+      wx:for="{{serviceList}}" 
+      wx:key="id" 
+      bindtap="goToServiceDetail" 
+      data-service="{{item}}"
+    >
+      <image class="service-image" src="{{item.image}}" mode="aspectFill" lazy-load="{{true}}" />
+      <view class="service-info">
+        <view class="info-top">
+          <text class="service-name">{{item.name}}</text>
+          <text class="service-desc">{{item.description}}</text>
+        </view>
+        <view class="info-bottom">
+          <view class="service-meta">
+            <view class="meta-row">
+              <text class="service-price">¥{{item.price}}</text>
+            </view>
+            <view class="meta-row secondary">
+              <text class="service-sales">{{translations.sold}} {{item.sales || 0}}</text>
+              <text class="service-duration" wx:if="{{item.duration}}">{{item.duration}}</text>
+            </view>
+          </view>
+          <view class="select-btn" catchtap="openCompanionDrawer" data-service="{{item}}">
+            {{translations.selectCompanion}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{serviceList.length === 0 && !loading}}">
+      <van-icon name="search" size="60" color="#ddd" />
+      <text class="empty-text">{{translations.noServices}}</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">{{translations.loading}}</text>
+  </view>
+
+  <!-- 陪诊师选择抽屉 -->
+  <view class="drawer-mask" wx:if="{{showCompanionDrawer}}" bindtap="closeCompanionDrawer">
+    <view class="drawer-content" catchtap="stopPropagation">
+      <view class="drawer-header">
+        <view class="header-left"></view>
+        <text class="drawer-title">{{translations.selectCompanion}}</text>
+        <view class="header-right" bindtap="closeCompanionDrawer">
+          <van-icon name="cross" size="24" color="#333" />
+        </view>
+      </view>
+      
+      <view class="drawer-body">
+        <scroll-view class="companion-scroll" scroll-y="{{true}}">
+          <view class="companion-card" wx:for="{{companionList}}" wx:key="id" bindtap="selectCompanion" data-companion="{{item}}">
+            <image class="companion-avatar" src="{{item.avatar}}" mode="aspectFill" />
+            <view class="companion-info">
+              <view class="info-row">
+                <text class="name">{{item.name}}</text>
+                <view class="tags">
+                  <van-tag type="primary" size="mini" wx:if="{{item.gender === 'male'}}">{{translations.male}}</van-tag>
+                  <van-tag type="danger" size="mini" wx:else>{{translations.female}}</van-tag>
+                  <van-tag type="success" size="mini">{{item.age}}{{translations.yearsOld}}</van-tag>
+                  <van-tag type="warning" size="mini" wx:if="{{item.experience}}">{{item.experience}}</van-tag>
+                </view>
+              </view>
+              <view class="stats-row">
+                <view class="stat-item">
+                  <van-icon name="todo-list-o" size="12" color="#666" />
+                  <text>{{item.orders}}{{translations.orders}}</text>
+                </view>
+                <view class="stat-item">
+                  <van-icon name="star-o" size="12" color="#f7ba2a" />
+                  <text>{{item.score}}</text>
+                </view>
+                <view class="stat-item">
+                  <van-icon name="chat-o" size="12" color="#666" />
+                  <text>{{item.comments}}</text>
+                </view>
+              </view>
+              <text class="intro">{{item.intro}}</text>
+            </view>
+            <van-icon name="arrow" size="16" color="#999" />
+          </view>
+        </scroll-view>
+      </view>
+    </view>
   </view>
 </view>

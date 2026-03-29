@@ -16,12 +16,16 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  gap: 24rpx;
+  gap: 20rpx;
 }
 
 .header-left {
+  width: 40rpx;
+  height: 40rpx;
   display: flex;
   align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 .search-input-wrapper {
@@ -42,13 +46,17 @@
 }
 
 .header-right {
+  width: auto;
+  min-width: 80rpx;
   font-size: 30rpx;
-  color: #333;
+  color: #409eff;
   font-weight: 500;
+  text-align: right;
 }
 
 .search-btn {
   display: block;
+  color: #409eff;
 }
 
 /* 搜索内容 */

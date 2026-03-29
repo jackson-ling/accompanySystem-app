@@ -18,12 +18,8 @@
   z-index: 100;
 }
 
-.back-icon {
+.header-left {
   width: 44rpx;
-  height: 44rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .title {

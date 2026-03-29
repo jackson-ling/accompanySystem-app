@@ -1,7 +1,115 @@
-<!-- pages/service-detail/service-detail.wxml -->
 <view class="container">
-  <view class="content">
-    <text class="title">服务详情</text>
-    <text class="desc">功能开发中...</text>
+  <!-- 头部图片 -->
+  <view class="header-image-container">
+    <image class="header-image" src="{{service.image}}" mode="aspectFill" />
+  </view>
+
+  <!-- 基本信息 -->
+  <view class="info-card">
+    <view class="info-content">
+      <view class="left-section">
+        <text class="title">{{service.name}}</text>
+        <text class="price">¥{{service.price}}</text>
+      </view>
+      <view class="right-section">
+        <text class="sales">{{translations.sold}} {{service.sales}}</text>
+        <view class="duration-row">
+          <van-icon name="clock-o" size="14" color="#666" />
+          <text class="duration-text">{{service.duration || '2小时'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 标签页 -->
+  <view class="detail-tabs">
+    <view class="tab-header">
+      <view class="tab-item {{currentTab === 'intro' ? 'active' : ''}}" bindtap="switchTab" data-tab="intro">
+        {{translations.intro}}
+      </view>
+      <view class="tab-item {{currentTab === 'notes' ? 'active' : ''}}" bindtap="switchTab" data-tab="notes">
+        {{translations.notes}}
+      </view>
+    </view>
+
+    <view class="tab-content">
+      <!-- 服务介绍 -->
+      <view wx:if="{{currentTab === 'intro'}}" class="content-text">
+        <text class="paragraph">1. 专业陪诊师一对一服务。</text>
+        <text class="paragraph">2. 协助办理就诊卡、缴费、取药。</text>
+        <text class="paragraph">3. 陪同检查、候诊。</text>
+        <text class="paragraph">4. 记录医嘱，整理病历资料。</text>
+        <view class="image-placeholder">{{translations.imagePlaceholder}}</view>
+      </view>
+      
+      <!-- 下单须知 -->
+      <view wx:else class="content-text">
+        <text class="paragraph">1. 请至少提前1天预约。</text>
+        <text class="paragraph">2. 服务期间产生的交通费、挂号费等由客户承担。</text>
+        <text class="paragraph">3. 如需取消，请提前2小时通知。</text>
+        <text class="paragraph">4. 陪诊师不提供医疗咨询服务，仅提供就医协助。</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-bar" wx:if="{{!isFromOrderDetail}}">
+    <view class="action-btn" bindtap="handleBook">
+      {{hasCompanion ? translations.bookNow : translations.selectCompanion}}
+    </view>
+  </view>
+
+  <!-- 陪诊师选择抽屉 -->
+  <view class="drawer-mask" wx:if="{{showCompanionDrawer}}" bindtap="closeCompanionDrawer">
+    <view class="drawer-content" catchtap="stopPropagation">
+      <view class="drawer-header">
+        <view class="header-left"></view>
+        <text class="drawer-title">{{translations.selectCompanion}}</text>
+        <view class="header-right" bindtap="closeCompanionDrawer">
+          <van-icon name="cross" size="24" color="#333" />
+        </view>
+      </view>
+      
+      <view class="drawer-body">
+        <scroll-view class="companion-scroll" scroll-y="{{true}}">
+          <view class="companion-card" wx:for="{{companionList}}" wx:key="id" bindtap="selectCompanion" data-companion="{{item}}">
+            <image class="companion-avatar" src="{{item.avatar}}" mode="aspectFill" />
+            <view class="companion-info">
+              <view class="info-row">
+                <text class="name">{{item.name}}</text>
+                <view class="tags">
+                  <van-tag type="primary" size="mini" wx:if="{{item.gender === 'male'}}">{{translations.male}}</van-tag>
+                  <van-tag type="danger" size="mini" wx:else>{{translations.female}}</van-tag>
+                  <van-tag type="success" size="mini">{{item.age}}{{translations.yearsOld}}</van-tag>
+                  <van-tag type="warning" size="mini" wx:if="{{item.experience}}">{{item.experience}}</van-tag>
+                </view>
+              </view>
+              <view class="stats-row">
+                <view class="stat-item">
+                  <van-icon name="todo-list-o" size="12" color="#666" />
+                  <text>{{item.orders}}{{translations.orders}}</text>
+                </view>
+                <view class="stat-item">
+                  <van-icon name="star-o" size="12" color="#f7ba2a" />
+                  <text>{{item.score}}</text>
+                </view>
+                <view class="stat-item">
+                  <van-icon name="chat-o" size="12" color="#666" />
+                  <text>{{item.comments}}</text>
+                </view>
+              </view>
+              <text class="intro">{{item.intro}}</text>
+            </view>
+            <van-icon name="arrow" size="16" color="#999" />
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">{{translations.loading}}</text>
   </view>
 </view>

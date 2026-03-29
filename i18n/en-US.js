@@ -217,7 +217,25 @@ module.exports = {
     avatarError: 'Please select an image file',
     avatarSizeError: 'Image size cannot exceed 2MB'
   },
-  
+
+  changePassword: {
+    title: 'Change Password',
+    oldPassword: 'Old Password',
+    oldPasswordPlaceholder: 'Please enter old password',
+    newPassword: 'New Password',
+    newPasswordPlaceholder: 'Please enter new password',
+    confirmPassword: 'Confirm Password',
+    confirmPasswordPlaceholder: 'Please enter new password again',
+    submit: 'Confirm Change',
+    oldPasswordRequired: 'Please enter old password',
+    newPasswordRequired: 'Please enter new password',
+    confirmPasswordRequired: 'Please enter password again',
+    passwordMismatch: 'Two passwords do not match',
+    passwordLength: 'Password length must be between 6 and 20 characters',
+    passwordChangeSuccess: 'Password changed successfully',
+    passwordChangeFailed: 'Failed to change password, please check if old password is correct'
+  },
+
   feedback: {
     title: 'Feedback',
     question: 'Questions and Suggestions',
@@ -333,7 +351,12 @@ module.exports = {
     call: 'Call',
     cancel: 'Cancel'
   },
-  
+
+  hospitalList: {
+    title: 'Nearby Hospitals',
+    noHospitals: 'No hospital information'
+  },
+
   recharge: {
     title: 'Recharge Center',
     currentBalance: 'Current Balance (CNY)',
@@ -581,7 +604,19 @@ module.exports = {
     selectCompanion: 'Select Companion',
     viewAll: 'View All'
   },
-  
+
+  serviceCategory: {
+    companionService: 'Companion Service',
+    agencyService: 'Agency Service',
+    smartSort: 'Smart Sort',
+    salesFirst: 'Sales First',
+    priceFirst: 'Price First',
+    selectCompanion: 'Select Companion',
+    sold: 'Sold',
+    noServices: 'No services available',
+    loading: 'Loading...'
+  },
+
   companion: {
     title: 'Companions',
     allCompanions: 'All Companions',

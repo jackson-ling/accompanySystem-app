@@ -136,11 +136,6 @@ experienceUnknown: i18n.t('workbench.experienceUnknown'),
     }
   },
 
-  // 返回上一页
-  goBack() {
-    wx.navigateBack()
-  },
-
   // 切换在线状态
   toggleStatus() {
     const newStatus = !this.data.isOnline

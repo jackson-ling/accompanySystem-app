@@ -82,9 +82,10 @@ Page({
 
   // 跳转到详情
   goToDetail(e) {
-    const id = e.currentTarget.dataset.id
+    const item = e.currentTarget.dataset.item
+    const type = item.type || 'system'
     wx.navigateTo({
-      url: `/pages/message-detail/message-detail?id=${id}`
+      url: `/pages/message-detail/message-detail?id=${type}`
     })
   }
 })
