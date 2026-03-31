@@ -239,6 +239,7 @@
   padding: 30rpx;
   border-bottom: 2rpx solid #f5f5f5;
   gap: 20rpx;
+  background-color: #fff;
 }
 
 .companion-avatar {
@@ -253,6 +254,43 @@
   display: flex;
   flex-direction: column;
   gap: 12rpx;
+}
+
+.companion-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6rpx;
+  flex-shrink: 0;
+  min-width: 110rpx;
+}
+
+.view-detail {
+  font-size: 24rpx;
+  color: #909399;
+  white-space: nowrap;
+  height: 32rpx;
+  line-height: 32rpx;
+}
+
+.book-companion-btn {
+  background: linear-gradient(135deg, #409eff 0%, #4facfe 100%);
+  color: #ffffff;
+  font-size: 24rpx;
+  height: 48rpx;
+  line-height: 48rpx;
+  padding: 0 20rpx;
+  border-radius: 24rpx;
+  text-align: center;
+  min-width: 110rpx;
+  box-shadow: 0 2rpx 8rpx rgba(64, 158, 255, 0.3);
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+.book-companion-btn:active {
+  opacity: 0.8;
+  transform: scale(0.95);
 }
 
 .info-row {

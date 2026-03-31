@@ -62,7 +62,8 @@ module.exports = {
     getCode: '获取验证码',
     resend: '重新获取',
     verifyCodeSent: '验证码已发送',
-    wechatLoginInDev: '微信登录开发中'
+    wechatLoginInDev: '微信登录开发中',
+    and: '和'
   },
   
   register: {
@@ -82,6 +83,31 @@ module.exports = {
     verifyCodeSent: '验证码已发送',
     resendIn: '重新获取',
     seconds: '秒'
+  },
+
+  forgotPassword: {
+    title: '忘记密码',
+    phoneNumber: '手机号码',
+    phonePlaceholder: '请输入注册手机号',
+    verifyCode: '验证码',
+    codePlaceholder: '请输入验证码',
+    newPassword: '新密码',
+    passwordPlaceholder: '设置新密码(6-20位)',
+    confirmPassword: '确认密码',
+    confirmPasswordPlaceholder: '请再次输入新密码',
+    submit: '确认修改',
+    submitting: '提交中...',
+    rememberPassword: '想起密码了?',
+    backToLogin: '返回登录',
+    phoneFormatError: '手机号格式不正确',
+    codeLengthError: '请输入6位验证码',
+    passwordLengthError: '密码长度为6-20位',
+    passwordMismatchError: '两次输入密码不一致',
+    submitSuccess: '密码修改成功',
+    submitFailed: '密码修改失败',
+    agreeFirst: '请先获取验证码',
+    codeSent: '验证码已发送',
+    getCode: '获取验证码'
   },
   
   order: {
@@ -145,10 +171,10 @@ module.exports = {
     }
   },
   
-  patient: {
+patient: {
     title: '选择就诊人',
     selectPatient: '选择就诊人',
-    pleaseSelectPatient: '请选择就诊人',
+    setDefault: '设为默认',
     addPatient: '添加就诊人',
     editPatient: '编辑就诊人',
     deletePatient: '删除就诊人',

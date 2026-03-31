@@ -178,8 +178,9 @@ Page({
 
   // 昵称输入
   handleNicknameInput(e) {
+    const value = e.detail.value !== undefined ? e.detail.value : e.detail
     this.setData({
-      newNickname: e.detail.value
+      newNickname: value
     })
   },
 
@@ -187,7 +188,7 @@ Page({
   async submitNicknameChange() {
     const { newNickname } = this.data
     
-    if (!newNickname.trim()) {
+    if (!newNickname || !newNickname.trim()) {
       wx.showToast({
         title: this.getApp().t('settings.nicknameEmpty'),
         icon: 'none'

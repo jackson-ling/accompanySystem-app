@@ -145,19 +145,10 @@ Page({
     })
   },
 
-  // 切换收藏状态
+  // 收藏/取消收藏
   toggleCollection() {
     const app = getApp()
-    if (!app.globalData.isLogin) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
-      setTimeout(() => {
-        wx.navigateTo({
-          url: '/pages/login/login'
-        })
-      }, 1500)
+    if (!app.requireLogin()) {
       return
     }
 
@@ -195,16 +186,7 @@ Page({
     const service = e.currentTarget.dataset.service
     
     const app = getApp()
-    if (!app.globalData.isLogin) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
-      setTimeout(() => {
-        wx.navigateTo({
-          url: '/pages/login/login'
-        })
-      }, 1500)
+    if (!app.requireLogin()) {
       return
     }
 
@@ -216,16 +198,7 @@ Page({
   // 打开预约
   openBooking() {
     const app = getApp()
-    if (!app.globalData.isLogin) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
-      setTimeout(() => {
-        wx.navigateTo({
-          url: '/pages/login/login'
-        })
-      }, 1500)
+    if (!app.requireLogin()) {
       return
     }
 

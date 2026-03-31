@@ -125,12 +125,14 @@
 }
 
 .edit-btn {
-  font-size: 20px;
+  font-size: 40rpx;
   color: #999;
-  padding: 5px;
+  padding: 16rpx;
   display: flex;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
+  transition: color 0.3s;
 }
 
 .edit-btn:active {
@@ -175,4 +177,10 @@
   height: 44px;
   font-size: 16px;
   font-weight: 500;
+}
+
+/* 使用主题色 */
+.bottom-action-bar .van-button--primary {
+  background-color: #409eff !important;
+  border-color: #409eff !important;
 }

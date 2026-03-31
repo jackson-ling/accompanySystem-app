@@ -133,25 +133,16 @@ Page({
 
   // 点击用户信息
   handleUserInfoClick() {
-    if (!this.data.isLogin) {
-      wx.navigateTo({
-        url: '/pages/login/login'
-      })
+    const app = getApp()
+    if (!app.requireLogin()) {
+      return
     }
   },
 
   // 充值
   handleRecharge() {
-    if (!this.data.isLogin) {
-      wx.showToast({
-        title: this.getApp().t('common.loading'),
-        icon: 'none'
-      })
-      setTimeout(() => {
-        wx.navigateTo({
-          url: '/pages/login/login'
-        })
-      }, 1500)
+    const app = getApp()
+    if (!app.requireLogin()) {
       return
     }
     
@@ -162,16 +153,8 @@ Page({
 
   // 跳转到订单列表
   goToOrderList(e) {
-    if (!this.data.isLogin) {
-      wx.showToast({
-        title: this.getApp().t('common.loading'),
-        icon: 'none'
-      })
-      setTimeout(() => {
-        wx.navigateTo({
-          url: '/pages/login/login'
-        })
-      }, 1500)
+    const app = getApp()
+    if (!app.requireLogin()) {
       return
     }
     
@@ -189,16 +172,8 @@ Page({
 
   // 就诊人管理
   handlePatientManagement() {
-    if (!this.data.isLogin) {
-      wx.showToast({
-        title: this.getApp().t('common.loading'),
-        icon: 'none'
-      })
-      setTimeout(() => {
-        wx.navigateTo({
-          url: '/pages/login/login'
-        })
-      }, 1500)
+    const app = getApp()
+    if (!app.requireLogin()) {
       return
     }
     
@@ -209,16 +184,8 @@ Page({
 
   // 我的收藏
   handleFavorites() {
-    if (!this.data.isLogin) {
-      wx.showToast({
-        title: this.getApp().t('common.loading'),
-        icon: 'none'
-      })
-      setTimeout(() => {
-        wx.navigateTo({
-          url: '/pages/login/login'
-        })
-      }, 1500)
+    const app = getApp()
+    if (!app.requireLogin()) {
       return
     }
     
@@ -229,20 +196,11 @@ Page({
 
   // 陪诊师工作台
   handleWorkbench() {
-    if (!this.data.isLogin) {
-      wx.showToast({
-        title: this.getApp().t('common.loading'),
-        icon: 'none'
-      })
-      setTimeout(() => {
-        wx.navigateTo({
-          url: '/pages/login/login'
-        })
-      }, 1500)
+    const app = getApp()
+    if (!app.requireLogin()) {
       return
     }
     
-    const app = getApp()
     const userInfo = app.globalData.userInfo
     
     // 检查是否是陪诊师
@@ -311,16 +269,8 @@ Page({
 
   // 设置
   handleSettings() {
-    if (!this.data.isLogin) {
-      wx.showToast({
-        title: this.getApp().t('common.loading'),
-        icon: 'none'
-      })
-      setTimeout(() => {
-        wx.navigateTo({
-          url: '/pages/login/login'
-        })
-      }, 1500)
+    const app = getApp()
+    if (!app.requireLogin()) {
       return
     }
     

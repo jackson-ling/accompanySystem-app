@@ -4,6 +4,9 @@ const i18n = require('../../utils/i18n.js')
 
 Page({
   data: {
+    // 当前语言
+    currentLang: 'zh-CN',
+
     // 手机号
     phone: '',
     
@@ -54,17 +57,51 @@ Page({
 
   onLoad(options) {
     console.log('注册页面加载', options)
+    const app = getApp()
+    
+    // 隐藏 loading
+    wx.hideLoading()
+    
+    // 立即重置跳转标志
+    app.globalData.isNavigatingToLogin = false
+    console.log('注册页面加载时已重置跳转标志')
+    
+    this.setData({
+      currentLang: app.globalData.currentLanguage || 'zh-CN'
+    })
     this.updateTranslations()
     // 初始化检查
     this.checkCanRegister()
     
     // 监听语言变化
-    const app = getApp()
     if (app.onLanguageChange) {
       app.onLanguageChange(() => {
+        const app = getApp()
+        this.setData({
+          currentLang: app.globalData.currentLanguage || 'zh-CN'
+        })
         this.updateTranslations()
       })
     }
+  },
+
+  onShow() {
+    console.log('注册页面显示')
+    const app = getApp()
+    // 重置跳转标志
+    app.globalData.isNavigatingToLogin = false
+    console.log('注册页面显示时已重置跳转标志')
+  },
+
+  // 切换语言
+  switchLanguage() {
+    const app = getApp()
+    const newLang = this.data.currentLang === 'zh-CN' ? 'en-US' : 'zh-CN'
+    app.switchLanguage(newLang)
+    this.setData({
+      currentLang: newLang
+    })
+    this.updateTranslations()
   },
   
   // 更新翻译文本
@@ -284,6 +321,9 @@ Page({
         createTime: new Date().toISOString().split('T')[0]
       }
 
+      // 重置跳转标志
+      app.globalData.isNavigatingToLogin = false
+
       wx.hideLoading()
       wx.showToast({
         title: '注册成功',
@@ -333,5 +373,49 @@ Page({
     if (!this.data.agreed) {
       this.openAgreement()
     }
+  },
+
+  // 点击电话图标获取手机号
+  getPhoneNumber(e) {
+    console.log('获取手机号', e)
+    
+    if (e.detail.errMsg !== 'getPhoneNumber:ok') {
+      // 用户拒绝授权
+      wx.showToast({
+        title: '您已取消授权',
+        icon: 'none',
+        duration: 2000
+      })
+      return
+    }
+
+    // 用户同意授权，获取到加密数据
+    const { encryptedData, iv } = e.detail
+    
+    // 这里应该调用后端接口解密获取手机号
+    // 暂时模拟获取到手机号
+    wx.showLoading({
+      title: '获取中...'
+    })
+
+    // 模拟请求后端解密
+    setTimeout(() => {
+      wx.hideLoading()
+      
+      // 模拟获取到的手机号（实际应该从后端接口返回）
+      const mockPhone = '13800138000'
+      
+      this.setData({
+        phone: mockPhone
+      })
+      this.checkCanRegister()
+      this.checkCanSendCode()
+      
+      wx.showToast({
+        title: '获取成功',
+        icon: 'success',
+        duration: 1500
+      })
+    }, 1000)
   }
 })

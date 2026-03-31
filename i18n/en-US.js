@@ -84,6 +84,31 @@ module.exports = {
     resendIn: 'Resend in',
     seconds: 'seconds'
   },
+
+  forgotPassword: {
+    title: 'Forgot Password',
+    phoneNumber: 'Phone Number',
+    phonePlaceholder: 'Enter registered phone number',
+    verifyCode: 'Verification Code',
+    codePlaceholder: 'Enter verification code',
+    newPassword: 'New Password',
+    passwordPlaceholder: 'Set new password (6-20 characters)',
+    confirmPassword: 'Confirm Password',
+    confirmPasswordPlaceholder: 'Enter new password again',
+    submit: 'Confirm Reset',
+    submitting: 'Submitting...',
+    rememberPassword: 'Remember password?',
+    backToLogin: 'Back to Login',
+    phoneFormatError: 'Invalid phone number format',
+    codeLengthError: 'Please enter 6-digit verification code',
+    passwordLengthError: 'Password length must be 6-20 characters',
+    passwordMismatchError: 'Two passwords do not match',
+    submitSuccess: 'Password reset successfully',
+    submitFailed: 'Password reset failed',
+    agreeFirst: 'Please get verification code first',
+    codeSent: 'Verification code sent',
+    getCode: 'Get Code'
+  },
   
   order: {
     title: 'My Orders',
@@ -146,10 +171,10 @@ module.exports = {
     }
   },
   
-  patient: {
+patient: {
     title: 'Select Patient',
     selectPatient: 'Select Patient',
-    pleaseSelectPatient: 'Please select a patient',
+    setDefault: 'Set as Default',
     addPatient: 'Add Patient',
     editPatient: 'Edit Patient',
     deletePatient: 'Delete Patient',

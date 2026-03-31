@@ -122,16 +122,7 @@ Page({
   // 处理预订
   handleBook() {
     const app = getApp()
-    if (!app.globalData.isLogin) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
-      setTimeout(() => {
-        wx.navigateTo({
-          url: '/pages/login/login'
-        })
-      }, 1500)
+    if (!app.requireLogin()) {
       return
     }
 
@@ -175,35 +166,106 @@ Page({
   },
 
   // 选择陪诊师
-  selectCompanion(e) {
-    const companion = e.currentTarget.dataset.companion
-    const app = getApp()
+
+    selectCompanion(e) {
+
+          const companion = e.currentTarget.dataset.companion
+
     
-    if (!app.globalData.isLogin) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
-      setTimeout(() => {
+
+          const app = getApp()
+
+    
+
+          if (!app.requireLogin()) {
+
+    
+
+            return
+
+    
+
+          }
+
+    
+
+        // 关闭抽屉
+
+        this.closeCompanionDrawer()
+
+        
+
+        // 跳转到订单创建页
+
         wx.navigateTo({
-          url: '/pages/login/login'
+
+          url: `/pages/order-create/order-create?serviceId=${this.data.service.id}&companionId=${companion.id}`
+
         })
-      }, 1500)
-      return
-    }
 
-    // 关闭抽屉
-    this.closeCompanionDrawer()
+      },
+
     
-    // 跳转到订单创建页
-    wx.navigateTo({
-      url: `/pages/order-create/order-create?serviceId=${this.data.service.id}&companionId=${companion.id}`
-    })
-  },
 
-  // 获取URL参数
-  getQueryVariable(variable) {
-    const query = wx.getEnterOptionsSync().query || {}
-    return query[variable]
-  }
+      // 查看陪诊师详情
+
+      goToCompanionDetail(e) {
+
+        const companionId = e.currentTarget.dataset.id
+
+        wx.navigateTo({
+
+          url: `/pages/companion-detail/companion-detail?id=${companionId}`
+
+        })
+
+      },
+
+    
+
+      // 直接预约陪诊师
+
+      bookCompanion(e) {
+
+        const companion = e.currentTarget.dataset.companion
+
+        const app = getApp()
+
+        
+
+        if (!app.requireLogin()) {
+
+          return
+
+        }
+
+        
+
+        // 关闭抽屉
+
+        this.closeCompanionDrawer()
+
+        
+
+        // 跳转到订单创建页
+
+        wx.navigateTo({
+
+          url: `/pages/order-create/order-create?serviceId=${this.data.service.id}&companionId=${companion.id}`
+
+        })
+
+      },
+
+    
+
+      // 获取URL参数
+
+      getQueryVariable(variable) {
+
+        const query = wx.getEnterOptionsSync().query || {}
+
+        return query[variable]
+
+      }
 })

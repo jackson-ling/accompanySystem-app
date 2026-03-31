@@ -73,26 +73,40 @@
     bind:select="onLanguageSelect"
     bind:cancel="onLanguageCancel"
   />
+</view>
 
-  <!-- 昵称修改弹窗 -->
-  <van-dialog
-    show="{{showNicknameDialog}}"
-    title="{{translations.changeNickname}}"
-    show-cancel-button
-    confirm-button-text="{{translations.commonConfirm}}"
-    cancel-button-text="{{translations.commonCancel}}"
-    bind:confirm="submitNicknameChange"
-    bind:cancel="handleNicknameDialogCancel"
-  >
-    <view class="dialog-content">
+<!-- 昵称修改弹窗 -->
+<van-popup
+  show="{{showNicknameDialog}}"
+  position="center"
+  round
+  bind:close="handleNicknameDialogCancel"
+  custom-class="nickname-popup"
+>
+  <view class="nickname-dialog">
+    <view class="dialog-header">
+      <text class="dialog-title">{{translations.changeNickname}}</text>
+      <van-icon name="cross" size="20" color="#999" bindtap="handleNicknameDialogCancel" />
+    </view>
+    
+    <view class="dialog-body">
       <van-field
         value="{{newNickname}}"
         placeholder="{{translations.nicknamePlaceholder}}"
         bind:input="handleNicknameInput"
         border="{{false}}"
-        autosize
         type="text"
+        clearable
       />
     </view>
-  </van-dialog>
-</view>
+    
+    <view class="dialog-footer">
+      <van-button plain type="default" round bindtap="handleNicknameDialogCancel">
+        {{translations.commonCancel}}
+      </van-button>
+      <van-button type="primary" round bindtap="submitNicknameChange">
+        {{translations.commonConfirm}}
+      </van-button>
+    </view>
+  </view>
+</van-popup>

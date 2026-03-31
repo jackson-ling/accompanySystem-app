@@ -6,6 +6,10 @@
       <van-icon name="service-o" size="64" color="#409eff" />
     </view>
     <text class="title">{{translations.platformTitle}}</text>
+    <!-- 语言切换按钮 -->
+    <view class="lang-btn" bindtap="switchLanguage">
+      <text class="lang-text">{{currentLang === 'zh-CN' ? 'EN' : '中'}}</text>
+    </view>
   </view>
 
   <!-- 登录表单 -->
@@ -22,7 +26,14 @@
           value="{{phone}}"
           bindinput="onPhoneInput"
         />
-        <van-icon name="phone-o" size="20" color="#409eff" class="input-icon" />
+        <van-icon 
+          name="phone-o" 
+          size="20" 
+          color="#409eff" 
+          class="input-icon input-icon-clickable"
+          open-type="getPhoneNumber"
+          bindgetphonenumber="getPhoneNumber"
+        />
       </view>
     </view>
 

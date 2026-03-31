@@ -180,28 +180,37 @@ Page({
 
   // 计算医院距离并排序
   calculateHospitalDistances() {
-    if (!this.data.latitude || !this.data.longitude) {
-      return
-    }
+    const { latitude, longitude } = this.data
     
-    const hospitals = [...mock.hospitals].map(hospital => {
-      // 计算距离（简化计算，实际应使用精确的地理距离公式）
-      const distance = this.calculateDistance(
-        this.data.latitude,
-        this.data.longitude,
-        hospital.latitude,
-        hospital.longitude
-      )
-      return {
+    let hospitals
+    
+    if (latitude && longitude) {
+      // 如果有位置信息，计算距离并排序
+      hospitals = [...mock.hospitals].map(hospital => {
+        // 计算距离（简化计算，实际应使用精确的地理距离公式）
+        const distance = this.calculateDistance(
+          latitude,
+          longitude,
+          hospital.latitude,
+          hospital.longitude
+        )
+        return {
+          ...hospital,
+          distance: distance < 1000 ? `${Math.round(distance)}m` : `${(distance / 1000).toFixed(1)}km`
+        }
+      }).sort((a, b) => {
+        // 按距离排序
+        const distA = parseFloat(a.distance)
+        const distB = parseFloat(b.distance)
+        return distA - distB
+      })
+    } else {
+      // 如果没有位置信息，使用模拟距离
+      hospitals = [...mock.hospitals].map((hospital, index) => ({
         ...hospital,
-        distance: distance < 1000 ? `${Math.round(distance)}m` : `${(distance / 1000).toFixed(1)}km`
-      }
-    }).sort((a, b) => {
-      // 按距离排序
-      const distA = parseFloat(a.distance)
-      const distB = parseFloat(b.distance)
-      return distA - distB
-    })
+        distance: `${(index + 1) * 1.1}km`
+      }))
+    }
     
     this.setData({
       hospitalList: hospitals.slice(0, 6) // 只显示前6个最近的医院
@@ -233,10 +242,8 @@ Page({
         loading: false
       })
       
-      // 如果已经有位置信息，计算医院距离
-      if (this.data.latitude && this.data.longitude) {
-        this.calculateHospitalDistances()
-      }
+      // 始终加载医院数据
+      this.calculateHospitalDistances()
     } catch (error) {
       console.error('获取数据失败:', error)
       wx.showToast({
@@ -336,16 +343,39 @@ Page({
     
     // 检查登录状态
     const app = getApp()
-    if (!app.globalData.isLogin) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
-      setTimeout(() => {
-        wx.navigateTo({
-          url: '/pages/login/login'
-        })
-      }, 1500)
+    if (!app.requireLogin()) {
+      return
+    }
+    
+    // 跳转到订单创建页
+    wx.navigateTo({
+      url: `/pages/order-create/order-create?serviceId=${service.id}&companionId=${companion.id}`
+    })
+  },
+
+  // 查看陪诊师详情
+  goToCompanionDetail(e) {
+    const companionId = e.currentTarget.dataset.id
+    wx.navigateTo({
+      url: `/pages/companion-detail/companion-detail?id=${companionId}`
+    })
+  },
+
+  // 直接预约陪诊师
+  bookCompanion(e) {
+    const companion = e.currentTarget.dataset.companion
+    const service = this.data.selectedService
+    
+    if (!service) {
+      return
+    }
+    
+    // 关闭抽屉
+    this.closeCompanionDrawer()
+    
+    // 检查登录状态
+    const app = getApp()
+    if (!app.requireLogin()) {
       return
     }
     

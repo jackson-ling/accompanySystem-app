@@ -238,16 +238,7 @@ Page({
     
     // 检查登录状态
     const app = getApp()
-    if (!app.globalData.isLogin) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
-      setTimeout(() => {
-        wx.navigateTo({
-          url: '/pages/login/login'
-        })
-      }, 1500)
+    if (!app.requireLogin()) {
       return
     }
     

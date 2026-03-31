@@ -1,1 +1,1 @@
-{"navigationBarTitleText": "", "usingComponents": {"van-icon": "@vant/weapp/icon/index", "van-action-sheet": "@vant/weapp/action-sheet/index", "van-dialog": "@vant/weapp/dialog/index", "van-field": "@vant/weapp/field/index"}}
+{"navigationBarTitleText": "", "usingComponents": {"van-icon": "@vant/weapp/icon/index", "van-action-sheet": "@vant/weapp/action-sheet/index", "van-dialog": "@vant/weapp/dialog/index", "van-field": "@vant/weapp/field/index", "van-button": "@vant/weapp/button/index", "van-popup": "@vant/weapp/popup/index"}}

@@ -72,7 +72,7 @@
       
       <view class="drawer-body">
         <scroll-view class="companion-scroll" scroll-y="{{true}}">
-          <view class="companion-card" wx:for="{{companionList}}" wx:key="id" bindtap="selectCompanion" data-companion="{{item}}">
+          <view class="companion-card" wx:for="{{companionList}}" wx:key="id">
             <image class="companion-avatar" src="{{item.avatar}}" mode="aspectFill" />
             <view class="companion-info">
               <view class="info-row">
@@ -100,7 +100,12 @@
               </view>
               <text class="intro">{{item.intro}}</text>
             </view>
-            <van-icon name="arrow" size="16" color="#999" />
+            <view class="companion-actions">
+              <view class="view-detail" catchtap="goToCompanionDetail" data-id="{{item.id}}">
+                <text>查看详情</text>
+              </view>
+              <view class="book-companion-btn" catchtap="bookCompanion" data-companion="{{item}}">立即预约</view>
+            </view>
           </view>
         </scroll-view>
       </view>
