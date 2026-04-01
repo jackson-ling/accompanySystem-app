@@ -1,12 +1,16 @@
 const mock = require('../../mock/index.js')
+const { getPatients, deletePatient, setDefaultPatient } = require('../../utils/api.js')
 
 Page({
   data: {
     // 就诊人列表
     patients: [],
     
-    // 选中的就诊人ID
+    // 当前选中的就诊人ID（用于订单等场景的临时选择）
     selectedPatientId: null,
+    
+    // 默认就诊人ID（长期保存的默认设置）
+    defaultPatientId: null,
     
     // 操作抽屉显示状态
     showDrawer: false,
@@ -55,25 +59,45 @@ Page({
     this.setData({ loading: true })
     
     try {
-      // 模拟网络延迟
-      await mock.delay(500)
+      // 调用后端API获取就诊人列表
+      const patients = await getPatients()
       
-      // 获取就诊人列表
-      const patients = mock.mockPatients || []
+      // 将isDefault从0/1转换为布尔值，方便前端使用
+      const processedPatients = patients.map(p => ({
+        ...p,
+        default: p.isDefault === 1
+      }))
       
-      // 获取默认就诊人
-      const defaultPatient = patients.find(p => p.default)
-      const selectedPatientId = defaultPatient ? defaultPatient.id : null
+      // 从本地存储读取当前选中的就诊人ID
+      const savedSelectedPatientId = wx.getStorageSync('selectedPatientId')
+      
+      // 从就诊人列表中找到默认就诊人
+      const defaultPatient = processedPatients.find(p => p.default)
+      const defaultPatientId = defaultPatient ? defaultPatient.id : null
+      
+      // 确定当前选中的就诊人ID
+      let selectedPatientId = null
+      if (savedSelectedPatientId) {
+        selectedPatientId = Number(savedSelectedPatientId)
+      } else if (defaultPatientId) {
+        // 如果没有保存的选中ID，使用默认就诊人ID
+        selectedPatientId = defaultPatientId
+      }
+      
+      console.log('最终设置的selectedPatientId:', selectedPatientId)
+      console.log('最终设置的defaultPatientId:', defaultPatientId)
+      console.log('就诊人列表:', processedPatients)
+      
+      this.setData({
+        patients: processedPatients,
+        selectedPatientId,
+        defaultPatientId,
+        loading: false,
+        isEmpty: processedPatients.length === 0
+      })
       
       // 更新翻译文本
       this.updateTranslations()
-      
-      this.setData({
-        patients,
-        selectedPatientId,
-        loading: false,
-        isEmpty: patients.length === 0
-      })
     } catch (error) {
       console.error('加载就诊人失败:', error)
       this.setData({
@@ -114,13 +138,17 @@ Page({
       selectedPatientId: patient.id
     })
     
+    // 保存当前选中的就诊人ID到本地存储
+    wx.setStorageSync('selectedPatientId', Number(patient.id))
+    
+    console.log('已切换当前选中的就诊人:', patient.name, 'ID:', patient.id)
+    
     // 如果需要返回上一页（从订单创建页选择就诊人）
     // 可以在这里添加返回逻辑
     // setTimeout(() => {
     //   wx.navigateBack()
     // }, 150)
   },
-
   // 添加就诊人
   handleAdd() {
     wx.navigateTo({
@@ -181,29 +209,11 @@ Page({
     })
     
     try {
-      await mock.delay(800)
+      // 调用后端API删除就诊人
+      await deletePatient(this.data.currentPatient.id)
       
-      // 删除就诊人
-      const patients = this.data.patients.filter(
-        p => p.id !== this.data.currentPatient.id
-      )
-      
-      // 如果删除的是选中的就诊人，清空选中状态
-      let selectedPatientId = this.data.selectedPatientId
-      if (selectedPatientId === this.data.currentPatient.id) {
-        const newDefault = patients.find(p => p.default)
-        selectedPatientId = newDefault ? newDefault.id : null
-      }
-      
-      // 更新mock数据
-      mock.mockPatients = patients
-      
-      this.setData({
-        patients,
-        selectedPatientId,
-        currentPatient: null,
-        isEmpty: patients.length === 0
-      })
+      // 重新加载就诊人列表
+      await this.loadPatients()
       
       wx.hideLoading()
       wx.showToast({
@@ -213,14 +223,14 @@ Page({
     } catch (error) {
       wx.hideLoading()
       wx.showToast({
-        title: this.getApp().t('common.error'),
+        title: error.message || this.getApp().t('common.error'),
         icon: 'none'
       })
     }
   },
 
   // 设置默认就诊人
-  handleSetDefault(e) {
+  async handleSetDefault(e) {
     const patient = e.currentTarget.dataset.patient
     
     // 如果已经是默认就诊人，不需要设置
@@ -230,27 +240,25 @@ Page({
       title: this.getApp().t('common.loading')
     })
     
-    mock.delay(500).then(() => {
-      // 更新就诊人列表，设置新的默认就诊人
-      const patients = this.data.patients.map(p => ({
-        ...p,
-        default: p.id === patient.id
-      }))
+    try {
+      // 调用后端API设置默认就诊人
+      await setDefaultPatient(patient.id)
       
-      // 更新mock数据
-      mock.mockPatients = patients
-      
-      this.setData({
-        patients,
-        selectedPatientId: patient.id
-      })
+      // 重新加载就诊人列表
+      await this.loadPatients()
       
       wx.hideLoading()
       wx.showToast({
         title: this.getApp().t('common.success'),
         icon: 'success'
       })
-    })
+    } catch (error) {
+      wx.hideLoading()
+      wx.showToast({
+        title: error.message || this.getApp().t('common.error'),
+        icon: 'none'
+      })
+    }
   },
 
   // 处理Action Sheet选择
@@ -282,7 +290,7 @@ Page({
   },
 
   // 设为默认就诊人
-  handleSetDefault() {
+  async handleSetDefault() {
     if (!this.data.currentPatient) return
     
     // 如果已经是默认就诊人，直接返回
@@ -301,69 +309,25 @@ Page({
       title: '设置中...'
     })
     
-    mock.delay(500).then(() => {
-      // 更新就诊人列表，设置新的默认就诊人
-      const patients = this.data.patients.map(p => ({
-        ...p,
-        default: p.id === this.data.currentPatient.id
-      }))
+    try {
+      // 调用后端API设置默认就诊人
+      await setDefaultPatient(this.data.currentPatient.id)
       
-      // 更新mock数据
-      mock.mockPatients = patients
-      
-      this.setData({
-        patients,
-        selectedPatientId: this.data.currentPatient.id
-      })
+      // 重新加载就诊人列表
+      await this.loadPatients()
       
       wx.hideLoading()
       wx.showToast({
         title: '已设为默认',
         icon: 'success'
       })
-    })
-  },
-
-  // 选择就诊人（设置为默认）
-  handleSelectPatient() {
-    if (!this.data.currentPatient) return
-    
-    this.closeDrawer()
-    
-    // 如果已经是默认就诊人，直接返回
-    if (this.data.currentPatient.default) {
+    } catch (error) {
+      wx.hideLoading()
       wx.showToast({
-        title: '已是默认就诊人',
+        title: error.message || '设置失败',
         icon: 'none'
       })
-      return
     }
-    
-    wx.showLoading({
-      title: '设置中...'
-    })
-    
-    mock.delay(500).then(() => {
-      // 更新就诊人列表，设置新的默认就诊人
-      const patients = this.data.patients.map(p => ({
-        ...p,
-        default: p.id === this.data.currentPatient.id
-      }))
-      
-      // 更新mock数据
-      mock.mockPatients = patients
-      
-      this.setData({
-        patients,
-        selectedPatientId: this.data.currentPatient.id
-      })
-      
-      wx.hideLoading()
-      wx.showToast({
-        title: '已设为默认',
-        icon: 'success'
-      })
-    })
   },
 
   // 获取app实例

@@ -9,7 +9,7 @@ const requestInterceptor = (config) => {
   // 添加token
   if (app.globalData.token) {
     config.header = config.header || {}
-    config.header['Authorization'] = `Bearer ${app.globalData.token}`
+    config.header['Token'] = app.globalData.token
   }
   
   // 添加时间戳防止缓存
@@ -154,7 +154,7 @@ const uploadFile = (url, filePath, formData = {}) => {
       name: 'file',
       formData,
       header: {
-        'Authorization': `Bearer ${app.globalData.token}`
+        'Token': app.globalData.token
       },
       success: (response) => {
         try {

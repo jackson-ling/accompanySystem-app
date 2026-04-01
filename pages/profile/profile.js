@@ -1,5 +1,6 @@
 // pages/profile/profile.js
 const mock = require('../../mock/index.js')
+const { getUserProfile } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -114,7 +115,15 @@ Page({
     
     if (app.globalData.isLogin) {
       try {
-        await mock.delay(200)
+        // 获取用户信息（getUserProfile已经包含了balance字段）
+        const userInfo = await getUserProfile()
+        
+        // 更新用户信息
+        app.globalData.userInfo = {
+          ...app.globalData.userInfo,
+          ...userInfo
+        }
+        wx.setStorageSync('userInfo', app.globalData.userInfo)
         
         // 计算待服务订单数
         const pendingOrders = mock.orders.filter(
@@ -122,11 +131,16 @@ Page({
         )
         
         this.setData({
+          userInfo: app.globalData.userInfo,
           pendingServiceCount: pendingOrders.length,
           isCompanion: app.globalData.userInfo?.isCompanion || false
         })
       } catch (error) {
         console.error('加载用户数据失败:', error)
+        // 如果API调用失败，使用本地缓存的用户信息
+        this.setData({
+          userInfo: app.globalData.userInfo
+        })
       }
     }
   },

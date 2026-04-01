@@ -1,6 +1,7 @@
 // pages/companion/companion.js
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { getCompanions } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -213,10 +214,34 @@ Page({
     this.setData({ loading: true })
     
     try {
-      await mock.delay(300)
+      // 准备查询参数
+      const params = {
+        page: 1,
+        pageSize: 100
+      }
+      
+      // 根据当前排序设置参数
+      const currentFilter = this.data.currentFilter
+      const sortDirection = this.data.sortDirection[currentFilter]
+      
+      if (currentFilter === 'score') {
+        params.sort = 'score_desc'
+      } else if (currentFilter === 'sales') {
+        params.sort = 'orders_desc'
+      }
+      // distance排序由前端处理，后端不提供
+      
+      // 根据筛选条件设置参数
+      if (this.data.appliedFilter.gender) {
+        params.gender = this.data.appliedFilter.gender
+      }
+      
+      // 调用后端API获取陪诊师列表
+      const result = await getCompanions(params)
+      const companionList = (result.list || []).map(comp => this.processCompanionData(comp))
       
       this.setData({
-        companionList: mock.companions,
+        companionList,
         serviceList: mock.services,
         loading: false
       })
@@ -224,11 +249,60 @@ Page({
       this.applyFilters()
     } catch (error) {
       console.error('获取数据失败:', error)
-      wx.showToast({
-        title: '加载失败',
-        icon: 'none'
+      // 如果API调用失败，使用mock数据
+      this.setData({
+        companionList: mock.companions,
+        serviceList: mock.services,
+        loading: false
       })
-      this.setData({ loading: false })
+      this.applyFilters()
+    }
+  },
+
+  // 处理陪诊师数据（将JSON字符串转换为对象，处理性别等字段）
+  processCompanionData(companion) {
+    // 处理标签字段
+    let tags = []
+    if (companion.tags) {
+      try {
+        if (typeof companion.tags === 'string') {
+          tags = JSON.parse(companion.tags)
+        } else {
+          tags = companion.tags
+        }
+      } catch (e) {
+        console.error('解析tags失败:', e)
+      }
+    }
+    
+    // 处理服务类别字段
+    let services = []
+    if (companion.services) {
+      try {
+        if (typeof companion.services === 'string') {
+          services = JSON.parse(companion.services)
+        } else {
+          services = companion.services
+        }
+      } catch (e) {
+        console.error('解析services失败:', e)
+      }
+    }
+    
+    // 处理性别字段（0=未知，1=男，2=女）
+    const genderMap = {
+      0: 'unknown',
+      1: 'male',
+      2: 'female'
+    }
+    const gender = genderMap[companion.gender] || 'unknown'
+    
+    return {
+      ...companion,
+      tags,
+      services,
+      gender,
+      collected: companion.isFavorite || false
     }
   },
 
@@ -253,7 +327,7 @@ Page({
   },
 
   // 排序切换
-  onSortChange(e) {
+  async onSortChange(e) {
     const type = e.currentTarget.dataset.type
     
     // 如果点击的是当前选中的排序方式，切换排序方向
@@ -270,7 +344,8 @@ Page({
       })
     }
     
-    this.applyFilters()
+    // 重新获取数据
+    await this.fetchData()
   },
 
   // 性别筛选

@@ -1,5 +1,6 @@
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { getServiceDetail } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -83,20 +84,27 @@ Page({
   async fetchServiceDetail(id) {
     this.setData({ loading: true })
     try {
-      const serviceId = parseInt(id)
-      const service = mock.services.find(s => s.id === serviceId)
+      // 调用后端API获取服务详情
+      const service = await getServiceDetail(id)
       
-      if (service) {
+      this.setData({
+        service,
+        loading: false
+      })
+    } catch (error) {
+      console.error('获取服务详情失败:', error)
+      // 如果API调用失败，尝试使用mock数据
+      const serviceId = parseInt(id)
+      const mockService = mock.services.find(s => s.id === serviceId)
+      
+      if (mockService) {
         this.setData({
-          service,
+          service: mockService,
           loading: false
         })
       } else {
         this.setData({ loading: false })
       }
-    } catch (error) {
-      console.error('获取服务详情失败:', error)
-      this.setData({ loading: false })
     }
   },
 

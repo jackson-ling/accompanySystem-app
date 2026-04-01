@@ -190,9 +190,11 @@ Page({
       const companionList = mock.companions || []
       this.setData({ companionList })
 
-      // 加载就诊人列表
-      const patientList = mock.patients || []
+      // 加载就诊人列表（修复数据源）
+      const patientList = mock.mockPatients || []
       this.setData({ patientList })
+
+      console.log('就诊人列表:', patientList)
 
       // 从URL参数初始化选中的服务
       if (this.data.serviceId) {
@@ -210,9 +212,34 @@ Page({
         }
       }
 
-      // 默认选中第一个就诊人
+      // 优先选择当前选中的就诊人，其次选择默认就诊人，最后选择第一个
       if (patientList.length > 0) {
-        this.setData({ selectedPatient: patientList[0] })
+        // 从本地存储读取当前选中的就诊人ID
+        const savedSelectedPatientId = wx.getStorageSync('selectedPatientId')
+        console.log('本地存储的当前选中就诊人ID:', savedSelectedPatientId)
+
+        let selectedPatient = null
+
+        // 优先使用当前选中的就诊人
+        if (savedSelectedPatientId) {
+          const savedId = Number(savedSelectedPatientId)
+          selectedPatient = patientList.find(p => p.id === savedId)
+          console.log('找到当前选中的就诊人:', selectedPatient)
+        }
+
+        // 如果没有当前选中的，使用默认就诊人
+        if (!selectedPatient) {
+          selectedPatient = patientList.find(p => p.default)
+          console.log('使用默认就诊人:', selectedPatient)
+        }
+
+        // 如果都没有，使用第一个就诊人
+        if (!selectedPatient) {
+          selectedPatient = patientList[0]
+          console.log('使用第一个就诊人:', selectedPatient)
+        }
+
+        this.setData({ selectedPatient })
       }
 
       // 生成日期列表

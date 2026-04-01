@@ -1,6 +1,7 @@
 // pages/login/login.js
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { login } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -295,19 +296,25 @@ Page({
     })
     
     try {
-      await mock.delay(1000)
-      
-      // 模拟登录成功
       const app = getApp()
+      const { loginType, phone, password, verifyCode } = this.data
+      
+      // 调用后端登录API
+      const result = await login({
+        phone: phone,
+        password: password
+      })
+      
+      // 登录成功，保存用户信息和token
       const userInfo = {
-        id: 1,
-        nickname: '测试用户',
-        avatar: '',
-        phone: this.data.phone,
-        balance: 1000.00
+        id: result.userId,
+        nickname: result.nickname,
+        avatar: result.avatar,
+        phone: result.phone,
+        userType: result.userType
       }
       
-      app.setLoginInfo('mock_token_' + Date.now(), userInfo)
+      app.setLoginInfo(result.token, userInfo)
       
       // 重置跳转标志
       app.globalData.isNavigatingToLogin = false
@@ -333,7 +340,7 @@ Page({
     } catch (error) {
       console.error('登录失败:', error)
       wx.showToast({
-        title: this.data.translations.loginFailed,
+        title: error.message || this.data.translations.loginFailed,
         icon: 'none'
       })
     } finally {

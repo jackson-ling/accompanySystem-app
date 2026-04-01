@@ -1,3 +1,5 @@
+const { logout, updateUserProfile, uploadImage } = require('../../utils/api.js')
+
 Page({
   data: {
     // 用户信息
@@ -133,19 +135,24 @@ Page({
   },
 
   // 更新头像
-  async updateAvatar(avatar) {
+  async updateAvatar(filePath) {
     wx.showLoading({
       title: this.getApp().t('common.loading')
     })
     
     try {
-      // 模拟网络延迟
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // 上传图片到服务器
+      const avatarUrl = await uploadImage(filePath)
       
-      // 更新用户信息
+      // 更新用户头像
+      await updateUserProfile({
+        avatar: avatarUrl
+      })
+      
+      // 更新本地用户信息
       const app = getApp()
       if (app.globalData.userInfo) {
-        app.globalData.userInfo.avatar = avatar
+        app.globalData.userInfo.avatar = avatarUrl
         wx.setStorageSync('userInfo', app.globalData.userInfo)
         
         this.setData({
@@ -161,7 +168,7 @@ Page({
     } catch (error) {
       wx.hideLoading()
       wx.showToast({
-        title: this.getApp().t('settings.avatarUpdateFailed'),
+        title: error.message || this.getApp().t('settings.avatarUpdateFailed'),
         icon: 'none'
       })
     }
@@ -201,10 +208,12 @@ Page({
     })
     
     try {
-      // 模拟网络延迟
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // 调用后端更新用户信息API
+      await updateUserProfile({
+        nickname: newNickname
+      })
       
-      // 更新用户信息
+      // 更新本地用户信息
       const app = getApp()
       if (app.globalData.userInfo) {
         app.globalData.userInfo.nickname = newNickname
@@ -225,7 +234,7 @@ Page({
     } catch (error) {
       wx.hideLoading()
       wx.showToast({
-        title: this.getApp().t('common.error'),
+        title: error.message || this.getApp().t('common.error'),
         icon: 'none'
       })
     }
@@ -292,17 +301,30 @@ Page({
   },
 
   // 退出登录
-  handleLogout() {
+  async handleLogout() {
     wx.showModal({
       title: this.getApp().t('common.confirm'),
       content: this.getApp().t('settings.logoutConfirm'),
       confirmText: this.getApp().t('common.confirm'),
       cancelText: this.getApp().t('common.cancel'),
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
+          wx.showLoading({
+            title: '退出中...'
+          })
+          
+          try {
+            // 调用后端登出API
+            await logout()
+          } catch (error) {
+            console.error('登出API调用失败:', error)
+            // 即使API调用失败，也继续执行本地登出
+          }
+          
           const app = getApp()
           app.logout()
           
+          wx.hideLoading()
           wx.showToast({
             title: this.getApp().t('profile.loggedOut'),
             icon: 'success'

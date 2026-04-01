@@ -1,6 +1,7 @@
 // pages/forgot-password/forgot-password.js
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { resetPassword } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -349,13 +350,18 @@ Page({
     })
     
     try {
-      await mock.delay(1000)
+      // 调用后端重置密码API
+      await resetPassword({
+        phone: phone,
+        verifyCode: verifyCode,
+        newPassword: newPassword
+      })
       
       // 重置跳转标志
       const app = getApp()
       app.globalData.isNavigatingToLogin = false
       
-      // 模拟重置密码成功
+      // 重置密码成功
       wx.showToast({
         title: translations.submitSuccess,
         icon: 'success'
@@ -371,7 +377,7 @@ Page({
     } catch (error) {
       console.error('重置密码失败:', error)
       wx.showToast({
-        title: translations.submitFailed,
+        title: error.message || translations.submitFailed,
         icon: 'none'
       })
     } finally {

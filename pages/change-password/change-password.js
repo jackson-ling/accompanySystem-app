@@ -1,3 +1,5 @@
+const { changePassword } = require('../../utils/api.js')
+
 Page({
   data: {
     // 旧密码
@@ -139,11 +141,11 @@ Page({
     this.setData({ loading: true })
     
     try {
-      // 模拟网络延迟
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // 这里应该调用API修改密码
-      // 目前只是模拟成功
+      // 调用后端修改密码API
+      await changePassword({
+        oldPassword: oldPassword,
+        newPassword: newPassword
+      })
       
       this.setData({ loading: false })
       
@@ -161,7 +163,7 @@ Page({
       this.setData({ loading: false })
       
       wx.showToast({
-        title: translations.passwordChangeFailed,
+        title: error.message || translations.passwordChangeFailed,
         icon: 'none'
       })
     }

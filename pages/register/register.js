@@ -1,6 +1,7 @@
 // pages/register/register.js
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { register } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -306,20 +307,25 @@ Page({
         title: '注册中...'
       })
 
-      // 模拟注册请求
-      await mock.delay(1000)
-
-      // 更新用户信息
+      // 调用后端注册API
       const app = getApp()
-      app.globalData.isLogin = true
-      app.globalData.userInfo = {
-        id: Date.now(),
-        nickname: this.data.phone.slice(-4),
+      const result = await register({
         phone: this.data.phone,
-        avatar: '',
-        balance: 0,
-        createTime: new Date().toISOString().split('T')[0]
+        password: this.data.password,
+        verifyCode: this.data.verifyCode,
+        nickname: this.data.phone.slice(-4) // 使用手机号后4位作为默认昵称
+      })
+      
+      // 注册成功，保存用户信息和token
+      const userInfo = {
+        id: result.userId,
+        nickname: result.nickname,
+        avatar: result.avatar,
+        phone: result.phone,
+        userType: result.userType
       }
+      
+      app.setLoginInfo(result.token, userInfo)
 
       // 重置跳转标志
       app.globalData.isNavigatingToLogin = false
@@ -339,7 +345,7 @@ Page({
       console.error('注册失败:', error)
       wx.hideLoading()
       wx.showToast({
-        title: '注册失败，请重试',
+        title: error.message || '注册失败，请重试',
         icon: 'none'
       })
     }

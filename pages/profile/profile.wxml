@@ -23,7 +23,7 @@
       <view class="balance-info">
         <text class="label">{{translations.accountBalance}}</text>
         <view class="amount-row">
-          <text class="amount">¥{{isLogin ? userInfo.balance : '0.00'}}</text>
+          <text class="amount">¥{{isLogin && userInfo.balance ? userInfo.balance : '0.00'}}</text>
         </view>
       </view>
       <view class="recharge-btn" bindtap="handleRecharge">

@@ -1,5 +1,6 @@
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { getServices, getServiceCategories } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -120,22 +121,29 @@ Page({
     this.setData({ loading: true })
     
     try {
-      await mock.delay(300)
-      
-      // 获取所有服务
-      const allServices = mock.services || []
-      
-      // 根据类型筛选服务
-      let filteredServices = []
-      if (this.data.type === 'all') {
-        // 显示所有服务
-        filteredServices = allServices
-      } else {
-        // 根据类型筛选
-        filteredServices = allServices.filter(service => service.type === this.data.type)
+      // 准备查询参数
+      const params = {
+        page: 1,
+        pageSize: 100
       }
       
-      // 根据排序方式排序
+      // 根据类型筛选
+      if (this.data.type !== 'all') {
+        params.type = this.data.type
+      }
+      
+      // 根据排序方式设置
+      if (this.data.currentSort === 'sales') {
+        params.sort = 'sales_desc'
+      } else if (this.data.currentSort === 'price') {
+        params.sort = 'price_asc'
+      }
+      
+      // 调用后端API获取服务列表
+      const result = await getServices(params)
+      let filteredServices = result.list || []
+      
+      // 根据排序方式排序（如果后端没有排序）
       filteredServices = this.sortServices(filteredServices, this.data.currentSort)
       
       // 获取陪诊师列表
@@ -148,11 +156,23 @@ Page({
       })
     } catch (error) {
       console.error('获取数据失败:', error)
-      wx.showToast({
-        title: '加载失败',
-        icon: 'none'
+      // 如果API调用失败，使用mock数据
+      const allServices = mock.services || []
+      let filteredServices = []
+      
+      if (this.data.type === 'all') {
+        filteredServices = allServices
+      } else {
+        filteredServices = allServices.filter(service => service.type === this.data.type)
+      }
+      
+      filteredServices = this.sortServices(filteredServices, this.data.currentSort)
+      
+      this.setData({
+        serviceList: filteredServices,
+        companionList: mock.companions,
+        loading: false
       })
-      this.setData({ loading: false })
     }
   },
 
@@ -181,7 +201,7 @@ Page({
   },
 
   // 切换排序
-  changeSort(e) {
+  async changeSort(e) {
     const sortType = e.currentTarget.dataset.sort
     if (sortType === this.data.currentSort) {
       return
@@ -189,9 +209,8 @@ Page({
     
     this.setData({ currentSort: sortType })
     
-    // 重新排序服务列表
-    const sortedServices = this.sortServices(this.data.serviceList, sortType)
-    this.setData({ serviceList: sortedServices })
+    // 重新获取数据以应用新的排序
+    await this.fetchData()
   },
 
   // 跳转到服务详情

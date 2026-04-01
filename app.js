@@ -6,8 +6,8 @@ App({
     userInfo: null,
     isLogin: false,
     token: '',
-    baseUrl: 'https://api.example.com', // 后端API地址
-    mockMode: true, // 是否使用模拟数据
+    baseUrl: 'http://localhost:8080', // 后端API地址
+    mockMode: false, // 是否使用模拟数据
     currentLanguage: 'zh-CN', // 当前语言
     languageChangeListeners: [], // 语言变化监听器列表
     isNavigatingToLogin: false // 是否正在跳转到登录页，防止重复跳转

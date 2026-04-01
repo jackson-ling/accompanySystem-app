@@ -1,6 +1,7 @@
 // pages/index/index.js
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { getServices } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -234,10 +235,11 @@ Page({
     this.setData({ loading: true })
     
     try {
-      await mock.delay(300)
+      // 调用后端API获取服务列表（取前4个推荐服务）
+      const services = await getServices({ page: 1, pageSize: 4, sort: 'sales_desc' })
       
       this.setData({
-        serviceList: (mock.services || []).slice(0, 4), // 只显示前4个服务
+        serviceList: services.list || [],
         companionList: mock.companions,
         loading: false
       })
@@ -246,11 +248,12 @@ Page({
       this.calculateHospitalDistances()
     } catch (error) {
       console.error('获取数据失败:', error)
-      wx.showToast({
-        title: '加载失败',
-        icon: 'none'
+      // 如果API调用失败，使用mock数据
+      this.setData({
+        serviceList: (mock.services || []).slice(0, 4),
+        companionList: mock.companions,
+        loading: false
       })
-      this.setData({ loading: false })
     }
   },
 

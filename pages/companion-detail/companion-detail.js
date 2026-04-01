@@ -1,5 +1,6 @@
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { getCompanionDetail, getCompanionComments, toggleCompanionFavorite } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -64,19 +65,77 @@ Page({
   // 获取陪诊师详情
   async fetchCompanionDetail(id) {
     try {
-      const companionId = parseInt(id)
-      const companion = mock.companions.find(c => c.id === companionId)
+      // 调用后端API获取陪诊师详情
+      const companion = await getCompanionDetail(id)
+      const processedCompanion = this.processCompanionData(companion)
       
-      if (companion) {
+      this.setData({
+        companion: processedCompanion,
+        isCollected: processedCompanion.collected || false
+      })
+      this.checkIntroOverflow()
+      this.fetchComments(id)
+    } catch (error) {
+      console.error('获取陪诊师详情失败:', error)
+      // 如果API调用失败，使用mock数据
+      const companionId = parseInt(id)
+      const mockCompanion = mock.companions.find(c => c.id === companionId)
+      
+      if (mockCompanion) {
         this.setData({
-          companion,
-          isCollected: companion.collected || false
+          companion: mockCompanion,
+          isCollected: mockCompanion.collected || false
         })
         this.checkIntroOverflow()
         this.fetchComments(companionId)
       }
-    } catch (error) {
-      console.error('获取陪诊师详情失败:', error)
+    }
+  },
+
+  // 处理陪诊师数据（将JSON字符串转换为对象，处理性别等字段）
+  processCompanionData(companion) {
+    // 处理标签字段
+    let tags = []
+    if (companion.tags) {
+      try {
+        if (typeof companion.tags === 'string') {
+          tags = JSON.parse(companion.tags)
+        } else {
+          tags = companion.tags
+        }
+      } catch (e) {
+        console.error('解析tags失败:', e)
+      }
+    }
+    
+    // 处理服务类别字段
+    let services = []
+    if (companion.services) {
+      try {
+        if (typeof companion.services === 'string') {
+          services = JSON.parse(companion.services)
+        } else {
+          services = companion.services
+        }
+      } catch (e) {
+        console.error('解析services失败:', e)
+      }
+    }
+    
+    // 处理性别字段（0=未知，1=男，2=女）
+    const genderMap = {
+      0: 'unknown',
+      1: 'male',
+      2: 'female'
+    }
+    const gender = genderMap[companion.gender] || 'unknown'
+    
+    return {
+      ...companion,
+      tags,
+      services,
+      gender,
+      collected: companion.isFavorite || false
     }
   },
 
@@ -94,7 +153,15 @@ Page({
   // 获取评论
   async fetchComments(companionId) {
     try {
-      // 模拟评论数据
+      // 调用后端API获取陪诊师评价
+      const result = await getCompanionComments(companionId, { page: 1, pageSize: 10 })
+      
+      this.setData({
+        comments: result.list || []
+      })
+    } catch (error) {
+      console.error('获取评论失败:', error)
+      // 如果API调用失败，使用mock数据
       const mockComments = [
         {
           id: 1,
@@ -116,8 +183,6 @@ Page({
       this.setData({
         comments: mockComments
       })
-    } catch (error) {
-      console.error('获取评论失败:', error)
     }
   },
 
@@ -146,22 +211,39 @@ Page({
   },
 
   // 收藏/取消收藏
-  toggleCollection() {
+  async toggleCollection() {
     const app = getApp()
     if (!app.requireLogin()) {
       return
     }
 
-    const isCollected = !this.data.isCollected
-    this.setData({
-      isCollected,
-      'companion.collected': isCollected ? (this.data.companion.collected + 1) : (this.data.companion.collected - 1)
-    })
-
-    wx.showToast({
-      title: isCollected ? '收藏成功' : '已取消收藏',
-      icon: 'success'
-    })
+    try {
+      wx.showLoading({
+        title: '处理中...'
+      })
+      
+      // 调用后端API收藏/取消收藏
+      await toggleCompanionFavorite(this.data.companion.id)
+      
+      // 切换收藏状态
+      const isCollected = !this.data.isCollected
+      this.setData({
+        isCollected
+      })
+      
+      wx.hideLoading()
+      wx.showToast({
+        title: isCollected ? '收藏成功' : '已取消收藏',
+        icon: 'success'
+      })
+    } catch (error) {
+      wx.hideLoading()
+      console.error('收藏操作失败:', error)
+      wx.showToast({
+        title: error.message || '操作失败',
+        icon: 'none'
+      })
+    }
   },
 
   // 预览图片

@@ -1,4 +1,5 @@
 const mock = require('../../mock/index.js')
+const { getPatients, addPatient, updatePatient } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -30,7 +31,10 @@ Page({
   // 加载就诊人详情（编辑模式）
   async loadPatientDetail(patientId) {
     try {
-      const patient = mock.mockPatients.find(p => p.id === parseInt(patientId))
+      // 调用后端API获取就诊人列表并查找指定就诊人
+      const patients = await getPatients()
+      const patient = patients.find(p => p.id === parseInt(patientId))
+      
       if (patient) {
         this.setData({
           formData: {
@@ -38,7 +42,7 @@ Page({
             phone: patient.phone,
             relationship: patient.relationship,
             address: patient.address,
-            default: patient.default
+            default: patient.isDefault === 1
           }
         })
         this.validateForm()
@@ -105,50 +109,20 @@ Page({
     })
 
     try {
-      // 模拟提交
-      await new Promise(resolve => setTimeout(resolve, 500))
+      const patientData = {
+        name,
+        phone,
+        relationship,
+        address,
+        isDefault: isDefault ? 1 : 0  // 将布尔值转换为0/1
+      }
 
       if (this.data.isEdit) {
         // 编辑模式：更新就诊人
-        const patientIndex = mock.mockPatients.findIndex(p => p.id === this.data.patientId)
-        if (patientIndex !== -1) {
-          mock.mockPatients[patientIndex] = {
-            ...mock.mockPatients[patientIndex],
-            name,
-            phone,
-            relationship,
-            address,
-            default: isDefault
-          }
-        }
-        
-        // 如果设为默认，取消其他默认
-        if (isDefault) {
-          mock.mockPatients.forEach(p => {
-            if (p.id !== this.data.patientId) {
-              p.default = false
-            }
-          })
-        }
+        await updatePatient(this.data.patientId, patientData)
       } else {
         // 添加模式：创建新就诊人
-        const newPatient = {
-          id: mock.mockPatients.length + 1,
-          name,
-          phone,
-          relationship,
-          address,
-          default: isDefault
-        }
-        
-        // 如果设为默认，取消其他默认
-        if (isDefault) {
-          mock.mockPatients.forEach(p => {
-            p.default = false
-          })
-        }
-        
-        mock.mockPatients.push(newPatient)
+        await addPatient(patientData)
       }
 
       wx.hideLoading()
@@ -165,7 +139,7 @@ Page({
       console.error('提交失败:', error)
       wx.hideLoading()
       wx.showToast({
-        title: '提交失败，请重试',
+        title: error.message || '提交失败，请重试',
         icon: 'none'
       })
     }
