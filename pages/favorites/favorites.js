@@ -1,4 +1,5 @@
 const mock = require('../../mock/index.js')
+const { getFavorites, deleteFavorite } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -59,14 +60,20 @@ Page({
     this.setData({ loading: true })
     
     try {
-      // 模拟网络延迟
-      await mock.delay(500)
+      // 调用后端API获取收藏列表
+      const result = await getFavorites({ type: 'companion', page: 1, pageSize: 100 })
       
-      // 获取所有陪诊师
-      const companions = mock.companions || []
-      
-      // 过滤出已收藏的陪诊师
-      const favoriteCompanions = companions.filter(c => c.collected)
+      // 处理字段映射
+      const favoriteCompanions = (result || []).map(item => ({
+        id: item.itemId,
+        name: item.name,
+        avatar: item.avatar,
+        description: item.description,
+        score: item.score || 5.0,
+        orders: item.orders || 0,
+        comments: item.comments || 0,
+        gender: item.gender || 'unknown'
+      }))
       
       this.setData({
         favoriteCompanions,
@@ -75,8 +82,9 @@ Page({
       })
     } catch (error) {
       console.error('加载收藏列表失败:', error)
+      // 如果API调用失败，使用mock数据
       this.setData({
-        favoriteCompanions: [],
+        favoriteCompanions: mock.companions?.filter(c => c.collected) || [],
         loading: false,
         isEmpty: true
       })
@@ -122,31 +130,22 @@ Page({
     })
     
     try {
-      await mock.delay(800)
-      
-      // 更新陪诊师列表的收藏状态
-      const companions = mock.companions.map(c => {
-        if (c.id === id) {
-          return { ...c, collected: false }
-        }
-        return c
-      })
-      
-      // 更新mock数据
-      mock.companions = companions
-      
-      // 重新加载收藏列表
-      await this.loadFavorites()
+      // 调用后端API删除收藏
+      await deleteFavorite(id)
       
       wx.hideLoading()
       wx.showToast({
         title: this.getApp().t('common.success'),
         icon: 'success'
       })
+      
+      // 重新加载收藏列表
+      await this.loadFavorites()
     } catch (error) {
       wx.hideLoading()
+      console.error('取消收藏失败:', error)
       wx.showToast({
-        title: this.getApp().t('common.error'),
+        title: error.message || this.getApp().t('common.error'),
         icon: 'none'
       })
     }

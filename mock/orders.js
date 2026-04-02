@@ -18,7 +18,7 @@ module.exports = [
     remarks: '请提前15分钟到达',
     amount: 299,
     price: 299,
-    status: 2, // 待服务
+    status: 2, // 已接单
     createTime: '2024-03-25 10:30:00',
     payTime: '2024-03-25 10:31:00',
     clientComment: null
@@ -40,7 +40,7 @@ module.exports = [
     remarks: '',
     amount: 199,
     price: 199,
-    status: 3, // 服务中
+    status: 7, // 服务中
     createTime: '2024-03-18 15:20:00',
     payTime: '2024-03-18 15:21:00',
     clientComment: null
@@ -62,7 +62,7 @@ module.exports = [
     remarks: '',
     amount: 99,
     price: 99,
-    status: 4, // 已完成
+    status: 3, // 已完成
     createTime: '2024-03-14 16:45:00',
     payTime: '2024-03-14 16:46:00',
     clientComment: {
@@ -88,7 +88,7 @@ module.exports = [
     remarks: '需要轮椅',
     amount: 299,
     price: 299,
-    status: 4, // 已完成
+    status: 3, // 已完成
     createTime: '2024-03-09 11:20:00',
     payTime: '2024-03-09 11:21:00',
     clientComment: {
@@ -114,7 +114,7 @@ module.exports = [
     remarks: '',
     amount: 149,
     price: 149,
-    status: 5, // 已退款
+    status: 6, // 已退款
     createTime: '2024-03-04 14:30:00',
     payTime: '2024-03-04 14:31:00',
     clientComment: null
@@ -123,22 +123,26 @@ module.exports = [
 
 // 订单状态枚举
 const ORDER_STATUS = {
-  PENDING_PAYMENT: 1,    // 待支付
-  PENDING_SERVICE: 2,    // 待服务
-  IN_SERVICE: 3,         // 服务中
-  COMPLETED: 4,          // 已完成
-  REFUNDED: 5,           // 已退款
-  CANCELLED: 6           // 已取消
+  PENDING_PAYMENT: 0,    // 待支付
+  PENDING_ACCEPT: 1,    // 待接单
+  ACCEPTED: 2,          // 已接单
+  COMPLETED: 3,         // 已完成
+  CANCELLED: 4,         // 已取消
+  REFUNDING: 5,         // 退款中
+  REFUNDED: 6,          // 已退款
+  IN_SERVICE: 7         // 服务中
 }
 
 // 订单状态文本
 const ORDER_STATUS_TEXT = {
-  1: '待支付',
-  2: '待服务',
-  3: '服务中',
-  4: '已完成',
-  5: '已退款',
-  6: '已取消'
+  0: '待支付',
+  1: '待接单',
+  2: '已接单',
+  3: '已完成',
+  4: '已取消',
+  5: '退款中',
+  6: '已退款',
+  7: '服务中'
 }
 
 // 接送选项枚举

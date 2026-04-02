@@ -113,26 +113,35 @@
     </view>
 
     <!-- 底部操作栏 -->
-    <view class="bottom-actions" wx:if="{{order.status === 1 || order.status === 2 || order.status === 3 || order.status === 4}}">
+    <view class="bottom-actions" wx:if="{{order.status === 0 || order.status === 1 || order.status === 2 || order.status === 7 || order.status === 3}}">
       <!-- 待付款 -->
-      <view wx:if="{{order.status === 1}}" class="actions">
+      <view wx:if="{{order.status === 0}}" class="actions">
         <view class="action-btn secondary" catchtap="handleCancel">取消订单</view>
         <view class="action-btn primary" catchtap="handlePay">去支付</view>
       </view>
 
-      <!-- 待服务 -->
-      <view wx:if="{{order.status === 2}}" class="actions">
+      <!-- 待接单/已接单 -->
+      <view wx:if="{{order.status === 1 || order.status === 2}}" class="actions">
         <view class="action-btn secondary" catchtap="handleContact">联系陪诊师</view>
       </view>
 
       <!-- 服务中 -->
-      <view wx:if="{{order.status === 3}}" class="actions">
+      <view wx:if="{{order.status === 7}}" class="actions">
+        <view class="action-btn secondary" catchtap="handleContact">联系陪诊师</view>
         <view class="action-btn primary" catchtap="handleConfirm">确认完成</view>
       </view>
 
       <!-- 已完成 -->
-      <view wx:if="{{order.status === 4}}" class="actions">
-        <view class="action-btn secondary" catchtap="handleRefund">申请售后</view>
+      <view wx:if="{{order.status === 3}}" class="actions">
+        <view wx:if="{{!order.reviewed}}" class="action-btn primary" catchtap="handleComment">
+          {{translations.comment}}
+        </view>
+        <view wx:if="{{order.reviewed}}" class="action-btn disabled">
+          {{translations.commented}}
+        </view>
+        <view class="action-btn secondary" catchtap="handleRefund">
+          {{translations.afterSales}}
+        </view>
       </view>
     </view>
   </view>

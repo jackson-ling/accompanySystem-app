@@ -278,3 +278,9 @@
   color: #666;
   border: 1rpx solid #e4e7ed;
 }
+
+.action-btn.disabled {
+  background-color: #f0f9ff;
+  color: #67c23a;
+  border: 1rpx solid #c6e2ff;
+}

@@ -1,5 +1,6 @@
 const mock = require('../../mock/index.js')
 const { ORDER_STATUS_TEXT } = require('../../mock/orders.js')
+const { getOrderList, cancelOrder, payOrder, confirmOrder } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -55,7 +56,18 @@ Page({
 
   onShow() {
     // 重新加载订单数据
+    this.updateTranslations()
     this.loadOrders()
+  },
+
+  onHide() {
+    // 页面隐藏时关闭loading状态
+    wx.hideLoading()
+  },
+
+  onUnload() {
+    // 页面卸载时关闭loading状态
+    wx.hideLoading()
   },
 
   // 语言切换回调
@@ -85,6 +97,8 @@ Page({
         contact: app.t('order.contact'),
         confirm: app.t('order.confirm'),
         afterSales: app.t('order.afterSales'),
+        comment: app.t('order.comment'),
+        commented: app.t('order.commented'),
         noData: app.t('common.noData'),
         loading: app.t('common.loading')
       }
@@ -101,11 +115,16 @@ Page({
     this.setData({ loading: true })
     
     try {
-      // 模拟网络延迟
-      await mock.delay(500)
+      // 调用后端API获取订单列表
+      const result = await getOrderList({ page: 1, pageSize: 100 })
       
-      // 获取订单列表
-      const orderList = mock.orders || []
+      // 处理字段映射
+      const orderList = (result.list || []).map(order => ({
+        ...order,
+        image: order.serviceImage || order.image, // 将serviceImage映射为image
+        price: order.actualAmount || order.amount, // 使用实付金额
+        reviewed: order.reviewed || false // 确保reviewed字段有值
+      }))
       
       this.setData({
         orderList,
@@ -116,8 +135,9 @@ Page({
       this.filterOrders()
     } catch (error) {
       console.error('加载订单失败:', error)
+      // 如果API调用失败，使用mock数据
       this.setData({
-        orderList: [],
+        orderList: mock.orders || [],
         loading: false
       })
       this.filterOrders()
@@ -135,8 +155,28 @@ Page({
         isEmpty: orderList.length === 0
       })
     } else {
-      // 根据状态过滤
-      const filtered = orderList.filter(order => order.status === activeTab)
+      // 根据tab映射过滤订单
+      let filtered = []
+      switch (activeTab) {
+        case 1: // 待支付
+          filtered = orderList.filter(order => order.status === 0)
+          break
+        case 2: // 进行中（待接单、已接单、服务中）
+          filtered = orderList.filter(order => [1, 2, 7].includes(order.status))
+          break
+        case 3: // 服务中
+          filtered = orderList.filter(order => order.status === 7)
+          break
+        case 4: // 已完成
+          filtered = orderList.filter(order => order.status === 3)
+          break
+        case 5: // 退款（退款中、已退款）
+          filtered = orderList.filter(order => [5, 6].includes(order.status))
+          break
+        default:
+          filtered = orderList
+      }
+      
       this.setData({
         filteredOrders: filtered,
         isEmpty: filtered.length === 0
@@ -171,12 +211,14 @@ Page({
   // 获取状态样式类
   getStatusClass(status) {
     const statusClassMap = {
-      1: 'status-pending',
-      2: 'status-wait',
-      3: 'status-process',
-      4: 'status-success',
+      0: 'status-pending',
+      1: 'status-wait',
+      2: 'status-accepted',
+      3: 'status-success',
+      4: 'status-cancel',
       5: 'status-refund',
-      6: 'status-cancel'
+      6: 'status-refunded',
+      7: 'status-process'
     }
     return statusClassMap[status] || ''
   },
@@ -223,44 +265,53 @@ Page({
     })
     
     try {
-      await mock.delay(1000)
+      // 调用后端API取消订单
+      await cancelOrder(order.id)
       
-      // 更新订单状态
-      const orderList = this.data.orderList.map(item => {
-        if (item.id === order.id) {
-          return { ...item, status: 6 } // 已取消
-        }
-        return item
-      })
+      // 重新加载订单列表
+      await this.loadOrders()
       
-      this.setData({
-        orderList
-      })
-      
-      this.filterOrders()
-      
-      wx.hideLoading()
       wx.showToast({
         title: this.getApp().t('common.success'),
         icon: 'success'
       })
     } catch (error) {
-      wx.hideLoading()
       wx.showToast({
-        title: this.getApp().t('common.error'),
+        title: error.message || this.getApp().t('common.error'),
         icon: 'none'
       })
+    } finally {
+      wx.hideLoading()
     }
   },
 
   // 去支付
-  handlePay(e) {
+  async handlePay(e) {
     const order = e.currentTarget.dataset.order
     
-    wx.showToast({
-      title: '跳转支付页面...',
-      icon: 'none'
+    wx.showLoading({
+      title: '处理中...'
     })
+    
+    try {
+      // 调用后端API支付订单
+      await payOrder(order.id, { paymentMethod: 'wechat' })
+      
+      wx.showToast({
+        title: '支付成功',
+        icon: 'success'
+      })
+      
+      // 重新加载订单列表
+      await this.loadOrders()
+    } catch (error) {
+      wx.showToast({
+        title: error.message || '支付失败',
+        icon: 'none'
+      })
+    } finally {
+      wx.hideLoading()
+    }
   },
 
   // 联系陪诊师
@@ -309,43 +360,82 @@ Page({
     })
     
     try {
-      await mock.delay(1000)
+      // 调用后端API确认完成
+      await confirmOrder(order.id)
       
-      // 更新订单状态
-      const orderList = this.data.orderList.map(item => {
-        if (item.id === order.id) {
-          return { ...item, status: 4 } // 已完成
-        }
-        return item
-      })
+      // 重新加载订单列表
+      await this.loadOrders()
       
-      this.setData({
-        orderList
-      })
-      
-      this.filterOrders()
-      
-      wx.hideLoading()
       wx.showToast({
         title: this.getApp().t('common.success'),
         icon: 'success'
       })
     } catch (error) {
-      wx.hideLoading()
       wx.showToast({
-        title: this.getApp().t('common.error'),
+        title: error.message || this.getApp().t('common.error'),
         icon: 'none'
       })
+    } finally {
+      wx.hideLoading()
     }
   },
 
   // 申请售后
   handleRefund(e) {
-    wx.showToast({
-      title: '售后功能开发中',
-      icon: 'none'
+    const order = e.currentTarget.dataset.order
+    
+    wx.showModal({
+      title: '申请退款',
+      content: '请输入退款原因',
+      editable: true,
+      placeholderText: '请说明退款原因',
+      success: (res) => {
+        if (res.confirm && res.content) {
+          this.performRefund(order, res.content)
+        }
+      }
     })
   },
+
+  // 执行申请退款
+  async performRefund(order, reason) {
+    wx.showLoading({
+      title: '处理中...'
+    })
+    
+    try {
+      // 调用后端API申请退款
+      await refundOrder(order.id, { reason })
+      
+      // 重新加载订单列表
+      await this.loadOrders()
+      
+      wx.showToast({
+        title: '退款申请已提交',
+        icon: 'success'
+      })
+    } catch (error) {
+      wx.showToast({
+        title: error.message || '申请失败',
+        icon: 'none'
+      })
+    } finally {
+      wx.hideLoading()
+    }
+  },
+
+  // 评价订单
+  handleComment(e) {
+    const order = e.currentTarget.dataset.order
+    
+    // 跳转到评价页面
+    wx.navigateTo({
+      url: `/pages/order-comment/order-comment?id=${order.id}&orderData=${encodeURIComponent(JSON.stringify(order))}`
+    })
+  },
+
+  // 评分变化
+  
 
   // 获取app实例
   getApp() {

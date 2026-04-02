@@ -1,6 +1,7 @@
 // pages/order-create/order-create.js
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { createOrder, getPatients } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -165,9 +166,18 @@ Page({
         payNow: i18n.t('order.payNow'),
         pleaseSelectTime: i18n.t('order.pleaseSelectTime'),
         pleaseFillRequiredFields: i18n.t('order.pleaseFillRequiredFields')
-      }
-    })
-
+      },
+      
+        onHide() {
+          // 页面隐藏时关闭loading状态
+          wx.hideLoading()
+        },
+      
+        onUnload() {
+          // 页面卸载时关闭loading状态
+          wx.hideLoading()
+        }
+      })
     // 更新接送选项的翻译
     this.setData({
       'pickupOptions[0].label': i18n.t('order.noPickup'),
@@ -190,11 +200,17 @@ Page({
       const companionList = mock.companions || []
       this.setData({ companionList })
 
-      // 加载就诊人列表（修复数据源）
-      const patientList = mock.mockPatients || []
-      this.setData({ patientList })
+      // 调用后端API获取就诊人列表
+      try {
+        const patientList = await getPatients() || []
+        this.setData({ patientList })
+      } catch (error) {
+        console.error('获取就诊人列表失败:', error)
+        // 如果API调用失败，使用mock数据
+        this.setData({ patientList: mock.mockPatients || [] })
+      }
 
-      console.log('就诊人列表:', patientList)
+      console.log('就诊人列表:', this.data.patientList)
 
       // 从URL参数初始化选中的服务
       if (this.data.serviceId) {
@@ -213,6 +229,7 @@ Page({
       }
 
       // 优先选择当前选中的就诊人，其次选择默认就诊人，最后选择第一个
+      const patientList = this.data.patientList
       if (patientList.length > 0) {
         // 从本地存储读取当前选中的就诊人ID
         const savedSelectedPatientId = wx.getStorageSync('selectedPatientId')
@@ -433,7 +450,7 @@ Page({
   },
 
   // 提交订单
-  handleSubmit() {
+  async handleSubmit() {
     const { selectedCompanion, selectedPatient, selectedService, appointmentTime, remarks, paymentMethod, pickupOption } = this.data
 
     // 验证必填项
@@ -474,37 +491,54 @@ Page({
       title: '提交中...'
     })
 
-    // 模拟提交
-    setTimeout(() => {
-      wx.hideLoading()
+    try {
+      // 将appointmentTime转换为标准格式（当前格式：今天 1/2 09:00，需要转换为：2024-01-02 09:00:00）
+      const { dateList, selectedDateIndex, selectedTimeSlot } = this.data
+      const selectedDate = dateList[selectedDateIndex]
+      const timeStr = selectedTimeSlot.time
+      
+      // 构造日期对象
+      const date = selectedDate.date
+      const [hours, minutes] = timeStr.split(':')
+      date.setHours(parseInt(hours), parseInt(minutes), 0, 0)
+      
+      // 格式化为后端需要的格式
+      const formattedTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${timeStr}:00`
 
-      // 创建订单数据
+      // 准备订单数据
       const orderData = {
-        id: Date.now(),
-        serviceName: selectedService.name,
-        companionName: selectedCompanion.name,
-        companionPhone: selectedCompanion.phone,
-        patientName: selectedPatient.name,
-        appointmentTime: appointmentTime,
-        price: this.data.totalPrice,
-        status: 1, // 待付款
-        image: selectedService.image,
-        pickupOption: pickupOption,
-        remarks: remarks,
-        paymentMethod: paymentMethod,
-        createTime: new Date().toISOString()
+        serviceId: selectedService.id,
+        companionId: selectedCompanion.id,
+        patientId: selectedPatient.id,
+        hospital: '北京协和医院', // 默认医院，实际应该让用户选择
+        department: '普通门诊', // 默认科室，实际应该让用户选择
+        appointmentTime: formattedTime,
+        pickupOption: pickupOption === 'none' ? 1 : (pickupOption === 'pick' ? 2 : (pickupOption === 'drop' ? 2 : 2)), // 后端定义：1-医院门口, 2-指定地点
+        pickupAddress: pickupOption === 'none' ? '' : this.data.pickupAddress,
+        remarks: remarks
       }
 
-      // 保存订单到本地存储
-      let orders = wx.getStorageSync('orders') || []
-      orders.unshift(orderData)
-      wx.setStorageSync('orders', orders)
+      // 调用后端API创建订单
+      const orderId = await createOrder(orderData)
+
+      wx.showToast({
+        title: '订单创建成功',
+        icon: 'success'
+      })
 
       // 跳转到订单详情
       wx.redirectTo({
-        url: `/pages/order-detail/order-detail?id=${orderData.id}`
+        url: `/pages/order-detail/order-detail?id=${orderId}`
       })
-    }, 1000)
+    } catch (error) {
+      console.error('创建订单失败:', error)
+      wx.showToast({
+        title: error.message || '订单创建失败',
+        icon: 'none'
+      })
+    } finally {
+      wx.hideLoading()
+    }
   },
 
   })

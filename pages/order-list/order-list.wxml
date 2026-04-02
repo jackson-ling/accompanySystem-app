@@ -123,10 +123,10 @@
         </view>
 
         <!-- 卡片底部操作按钮 -->
-        <view class="card-footer" wx:if="{{item.status === 1 || item.status === 2 || item.status === 3 || item.status === 4}}">
+        <view class="card-footer" wx:if="{{item.status === 0 || item.status === 1 || item.status === 2 || item.status === 7}}">
           <view class="actions">
             <!-- 待付款状态 -->
-            <block wx:if="{{item.status === 1}}">
+            <block wx:if="{{item.status === 0}}">
               <van-button 
                 size="small" 
                 round 
@@ -146,8 +146,8 @@
               </van-button>
             </block>
 
-            <!-- 待服务状态 -->
-            <block wx:if="{{item.status === 2}}">
+            <!-- 待接单、已接单、服务中状态 -->
+            <block wx:if="{{item.status === 1 || item.status === 2 || item.status === 7}}">
               <van-button 
                 size="small" 
                 round 
@@ -156,11 +156,8 @@
               >
                 {{translations.contact}}
               </van-button>
-            </block>
-
-            <!-- 服务中状态 -->
-            <block wx:if="{{item.status === 3}}">
               <van-button 
+                wx:if="{{item.status === 7}}"
                 size="small" 
                 type="primary" 
                 round 
@@ -172,7 +169,20 @@
             </block>
 
             <!-- 已完成状态 -->
-            <block wx:if="{{item.status === 4}}">
+            <block wx:if="{{item.status === 3}}">
+              <van-button 
+                wx:if="{{!item.reviewed}}"
+                size="small" 
+                type="primary" 
+                round 
+                data-order="{{item}}"
+                catchtap="handleComment"
+              >
+                {{translations.comment}}
+              </van-button>
+              <text wx:if="{{item.reviewed}}" class="reviewed-text">
+                {{translations.commented}}
+              </text>
               <van-button 
                 size="small" 
                 round 

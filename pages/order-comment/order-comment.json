@@ -1,0 +1,1 @@
+{"usingComponents": {"van-rate": "@vant/weapp/rate/index", "van-button": "@vant/weapp/button/index", "van-field": "@vant/weapp/field/index", "van-toast": "@vant/weapp/toast/index"}, "navigationBarTitleText": "评价订单"}

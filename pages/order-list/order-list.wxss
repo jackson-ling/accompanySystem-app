@@ -1,9 +1,7 @@
 /* pages/order-list/order-list.wxss */
 .order-list-page {
   min-height: 100vh;
-  background-color: #f5f7fa;
-  display: flex;
-  flex-direction: column;
+  background-color: #f7f8fa;
 }
 
 /* 头部导航 */
@@ -311,4 +309,16 @@
 
 .actions button {
   margin: 0;
+}
+
+/* 已评价文本 */
+.reviewed-text {
+  font-size: 12px;
+  color: #67c23a;
+  padding: 4px 12px;
+  background: #f0f9ff;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
 }

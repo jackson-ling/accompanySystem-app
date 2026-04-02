@@ -1,0 +1,122 @@
+<view class="order-comment-page">
+  <!-- 主内容区 -->
+  <view class="content">
+    <!-- 服务信息卡片 -->
+    <view class="service-card">
+      <view class="service-header">
+        <image class="service-image" src="{{orderInfo.serviceImage || orderInfo.image}}" mode="aspectFill" />
+        <view class="service-info">
+          <text class="service-name">{{orderInfo.serviceName || orderInfo.serviceTitle}}</text>
+          <text class="companion-name">{{t('order.companion')}}：{{orderInfo.companionName}}</text>
+          <text class="order-price">￥{{orderInfo.actualAmount || orderInfo.price}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 评分卡片 -->
+    <view class="rating-card">
+      <view class="card-title">{{translations.commentScore}}</view>
+      <view class="rating-content">
+        <van-rate
+          value="{{commentScore}}"
+          size="28px"
+          color="#FFB800"
+          void-color="#C8C9CC"
+          bind:change="onRatingChange"
+        />
+        <text class="rating-text">{{ratingText}}</text>
+      </view>
+      <view class="rating-tips">
+        <text class="tips-item" wx:for="{{ratingTips}}" wx:key="index">
+          {{item}}
+        </text>
+      </view>
+    </view>
+
+    <!-- 评价内容卡片 -->
+    <view class="comment-card">
+      <view class="card-title">
+        <text>{{translations.commentContent}}</text>
+        <text class="word-count">{{commentContent.length}}/200</text>
+      </view>
+      <van-field
+        type="textarea"
+        value="{{commentContent}}"
+        placeholder="{{translations.commentPlaceholder}}"
+        placeholder-style="color: #C0C4CC; font-size: 14px;"
+        maxlength="200"
+        autosize="{{true}}"
+        show-word-limit="{{false}}"
+        bind:change="onCommentChange"
+        custom-class="comment-textarea"
+      />
+
+      <!-- 图片上传区域 -->
+      <view class="image-upload-section">
+        <view class="image-list">
+          <view
+            class="image-item"
+            wx:for="{{commentImages}}"
+            wx:key="index"
+          >
+            <image
+              class="image-preview"
+              src="{{item}}"
+              mode="aspectFill"
+              bindtap="previewImage"
+              data-url="{{item}}"
+            />
+            <view
+              class="image-delete"
+              catchtap="deleteImage"
+              data-index="{{index}}"
+            >
+              <text class="delete-icon">×</text>
+            </view>
+          </view>
+          <view
+            class="image-add {{commentImages.length >= maxImageCount ? 'disabled' : ''}}"
+            bindtap="chooseImage"
+            wx:if="{{commentImages.length < maxImageCount}}"
+          >
+            <text class="add-icon">+</text>
+            <text class="add-text">{{translations.addImage}}</text>
+          </view>
+        </view>
+        <view class="image-tip">{{translations.maxImages}}</view>
+      </view>
+    </view>
+
+    <!-- 标签选择 -->
+    <view class="tags-card">
+      <view class="card-title">{{translations.serviceImpression}}</view>
+      <view class="tags-container">
+        <view 
+          class="tag-item {{selectedTags.indexOf(item) !== -1 ? 'active' : ''}}"
+          wx:for="{{tagOptions}}"
+          wx:key="index"
+          bindtap="toggleTag"
+          data-tag="{{item}}"
+        >
+          {{item}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部提交按钮 -->
+  <view class="footer">
+    <van-button
+      type="primary"
+      color="#409EFF"
+      round
+      block
+      loading="{{submitting}}"
+      disabled="{{!canSubmit}}"
+      bind:click="submitComment"
+      custom-class="submit-btn"
+    >
+      {{translations.commentTitle}}
+    </van-button>
+  </view>
+</view>
