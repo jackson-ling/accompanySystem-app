@@ -47,8 +47,8 @@
     "disableSWC": true
   },
   "compileType": "miniprogram",
-  "libVersion": "2.19.4",
-  "appid": "wx87603a280978a333",
+  "libVersion": "3.15.0",
+  "appid": "wx5a07b2fc7deb4518",
   "projectname": "accompany-system-miniprogram",
   "condition": {},
   "editorSetting": {
