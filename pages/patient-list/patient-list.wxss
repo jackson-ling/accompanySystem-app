@@ -7,34 +7,6 @@
   overscroll-behavior-y: none;
 }
 
-/* 头部导航 */
-.header-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  background-color: #fff;
-  font-size: 18px;
-  font-weight: bold;
-  border-bottom: 1px solid #eee;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.header-left {
-  width: 24px;
-}
-
-.title {
-  flex: 1;
-  text-align: center;
-}
-
-.placeholder {
-  width: 24px;
-}
-
 /* 就诊人列表 */
 .patient-list {
   padding: 15px;

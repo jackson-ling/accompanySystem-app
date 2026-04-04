@@ -2,7 +2,14 @@
 <view class="container">
   <!-- 消息列表 -->
   <view class="message-list">
-    <view class="message-item" wx:for="{{messageList}}" wx:key="id" bindtap="goToDetail" data-item="{{item}}">
+    <view 
+      class="message-item" 
+      wx:for="{{messageList}}" 
+      wx:key="id" 
+      bindtap="goToDetail" 
+      bindlongpress="showActionSheet"
+      data-item="{{item}}"
+    >
       <view class="icon-box-wrapper" style="background-color: {{item.bgColor}}">
         <view class="icon-box">
           <van-icon name="{{item.iconName}}" size="28" color="#fff" />

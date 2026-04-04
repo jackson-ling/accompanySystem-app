@@ -1,5 +1,6 @@
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { getCompanionIncome } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -79,16 +80,37 @@ Page({
     this.setData({ loading: true })
     
     try {
-      // 模拟网络延迟
-      await mock.delay(500)
+      // 调用后端API获取收入明细
+      const result = await getCompanionIncome({ page: 1, pageSize: 100 })
       
-      // 获取陪诊师信息
-      const companionId = getApp().globalData.userInfo?.companionInfo?.id
+      // 处理收入记录数据
+      const incomeRecords = (result.list || []).map(item => ({
+        id: item.id,
+        orderId: item.orderId,
+        orderNo: item.orderNo,
+        serviceName: item.serviceName,
+        amount: item.amount,
+        status: item.status,
+        time: item.createTime
+      }))
       
-      // 模拟收入记录数据
+      // 计算收入统计
+      const totalIncome = incomeRecords.reduce((sum, record) => sum + record.amount, 0)
+      const todayIncome = result.todayIncome || 0
+      const totalCumulativeIncome = result.totalIncome || totalIncome
+      
+      this.setData({
+        incomeRecords,
+        totalIncome,
+        todayIncome,
+        totalCumulativeIncome,
+        loading: false,
+        isEmpty: incomeRecords.length === 0
+      })
+    } catch (error) {
+      console.error('加载收入数据失败:', error)
+      // 如果API调用失败，使用mock数据
       const incomeRecords = []
-      
-      // 从订单中生成收入记录
       const completedOrders = mock.orders.filter(order => order.status === 4)
       completedOrders.forEach((order, index) => {
         incomeRecords.push({
@@ -101,25 +123,15 @@ Page({
         })
       })
       
-      // 计算收入统计
       const totalIncome = incomeRecords.reduce((sum, record) => sum + record.amount, 0)
-      const todayIncome = 0 // 模拟数据
-      const totalCumulativeIncome = totalIncome
       
       this.setData({
         incomeRecords,
         totalIncome,
-        todayIncome,
-        totalCumulativeIncome,
+        todayIncome: 0,
+        totalCumulativeIncome: totalIncome,
         loading: false,
         isEmpty: incomeRecords.length === 0
-      })
-    } catch (error) {
-      console.error('加载收入数据失败:', error)
-      this.setData({
-        incomeRecords: [],
-        loading: false,
-        isEmpty: true
       })
     }
   },

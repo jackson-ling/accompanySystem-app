@@ -1,7 +1,7 @@
 // pages/index/index.js
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
-const { getServices } = require('../../utils/api.js')
+const { getServices, getHospitals } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -180,42 +180,79 @@ Page({
   },
 
   // 计算医院距离并排序
-  calculateHospitalDistances() {
-    const { latitude, longitude } = this.data
-    
-    let hospitals
-    
-    if (latitude && longitude) {
-      // 如果有位置信息，计算距离并排序
-      hospitals = [...mock.hospitals].map(hospital => {
-        // 计算距离（简化计算，实际应使用精确的地理距离公式）
-        const distance = this.calculateDistance(
-          latitude,
-          longitude,
-          hospital.latitude,
-          hospital.longitude
-        )
-        return {
+  async calculateHospitalDistances() {
+    try {
+      // 调用后端API获取医院列表
+      const result = await getHospitals()
+      let hospitals = result || []
+      
+      const { latitude, longitude } = this.data
+      
+      if (latitude && longitude) {
+        // 如果有位置信息，计算距离并排序
+        hospitals = hospitals.map(hospital => {
+          // 计算距离
+          const distance = this.calculateDistance(
+            latitude,
+            longitude,
+            hospital.latitude,
+            hospital.longitude
+          )
+          return {
+            ...hospital,
+            distance: distance < 1000 ? `${Math.round(distance)}m` : `${(distance / 1000).toFixed(1)}km`
+          }
+        }).sort((a, b) => {
+          // 按距离排序
+          const distA = parseFloat(a.distance)
+          const distB = parseFloat(b.distance)
+          return distA - distB
+        })
+      } else {
+        // 如果没有位置信息，使用模拟距离
+        hospitals = hospitals.map((hospital, index) => ({
           ...hospital,
-          distance: distance < 1000 ? `${Math.round(distance)}m` : `${(distance / 1000).toFixed(1)}km`
-        }
-      }).sort((a, b) => {
-        // 按距离排序
-        const distA = parseFloat(a.distance)
-        const distB = parseFloat(b.distance)
-        return distA - distB
+          distance: `${(index + 1) * 1.1}km`
+        }))
+      }
+      
+      this.setData({
+        hospitalList: hospitals.slice(0, 6) // 只显示前6个最近的医院
       })
-    } else {
-      // 如果没有位置信息，使用模拟距离
-      hospitals = [...mock.hospitals].map((hospital, index) => ({
-        ...hospital,
-        distance: `${(index + 1) * 1.1}km`
-      }))
+    } catch (error) {
+      console.error('获取医院列表失败:', error)
+      // 降级到mock数据
+      const { latitude, longitude } = this.data
+      let hospitals = mock.hospitals || []
+      
+      if (latitude && longitude) {
+        hospitals = [...hospitals].map(hospital => {
+          const distance = this.calculateDistance(
+            latitude,
+            longitude,
+            hospital.latitude,
+            hospital.longitude
+          )
+          return {
+            ...hospital,
+            distance: distance < 1000 ? `${Math.round(distance)}m` : `${(distance / 1000).toFixed(1)}km`
+          }
+        }).sort((a, b) => {
+          const distA = parseFloat(a.distance)
+          const distB = parseFloat(b.distance)
+          return distA - distB
+        })
+      } else {
+        hospitals = [...hospitals].map((hospital, index) => ({
+          ...hospital,
+          distance: `${(index + 1) * 1.1}km`
+        }))
+      }
+      
+      this.setData({
+        hospitalList: hospitals.slice(0, 6)
+      })
     }
-    
-    this.setData({
-      hospitalList: hospitals.slice(0, 6) // 只显示前6个最近的医院
-    })
   },
 
   // 计算两点距离（米）

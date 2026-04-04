@@ -1,0 +1,260 @@
+/* pages/hospital-detail/hospital-detail.wxss */
+
+.hospital-detail-page {
+  min-height: 100vh;
+  background-color: #f7f8fa;
+  padding-bottom: 140rpx;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 0;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f0f0f0;
+  border-top-color: #409eff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  margin-top: 20rpx;
+  font-size: 28rpx;
+  color: #999999;
+}
+
+/* 内容区域 */
+.content {
+  padding: 20rpx;
+}
+
+/* 医院头部 */
+.hospital-header {
+  margin-bottom: 20rpx;
+}
+
+.header-bg {
+  background: linear-gradient(135deg, #409eff 0%, #4facfe 100%);
+  border-radius: 20rpx;
+  padding: 40rpx 30rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(64, 158, 255, 0.3);
+}
+
+.hospital-icon {
+  width: 120rpx;
+  height: 120rpx;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10rpx);
+  flex-shrink: 0;
+}
+
+.icon-text {
+  font-size: 60rpx;
+}
+
+.hospital-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.hospital-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ffffff;
+  line-height: 1.4;
+}
+
+.hospital-tags {
+  display: flex;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+/* 信息卡片 */
+.info-card {
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.info-label {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #333333;
+  line-height: 1.4;
+}
+
+/* 医院介绍 */
+.description-card {
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.card-title text {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.description-text {
+  font-size: 28rpx;
+  line-height: 1.8;
+  color: #666666;
+}
+
+/* 科室列表 */
+.departments-card {
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.loading-departments {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  padding: 60rpx 0;
+}
+
+.departments-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20rpx;
+}
+
+.department-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  padding: 24rpx 12rpx;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+  border-radius: 16rpx;
+  transition: all 0.3s;
+}
+
+.department-item:active {
+  transform: scale(0.95);
+  background: linear-gradient(135deg, #409eff 0%, #4facfe 100%);
+}
+
+.department-item:active .department-icon {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.department-item:active .department-name {
+  color: #ffffff;
+}
+
+.department-icon {
+  width: 80rpx;
+  height: 80rpx;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+}
+
+.department-name {
+  font-size: 24rpx;
+  color: #333333;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 28rpx;
+  border-radius: 50rpx;
+  font-size: 28rpx;
+  color: #ffffff;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+  transition: all 0.3s;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.navigate-btn {
+  background: linear-gradient(135deg, #409eff 0%, #4facfe 100%);
+}
+
+.call-btn {
+  background: linear-gradient(135deg, #67c23a 0%, #85ce61 100%);
+}

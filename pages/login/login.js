@@ -311,7 +311,8 @@ Page({
         nickname: result.nickname,
         avatar: result.avatar,
         phone: result.phone,
-        userType: result.userType
+        userType: result.userType,
+        isCompanion: result.userType === 2 // userType为2时表示是陪诊师
       }
       
       app.setLoginInfo(result.token, userInfo)

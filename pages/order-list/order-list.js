@@ -43,6 +43,12 @@ Page({
   onLoad(options) {
     console.log('订单列表页面加载', options)
     
+    // 设置导航栏标题
+    const app = getApp()
+    wx.setNavigationBarTitle({
+      title: app.t('order.title') || '我的订单'
+    })
+    
     // 从URL参数获取初始标签
     if (options.status) {
       this.setData({
@@ -79,6 +85,12 @@ Page({
   // 更新翻译文本
   updateTranslations() {
     const app = getApp()
+    
+    // 设置导航栏标题
+    wx.setNavigationBarTitle({
+      title: app.t('order.title') || '我的订单'
+    })
+    
     this.setData({
       translations: {
         title: app.t('order.title'),

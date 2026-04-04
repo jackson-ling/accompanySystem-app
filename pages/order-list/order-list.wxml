@@ -1,12 +1,5 @@
 <!-- pages/order-list/order-list.wxml -->
 <view class="order-list-page">
-  <!-- 头部导航 -->
-  <view class="header-nav">
-    <view class="header-left"></view>
-    <text class="title">{{translations.title}}</text>
-    <view class="placeholder"></view>
-  </view>
-
   <!-- 标签页 -->
   <view class="tabs-wrapper">
     <scroll-view scroll-x class="tabs-scroll" scroll-anchoring enable-flex>

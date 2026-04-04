@@ -1,0 +1,1 @@
+{"navigationBarTitleText": "我的评价", "enablePullDownRefresh": true, "backgroundColor": "#f7f8fa", "backgroundTextStyle": "dark", "usingComponents": {"van-empty": "@vant/weapp/empty/index", "van-icon": "@vant/weapp/icon/index", "van-rate": "@vant/weapp/rate/index", "van-tag": "@vant/weapp/tag/index"}}

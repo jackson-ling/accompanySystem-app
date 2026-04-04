@@ -1,1 +1,1 @@
-{"navigationBarTitleText": "", "usingComponents": {"van-icon": "@vant/weapp/icon/index", "van-button": "@vant/weapp/button/index"}}
+{"navigationBarTitleText": "意见反馈", "navigationBarBackgroundColor": "#409eff", "navigationBarTextStyle": "white", "usingComponents": {"van-icon": "@vant/weapp/icon/index", "van-button": "@vant/weapp/button/index"}}

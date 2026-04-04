@@ -1,12 +1,5 @@
 <!-- pages/favorites/favorites.wxml -->
 <view class="favorites-page">
-  <!-- 头部导航 -->
-  <view class="header">
-    <view class="header-left"></view>
-    <text class="title">{{translations.title}}</text>
-    <view class="placeholder"></view>
-  </view>
-
   <!-- 收藏列表内容 -->
   <view class="content">
     <!-- 加载状态 -->

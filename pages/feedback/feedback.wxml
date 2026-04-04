@@ -1,12 +1,5 @@
 <!-- pages/feedback/feedback.wxml -->
 <view class="feedback-page">
-  <!-- 头部导航 -->
-  <view class="header">
-    <view class="header-left"></view>
-    <text class="title">{{translations.title}}</text>
-    <view class="placeholder"></view>
-  </view>
-
   <!-- 内容区域 -->
   <view class="content">
     <!-- 反馈内容 -->

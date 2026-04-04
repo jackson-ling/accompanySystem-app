@@ -35,21 +35,32 @@
 /* 消息列表 */
 .message-list {
   flex: 1;
-  padding: 20rpx;
+  padding: 20rpx 24rpx;
   overflow-y: auto;
   padding-bottom: 20rpx;
+  box-sizing: border-box;
 }
 
 .message-row {
   display: flex;
   margin-bottom: 30rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.message-row.ai-row {
+  justify-content: flex-start;
+}
+
+.message-row.user-row {
+  justify-content: flex-end;
 }
 
 .message-bubble {
   display: flex;
   align-items: flex-start;
-  gap: 16rpx;
-  max-width: 80%;
+  gap: 12rpx;
+  max-width: 70%;
 }
 
 .ai-bubble {
@@ -58,22 +69,28 @@
 
 .user-bubble {
   flex-direction: row-reverse;
-  align-self: flex-end;
 }
 
 .ai-avatar,
 .user-avatar {
-  width: 72rpx;
-  height: 72rpx;
+  width: 64rpx;
+  height: 64rpx;
   border-radius: 50%;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  min-width: 64rpx;
 }
 
 .ai-avatar {
   background: linear-gradient(135deg, #409eff 0%, #4facfe 100%);
+}
+
+.user-avatar {
+  background-color: #f5f7fa;
+  border: 2rpx solid #e6e8eb;
 }
 
 .user-avatar image {
@@ -83,11 +100,13 @@
 }
 
 .bubble-content {
-  padding: 24rpx;
+  padding: 20rpx 24rpx;
   border-radius: 20rpx;
   font-size: 28rpx;
   line-height: 1.6;
   word-break: break-all;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 .ai-bubble .bubble-content {
@@ -189,4 +208,42 @@
 .send-btn.disabled {
   background-color: #e6e8eb;
   opacity: 0.6;
+}
+
+/* 菜单弹窗 */
+.menu-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-top: calc(100rpx + env(safe-area-inset-top));
+  padding-right: 30rpx;
+}
+
+.menu-content {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  min-width: 200rpx;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 24rpx 30rpx;
+  font-size: 28rpx;
+  color: #333333;
+  transition: all 0.3s;
+}
+
+.menu-item:active {
+  background-color: #f5f7fa;
 }

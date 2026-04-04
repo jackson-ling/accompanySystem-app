@@ -1,5 +1,6 @@
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { getRechargeRecords } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -71,11 +72,17 @@ Page({
     this.setData({ loading: true })
     
     try {
-      // 模拟网络延迟
-      await mock.delay(500)
-      
-      // 获取充值记录
-      const records = mock.mockRechargeRecords || []
+      // 调用后端API获取充值记录
+      const result = await getRechargeRecords({ page: 1, pageSize: 100 })
+      const records = (result || []).map(item => ({
+        id: item.id,
+        orderNo: item.orderNo,
+        amount: item.amount,
+        status: item.status,
+        payMethod: item.payMethod,
+        createTime: item.createTime || item.time,
+        updateTime: item.updateTime
+      }))
       
       this.setData({
         records,
@@ -84,11 +91,22 @@ Page({
       })
     } catch (error) {
       console.error('加载充值记录失败:', error)
-      this.setData({
-        records: [],
-        loading: false,
-        isEmpty: true
-      })
+      // 降级到mock数据
+      try {
+        await mock.delay(500)
+        const mockRecords = mock.mockRechargeRecords || []
+        this.setData({
+          records: mockRecords,
+          loading: false,
+          isEmpty: mockRecords.length === 0
+        })
+      } catch (mockError) {
+        this.setData({
+          records: [],
+          loading: false,
+          isEmpty: true
+        })
+      }
     }
   },
 

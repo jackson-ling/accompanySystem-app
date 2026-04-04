@@ -1,5 +1,6 @@
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { getHospitals } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -62,10 +63,9 @@ Page({
     this.setData({ loading: true })
     
     try {
-      await mock.delay(300)
-      
-      // 获取医院列表
-      const hospitals = mock.hospitals || []
+      // 调用后端API获取医院列表
+      const result = await getHospitals()
+      const hospitals = result || []
       
       // 计算距离并排序
       const hospitalList = this.calculateHospitalDistances(hospitals)
@@ -76,11 +76,25 @@ Page({
       })
     } catch (error) {
       console.error('获取医院列表失败:', error)
-      wx.showToast({
-        title: i18n.t('common.error'),
-        icon: 'none'
-      })
-      this.setData({ loading: false })
+      // 降级到mock数据
+      try {
+        await mock.delay(300)
+        const mockHospitals = mock.hospitals || []
+        const hospitalList = this.calculateHospitalDistances(mockHospitals)
+        this.setData({
+          hospitalList,
+          loading: false
+        })
+      } catch (mockError) {
+        wx.showToast({
+          title: i18n.t('common.error') || '加载失败',
+          icon: 'none'
+        })
+        this.setData({ 
+          hospitalList: [],
+          loading: false 
+        })
+      }
     }
   },
 
@@ -126,10 +140,8 @@ Page({
   // 跳转到医院详情
   goToHospitalDetail(e) {
     const hospital = e.currentTarget.dataset.hospital
-    wx.showToast({
-      title: `${hospital.name}`,
-      icon: 'none',
-      duration: 2000
+    wx.navigateTo({
+      url: `/pages/hospital-detail/hospital-detail?id=${hospital.id}`
     })
   },
 

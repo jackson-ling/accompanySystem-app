@@ -109,6 +109,11 @@ Page({
       bannerSubtitle = '让生活更便捷'
     }
     
+    // 设置导航栏标题
+    wx.setNavigationBarTitle({
+      title: pageTitle
+    })
+    
     this.setData({
       pageTitle,
       bannerTitle,

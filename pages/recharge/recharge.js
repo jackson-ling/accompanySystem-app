@@ -1,4 +1,5 @@
 const mock = require('../../mock/index.js')
+const { getUserProfile, getRechargeConfig, createRecharge } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -7,6 +8,12 @@ Page({
     
     // 充值金额选项
     amounts: [50, 100, 200, 500, 1000],
+    
+    // 最小充值金额
+    minAmount: 10,
+    
+    // 最大充值金额
+    maxAmount: 5000,
     
     // 选中的金额
     selectedAmount: 50,
@@ -43,6 +50,7 @@ Page({
 
   onLoad(options) {
     console.log('充值页面加载', options)
+    this.loadRechargeConfig()
     this.loadUserInfo()
     this.updateTranslations()
   },
@@ -79,13 +87,46 @@ Page({
     })
   },
 
-  // 加载用户信息
-  loadUserInfo() {
+  // 加载充值配置
+  async loadRechargeConfig() {
+    try {
+      const config = await getRechargeConfig()
+      if (config) {
+        this.setData({
+          minAmount: config.minAmount || 10,
+          maxAmount: config.maxAmount || 5000,
+          amounts: config.quickAmounts || [50, 100, 200, 500, 1000],
+          selectedAmount: config.quickAmounts ? config.quickAmounts[0] : 50
+        })
+      }
+    } catch (error) {
+      console.error('加载充值配置失败:', error)
+      // 使用默认配置
+    }
+  },
+
+// 加载用户信息
+  async loadUserInfo() {
     const app = getApp()
-    if (app.globalData.isLogin && app.globalData.userInfo) {
+    if (!app.globalData.isLogin) {
+      return
+    }
+    
+    try {
+      const userInfo = await getUserProfile()
       this.setData({
-        userInfo: app.globalData.userInfo
+        userInfo: userInfo
       })
+      // 更新全局用户信息
+      app.globalData.userInfo = userInfo
+    } catch (error) {
+      console.error('获取用户信息失败:', error)
+      // 降级到全局数据
+      if (app.globalData.userInfo) {
+        this.setData({
+          userInfo: app.globalData.userInfo
+        })
+      }
     }
   },
 
@@ -110,9 +151,9 @@ Page({
   handleCustomAmountInput(e) {
     let value = e.detail.value
     
-    // 限制最大金额为9999
-    if (Number(value) > 9999) {
-      value = '9999'
+    // 限制最大金额为配置的最大值
+    if (Number(value) > this.data.maxAmount) {
+      value = String(this.data.maxAmount)
       wx.showToast({
         title: this.data.translations.maxAmountWarning,
         icon: 'none',
@@ -165,6 +206,15 @@ Page({
       return
     }
 
+    // 验证最小金额
+    if (amount < this.data.minAmount) {
+      wx.showToast({
+        title: `最小充值金额为${this.data.minAmount}元`,
+        icon: 'none'
+      })
+      return
+    }
+
     if (this.data.isCustomAmount && (!this.data.customAmount || this.data.customAmount === '')) {
       wx.showToast({
         title: this.data.translations.invalidAmount,
@@ -178,19 +228,14 @@ Page({
     })
 
     try {
-      // 模拟网络延迟
-      await mock.delay(1500)
+      // 调用后端API创建充值订单
+      const result = await createRecharge({
+        amount: amount,
+        payMethod: this.data.payMethod
+      })
       
       // 更新用户余额
-      const app = getApp()
-      if (app.globalData.userInfo) {
-        app.globalData.userInfo.balance += amount
-        wx.setStorageSync('userInfo', app.globalData.userInfo)
-        
-        this.setData({
-          userInfo: app.globalData.userInfo
-        })
-      }
+      await this.loadUserInfo()
 
       wx.hideLoading()
       wx.showToast({
@@ -206,7 +251,7 @@ Page({
       wx.hideLoading()
       console.error('充值失败:', error)
       wx.showToast({
-        title: this.data.translations.rechargeFailed,
+        title: error.message || this.data.translations.rechargeFailed,
         icon: 'none'
       })
     }

@@ -92,10 +92,28 @@
       <van-icon name="arrow" size="14" color="#c0c4cc" />
     </view>
 
-    <view class="menu-item" bindtap="handleWorkbench">
+    <view class="menu-item" bindtap="handleMyReviews">
+      <view class="left">
+        <van-icon name="comment-o" size="20" color="#e6a23c" />
+        <text class="text">{{translations.myReviews}}</text>
+      </view>
+      <van-icon name="arrow" size="14" color="#c0c4cc" />
+    </view>
+
+    <!-- 申请成为陪诊师 - 只在非陪诊师时显示 -->
+    <view class="menu-item" wx:if="{{!isCompanion}}" bindtap="handleApplyCompanion">
+      <view class="left">
+        <van-icon name="medal-o" size="20" color="#f56c6c" />
+        <text class="text">{{translations.applyCompanion}}</text>
+      </view>
+      <van-icon name="arrow" size="14" color="#c0c4cc" />
+    </view>
+
+    <!-- 陪诊师工作台 - 只在陪诊师时显示 -->
+    <view class="menu-item" wx:if="{{isCompanion}}" bindtap="handleWorkbench">
       <view class="left">
         <van-icon name="bag-o" size="20" color="#409eff" />
-        <text class="text">{{isCompanion ? translations.workbench : translations.applyCompanion}}</text>
+        <text class="text">{{translations.workbench}}</text>
       </view>
       <van-icon name="arrow" size="14" color="#c0c4cc" />
     </view>

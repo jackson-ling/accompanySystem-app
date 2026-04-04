@@ -1,5 +1,6 @@
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { getAvailableOrders, acceptOrder } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -77,14 +78,11 @@ Page({
     this.setData({ loading: true })
     
     try {
-      // 模拟网络延迟
-      await mock.delay(500)
-      
-      // 获取可接订单（待接单状态的订单）
-      const availableOrders = mock.orders.filter(order => order.status === 1)
+      // 调用后端API获取可接订单
+      const orders = await getAvailableOrders()
       
       // 为每个订单添加唯一标识（防止动画问题）
-      const ordersWithUnique = availableOrders.map(order => ({
+      const ordersWithUnique = (orders || []).map(order => ({
         ...order,
         _uniqueId: `${order.id}_${Date.now()}`
       }))
@@ -96,10 +94,17 @@ Page({
       })
     } catch (error) {
       console.error('加载订单失败:', error)
+      // 如果API调用失败，使用mock数据
+      const availableOrders = mock.orders.filter(order => order.status === 1)
+      const ordersWithUnique = availableOrders.map(order => ({
+        ...order,
+        _uniqueId: `${order.id}_${Date.now()}`
+      }))
+      
       this.setData({
-        availableOrders: [],
+        availableOrders: ordersWithUnique,
         loading: false,
-        isEmpty: true
+        isEmpty: ordersWithUnique.length === 0
       })
     }
   },
@@ -128,35 +133,22 @@ Page({
     })
     
     try {
-      // 模拟网络延迟
-      await mock.delay(1000)
-      
-      // 更新订单状态为待服务
-      const orderIndex = mock.orders.findIndex(o => o.id === order.id)
-      if (orderIndex > -1) {
-        mock.orders[orderIndex].status = 2
-        mock.orders[orderIndex].companionId = getApp().globalData.userInfo?.companionInfo?.id
-        mock.orders[orderIndex].companionName = getApp().globalData.userInfo?.companionInfo?.name
-      }
-      
-      // 从列表中移除已抢订单
-      const availableOrders = this.data.availableOrders.filter(o => o.id !== order.id)
-      
-      this.setData({
-        availableOrders,
-        isEmpty: availableOrders.length === 0
-      })
+      // 调用后端API接单
+      await acceptOrder(order.id)
       
       wx.hideLoading()
       wx.showToast({
         title: this.data.translations.grabSuccess,
         icon: 'success'
       })
+      
+      // 重新加载订单列表
+      await this.loadAvailableOrders()
     } catch (error) {
       wx.hideLoading()
       console.error('抢单失败:', error)
       wx.showToast({
-        title: this.data.translations.grabFailed,
+        title: error.message || this.data.translations.grabFailed,
         icon: 'none'
       })
     }

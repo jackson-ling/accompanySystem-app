@@ -1,0 +1,117 @@
+<!-- pages/hospital-detail/hospital-detail.wxml -->
+<view class="hospital-detail-page">
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">{{translations.loading}}</text>
+  </view>
+
+  <!-- 医院详情内容 -->
+  <view class="content" wx:if="{{hospital && !loading}}">
+    <!-- 医院头部信息 -->
+    <view class="hospital-header">
+      <view class="header-bg">
+        <view class="hospital-icon">
+          <text class="icon-text">{{hospital.icon || '🏥'}}</text>
+        </view>
+        <view class="hospital-info">
+          <text class="hospital-name">{{hospital.name}}</text>
+          <view class="hospital-tags">
+            <van-tag type="primary" size="medium">{{hospital.level}}</van-tag>
+            <van-tag type="success" size="medium">{{translations.rating}} {{hospital.rating}}</van-tag>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 医院基本信息卡片 -->
+    <view class="info-card">
+      <view class="info-item">
+        <van-icon name="location-o" size="20" color="#409eff" />
+        <view class="info-content">
+          <text class="info-label">{{translations.address}}</text>
+          <text class="info-value">{{hospital.address}}</text>
+        </view>
+      </view>
+      
+      <view class="info-item">
+        <van-icon name="phone-o" size="20" color="#67c23a" />
+        <view class="info-content">
+          <text class="info-label">联系电话</text>
+          <text class="info-value">{{hospital.phone}}</text>
+        </view>
+      </view>
+      
+      <view class="info-item">
+        <van-icon name="clock-o" size="20" color="#e6a23c" />
+        <view class="info-content">
+          <text class="info-label">营业时间</text>
+          <text class="info-value">{{hospital.openTime}}</text>
+        </view>
+      </view>
+      
+      <view class="info-item" wx:if="{{hospital.distance}}">
+        <van-icon name="guide-o" size="20" color="#f56c6c" />
+        <view class="info-content">
+          <text class="info-label">{{translations.distance}}</text>
+          <text class="info-value">{{hospital.distance}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 医院介绍 -->
+    <view class="description-card">
+      <view class="card-title">
+        <van-icon name="info-o" size="18" color="#409eff" />
+        <text>医院介绍</text>
+      </view>
+      <text class="description-text">{{hospital.description}}</text>
+    </view>
+
+    <!-- 科室列表 -->
+    <view class="departments-card">
+      <view class="card-title">
+        <van-icon name="bag-o" size="18" color="#409eff" />
+        <text>{{translations.departments}}</text>
+      </view>
+      
+      <!-- 加载状态 -->
+      <view class="loading-departments" wx:if="{{loadingDepartments}}">
+        <van-loading type="spinner" size="24" />
+        <text>{{translations.loadingDepartments}}</text>
+      </view>
+      
+      <!-- 科室网格 -->
+      <view class="departments-grid" wx:elif="{{departments.length > 0}}">
+        <view 
+          class="department-item" 
+          wx:for="{{departments}}" 
+          wx:key="id"
+        >
+          <view class="department-icon">
+            <van-icon name="medal-o" size="24" color="#409eff" />
+          </view>
+          <text class="department-name">{{item.name}}</text>
+        </view>
+      </view>
+      
+      <!-- 空状态 -->
+      <van-empty wx:else description="{{translations.noDepartments}}" />
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <view class="action-btn navigate-btn" bindtap="handleNavigate">
+        <van-icon name="guide-o" size="20" color="#fff" />
+        <text>{{translations.navigate}}</text>
+      </view>
+      <view class="action-btn call-btn" bindtap="handleCall">
+        <van-icon name="phone-o" size="20" color="#fff" />
+        <text>{{translations.call}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <van-empty wx:if="{{!loading && !hospital}}" description="医院信息不存在" />
+</view>

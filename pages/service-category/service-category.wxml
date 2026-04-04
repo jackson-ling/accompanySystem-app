@@ -1,11 +1,4 @@
 <view class="container">
-  <!-- 页面头部 -->
-  <view class="page-header">
-    <view class="header-left"></view>
-    <text class="page-title">{{pageTitle}}</text>
-    <view class="header-right"></view>
-  </view>
-
   <!-- Banner -->
   <view class="banner-section">
     <view class="banner-content">

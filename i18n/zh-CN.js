@@ -193,6 +193,13 @@ module.exports = {
     }
   },
   
+  myReviews: {
+    title: '我的评价',
+    noReviews: '暂无评价',
+    companion: '陪诊师',
+    service: '服务'
+  },
+  
 patient: {
     title: '选择就诊人',
     selectPatient: '选择就诊人',
@@ -228,6 +235,7 @@ patient: {
     commonFunctions: '常用功能',
     patientManagement: '就诊人管理',
     myFavorites: '我的收藏',
+    myReviews: '我的评价',
     workbench: '陪诊师工作台',
     applyCompanion: '申请成为陪诊师',
     contactService: '联系客服',
@@ -383,6 +391,18 @@ patient: {
     amount: '金额',
     balance: '余额',
     noRecords: '暂无消费记录'
+  },
+  
+  hospitalDetail: {
+    title: '医院详情',
+    level: '医院等级',
+    address: '医院地址',
+    rating: '评分',
+    distance: '距离',
+    departments: '科室列表',
+    noDepartments: '暂无科室信息',
+    navigate: '导航',
+    call: '拨打电话'
   },
   
   orderHall: {
@@ -576,7 +596,8 @@ patient: {
     system: '系统',
     order: '订单',
     activity: '活动',
-    service: '服务'
+    service: '服务',
+    deleteConfirm: '确定要删除这条消息吗？'
   },
   
   search: {
@@ -607,7 +628,9 @@ patient: {
     servicesInfo: '我们提供以下陪诊服务：\n1. 全天陪诊服务 - ¥299\n2. 半天陪诊服务 - ¥199\n3. 夜间急诊陪诊 - ¥399\n4. 异地就医陪诊 - ¥599\n\n还有代办服务：\n1. 代取报告服务 - ¥99\n2. 代挂号服务 - ¥149\n3. 代开药服务 - ¥129',
     chooseCompanion: '选择陪诊师可以从以下几个方面考虑：\n1. 查看陪诊师评分和订单量\n2. 了解陪诊师的专业领域\n3. 查看其他用户的评价\n4. 根据自身需求选择合适的陪诊师',
     refundInfo: '可以的。订单支付后，在服务开始前可以申请退款。具体退款规则请查看订单详情或联系客服。',
-    defaultResponse: '感谢您的提问！我们的客服会尽快为您解答。您也可以联系客服：400-123-4567'
+    defaultResponse: '感谢您的提问！我们的客服会尽快为您解答。您也可以联系客服：400-123-4567',
+    clearConfirm: '确定要清空聊天记录吗？',
+    cleared: '已清空'
   },
   
   incomeRecord: {

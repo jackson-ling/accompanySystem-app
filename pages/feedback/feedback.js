@@ -1,4 +1,5 @@
 const mock = require('../../mock/index.js')
+const { submitFeedback } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -47,6 +48,12 @@ Page({
   // 更新翻译文本
   updateTranslations() {
     const app = getApp()
+    
+    // 设置导航栏标题
+    wx.setNavigationBarTitle({
+      title: app.t('feedback.title') || '意见反馈'
+    })
+    
     this.setData({
       translations: {
         title: app.t('feedback.title'),
@@ -107,15 +114,22 @@ Page({
     this.setData({ submitting: true })
     
     try {
-      // 模拟网络延迟
-      await mock.delay(1000)
+      // 准备提交数据
+      const feedbackData = {
+        content: content.trim()
+      }
       
-      // 这里可以调用API提交反馈
-      console.log('提交反馈:', {
-        content,
-        orderNo: orderNo || undefined,
-        contact: contact || undefined
-      })
+      // 添加可选字段
+      if (orderNo && orderNo.trim()) {
+        feedbackData.orderNo = orderNo.trim()
+      }
+      
+      if (contact && contact.trim()) {
+        feedbackData.contact = contact.trim()
+      }
+      
+      // 调用后端API提交反馈
+      await submitFeedback(feedbackData)
       
       this.setData({ submitting: false })
       
@@ -133,7 +147,7 @@ Page({
       this.setData({ submitting: false })
       
       wx.showToast({
-        title: this.getApp().t('feedback.submitFailed'),
+        title: error.message || this.getApp().t('feedback.submitFailed'),
         icon: 'none'
       })
     }

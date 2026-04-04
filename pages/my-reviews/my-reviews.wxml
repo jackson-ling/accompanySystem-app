@@ -1,0 +1,80 @@
+<!-- pages/my-reviews/my-reviews.wxml -->
+<view class="container">
+  <!-- 评价列表 -->
+  <view class="review-list">
+    <view class="review-card" wx:for="{{reviewList}}" wx:key="id">
+      <!-- 头部信息 -->
+      <view class="review-header">
+        <view class="header-left" bindtap="goToCompanionDetail" data-companion-id="{{item.companionId}}">
+          <image class="companion-avatar" src="{{item.companionAvatar}}" mode="aspectFill" />
+          <view class="companion-info">
+            <text class="companion-name">{{item.companionName}}</text>
+            <view class="service-tag">{{item.serviceName}}</view>
+          </view>
+        </view>
+        <text class="review-time">{{item.time}}</text>
+      </view>
+
+      <!-- 评分 -->
+      <view class="review-score">
+        <van-rate readonly="{{true}}" value="{{item.score}}" size="20" color="#f7ba2a" void-color="#d8d8d8" />
+        <text class="score-text">{{item.score}}.0</text>
+      </view>
+
+      <!-- 评价内容 -->
+      <view class="review-content">
+        <text class="content-text">{{item.content}}</text>
+      </view>
+
+      <!-- 评价图片 -->
+      <view class="review-images" wx:if="{{item.images && item.images.length > 0}}">
+        <image 
+          class="review-image" 
+          wx:for="{{item.images}}" 
+          wx:for-item="img" 
+          wx:for-index="imgIndex" 
+          wx:key="imgIndex"
+          src="{{img}}" 
+          mode="aspectFill"
+          bindtap="previewImage"
+          data-current="{{img}}"
+          data-urls="{{item.images}}"
+        />
+      </view>
+
+      <!-- 底部信息 -->
+      <view class="review-footer">
+        <view class="footer-left">
+          <van-icon name="bag-o" size="14" color="#999" />
+          <text class="order-no">{{item.orderNo}}</text>
+        </view>
+        <view class="footer-right">
+          <view class="view-detail" bindtap="goToOrderDetail" data-order-no="{{item.orderNo}}">
+            <text>查看订单</text>
+            <van-icon name="arrow" size="12" color="#409eff" />
+          </view>
+        </view>
+      </view>
+
+      <!-- 陪诊师回复 -->
+      <view class="review-reply" wx:if="{{item.reply}}">
+        <view class="reply-header">
+          <van-icon name="chat-o" size="16" color="#409eff" />
+          <text class="reply-title">陪诊师回复</text>
+        </view>
+        <text class="reply-content">{{item.reply}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">{{translations.loading}}</text>
+  </view>
+
+  <!-- 空状态 -->
+  <van-empty wx:if="{{!loading && isEmpty}}" description="{{translations.noReviews}}">
+    <image slot="image" src="https://placehold.co/160x160/f0f0f0/999?text=暂无评价" mode="aspectFit" />
+  </van-empty>
+</view>

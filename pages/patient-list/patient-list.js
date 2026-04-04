@@ -111,6 +111,12 @@ Page({
   // 更新翻译文本
   updateTranslations() {
     const app = getApp()
+    
+    // 设置导航栏标题
+    wx.setNavigationBarTitle({
+      title: app.t('patient.title') || '就诊人管理'
+    })
+    
     this.setData({
       drawerActions: [
         { name: app.t('patient.setDefault'), color: '#333' },

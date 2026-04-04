@@ -70,6 +70,72 @@ const getCompanionComments = (id, params) => get(`/companions/${id}/comments`, p
  */
 const getCompanionAvailableTimes = (id, date) => get(`/companions/${id}/available-times`, date ? { date } : {})
 
+// ============ 陪诊师工作台相关 ============
+/**
+ * 获取统计数据
+ */
+const getCompanionStatistics = () => get('/companion/statistics')
+
+/**
+ * 获取个人信息
+ */
+const getCompanionProfile = () => get('/companion/profile')
+
+/**
+ * 更新个人信息
+ */
+const updateCompanionProfile = (data) => put('/companion/profile', data)
+
+/**
+ * 获取可接订单
+ */
+const getAvailableOrders = () => get('/companion/available-orders')
+
+/**
+ * 接单
+ */
+const acceptOrder = (orderId) => post(`/companion/orders/${orderId}/accept`)
+
+/**
+ * 拒单
+ */
+const rejectOrder = (orderId) => post(`/companion/orders/${orderId}/reject`)
+
+/**
+ * 更新订单状态
+ */
+const updateOrderStatus = (id, data) => put(`/companion/orders/${id}/status`, data)
+
+/**
+ * 开始服务
+ */
+const startService = (id) => post(`/companion/orders/${id}/start`)
+
+/**
+ * 完成服务
+ */
+const completeService = (id) => post(`/companion/orders/${id}/complete`)
+
+/**
+ * 获取订单列表
+ */
+const getCompanionOrders = (params) => get('/companion/orders', params)
+
+/**
+ * 获取订单详情
+ */
+const getCompanionOrderDetail = (id) => get(`/companion/orders/${id}`)
+
+/**
+ * 获取收入明细
+ */
+const getCompanionIncome = (params) => get('/companion/income', params)
+
+/**
+ * 更新在线状态
+ */
+const updateCompanionStatus = (data) => post('/companion/status', data)
+
 // ============ 服务相关 ============
 /**
  * 获取服务列表
@@ -216,6 +282,11 @@ const markMessageRead = (id) => put(`/user/messages/${id}/read`)
  */
 const deleteMessage = (id) => del(`/user/messages/${id}`)
 
+// 聊天相关
+const getChatMessages = (type) => get(`/user/chats/${type}`)
+const sendChatMessage = (type, data) => post(`/user/chats/${type}/messages`, data)
+const deleteChatConversation = (type) => del(`/user/chats/${type}`)
+
 // ============ AI相关 ============
 /**
  * 发送AI消息
@@ -249,11 +320,19 @@ const uploadFileApi = (filePath) => uploadFile('/upload/file', filePath)
  */
 const submitFeedback = (data) => post('/user/feedback', data)
 
+/**
+ * 获取反馈列表
+ */
+const getFeedbackList = (params) => get('/user/feedback', params)
+
 // ============ 字典相关 ============
 /**
  * 获取字典数据
  */
 const getDictData = (type) => get(`/dict/${type}`)
+const getServiceTypes = () => get('/dict/service-types')
+const getHospitals = (params) => get('/dict/hospitals', params)
+const getDepartments = (params) => get('/dict/departments', params)
 
 module.exports = {
   // 认证相关
@@ -274,6 +353,21 @@ module.exports = {
   toggleCompanionFavorite,
   getCompanionComments,
   getCompanionAvailableTimes,
+  
+  // 陪诊师工作台相关
+  getCompanionStatistics,
+  getCompanionProfile,
+  updateCompanionProfile,
+  getAvailableOrders,
+  acceptOrder,
+  rejectOrder,
+  updateOrderStatus,
+  startService,
+  completeService,
+  getCompanionOrders,
+  getCompanionOrderDetail,
+  getCompanionIncome,
+  updateCompanionStatus,
   
   // 服务相关
   getServices,
@@ -315,6 +409,11 @@ module.exports = {
   markMessageRead,
   deleteMessage,
   
+  // 聊天相关
+  getChatMessages,
+  sendChatMessage,
+  deleteChatConversation,
+  
   // AI相关
   sendAiMessage,
   getChatHistory,
@@ -326,7 +425,11 @@ module.exports = {
   
   // 反馈相关
   submitFeedback,
+  getFeedbackList,
   
   // 字典相关
-  getDictData
+  getDictData,
+  getServiceTypes,
+  getHospitals,
+  getDepartments
 }

@@ -1,12 +1,5 @@
 <!-- pages/patient-list/patient-list.wxml -->
 <view class="patient-list-page">
-  <!-- 头部导航 -->
-  <view class="header-nav">
-    <view class="header-left"></view>
-    <text class="title">{{translations.title}}</text>
-    <view class="placeholder"></view>
-  </view>
-
   <!-- 就诊人列表 -->
   <view class="patient-list" wx:if="{{!isEmpty && !loading}}">
     <view 

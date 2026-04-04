@@ -6,35 +6,6 @@
   flex-direction: column;
 }
 
-/* 头部导航 */
-.header {
-  background-color: #fff;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-  border-bottom: 1px solid #eee;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.header-left {
-  width: 24px;
-}
-
-.title {
-  font-size: 17px;
-  font-weight: 500;
-  flex: 1;
-  text-align: center;
-}
-
-.placeholder {
-  width: 24px;
-}
-
 /* 内容区域 */
 .content {
   flex: 1;

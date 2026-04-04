@@ -43,6 +43,12 @@ Page({
   // 更新翻译文本
   updateTranslations() {
     const app = getApp()
+    
+    // 设置导航栏标题
+    wx.setNavigationBarTitle({
+      title: app.t('favorite.title') || '我的收藏'
+    })
+    
     this.setData({
       translations: {
         title: app.t('favorite.title'),

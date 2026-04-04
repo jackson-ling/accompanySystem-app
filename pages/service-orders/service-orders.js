@@ -1,5 +1,11 @@
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { 
+  getCompanionOrders, 
+  startService, 
+  completeService,
+  updateOrderStatus 
+} = require('../../utils/api.js')
 
 Page({
   data: {
@@ -79,13 +85,25 @@ Page({
     this.setData({ loading: true })
     
     try {
-      // 模拟网络延迟
-      await mock.delay(500)
+      // 调用后端API获取陪诊师订单
+      const result = await getCompanionOrders({ 
+        status: this.data.activeTab === 'pending' ? 2 : 4 
+      })
       
-      // 获取当前陪诊师的订单
-      const companionId = getApp().globalData.userInfo?.companionInfo?.id
+      // 处理字段映射
+      const orders = (result.list || []).map(order => ({
+        ...order,
+        image: order.serviceImage || order.image,
+        price: order.actualAmount || order.amount
+      }))
       
-      // 获取待服务订单（状态为2）和已完成订单（状态为4）
+      this.setData({
+        orders,
+        loading: false
+      })
+    } catch (error) {
+      console.error('加载订单失败:', error)
+      // 如果API调用失败，使用mock数据
       let orders = []
       if (this.data.activeTab === 'pending') {
         orders = mock.orders.filter(order => order.status === 2)
@@ -95,12 +113,6 @@ Page({
       
       this.setData({
         orders,
-        loading: false
-      })
-    } catch (error) {
-      console.error('加载订单失败:', error)
-      this.setData({
-        orders: [],
         loading: false
       })
     }
@@ -141,52 +153,58 @@ Page({
   },
 
   // 开始服务
-  handleStartService(e) {
+  async handleStartService(e) {
     const order = e.currentTarget.dataset.order
     wx.showModal({
       title: i18n.t('serviceOrders.confirmStartService'),
       content: i18n.t('serviceOrders.startServiceConfirm'),
       confirmText: i18n.t('common.confirm'),
       cancelText: i18n.t('common.cancel'),
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          // 更新订单状态为服务中
-          const orderIndex = mock.orders.findIndex(o => o.id === order.id)
-          if (orderIndex > -1) {
-            mock.orders[orderIndex].status = 3
+          try {
+            await startService(order.id)
+            wx.showToast({
+              title: i18n.t('serviceOrders.serviceStarted'),
+              icon: 'success'
+            })
+            this.loadOrders()
+          } catch (error) {
+            console.error('开始服务失败:', error)
+            wx.showToast({
+              title: error.message || i18n.t('common.error'),
+              icon: 'none'
+            })
           }
-          
-          wx.showToast({
-            title: i18n.t('serviceOrders.serviceStarted'),
-            icon: 'success'
-          })
-          this.loadOrders()
         }
       }
     })
   },
 
   // 完成服务
-  handleCompleteService(e) {
+  async handleCompleteService(e) {
     const order = e.currentTarget.dataset.order
     wx.showModal({
       title: i18n.t('serviceOrders.confirmCompleteService'),
       content: i18n.t('serviceOrders.completeServiceConfirm'),
       confirmText: i18n.t('common.confirm'),
       cancelText: i18n.t('common.cancel'),
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          // 更新订单状态为已完成
-          const orderIndex = mock.orders.findIndex(o => o.id === order.id)
-          if (orderIndex > -1) {
-            mock.orders[orderIndex].status = 4
+          try {
+            await completeService(order.id)
+            wx.showToast({
+              title: i18n.t('serviceOrders.serviceCompleted'),
+              icon: 'success'
+            })
+            this.loadOrders()
+          } catch (error) {
+            console.error('完成服务失败:', error)
+            wx.showToast({
+              title: error.message || i18n.t('common.error'),
+              icon: 'none'
+            })
           }
-          
-          wx.showToast({
-            title: i18n.t('serviceOrders.serviceCompleted'),
-            icon: 'success'
-          })
-          this.loadOrders()
         }
       }
     })

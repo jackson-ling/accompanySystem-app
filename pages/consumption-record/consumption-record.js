@@ -1,5 +1,6 @@
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { getConsumptionRecords } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -64,11 +65,16 @@ Page({
     this.setData({ loading: true })
     
     try {
-      // 模拟网络延迟
-      await mock.delay(500)
-      
-      // 获取消费记录
-      const records = mock.mockConsumptionRecords || []
+      // 调用后端API获取消费记录
+      const result = await getConsumptionRecords({ page: 1, pageSize: 100 })
+      const records = (result.list || result || []).map(item => ({
+        id: item.id,
+        type: item.type,
+        title: item.title,
+        amount: item.amount,
+        balance: item.balance,
+        time: item.time || item.createTime
+      }))
       
       this.setData({
         records,
@@ -77,11 +83,22 @@ Page({
       })
     } catch (error) {
       console.error('加载消费记录失败:', error)
-      this.setData({
-        records: [],
-        loading: false,
-        isEmpty: true
-      })
+      // 降级到mock数据
+      try {
+        await mock.delay(500)
+        const mockRecords = mock.mockConsumptionRecords || []
+        this.setData({
+          records: mockRecords,
+          loading: false,
+          isEmpty: mockRecords.length === 0
+        })
+      } catch (mockError) {
+        this.setData({
+          records: [],
+          loading: false,
+          isEmpty: true
+        })
+      }
     }
   },
 

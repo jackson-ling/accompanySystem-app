@@ -29,6 +29,7 @@ Page({
       commonFunctions: '',
       patientManagement: '',
       myFavorites: '',
+      myReviews: '',
       workbench: '',
       contactService: '',
       feedback: '',
@@ -88,6 +89,7 @@ Page({
         commonFunctions: app.t('profile.commonFunctions'),
         patientManagement: app.t('profile.patientManagement'),
         myFavorites: app.t('profile.myFavorites'),
+        myReviews: app.t('profile.myReviews'),
         workbench: app.t('profile.workbench'),
         contactService: app.t('profile.contactService'),
         feedback: app.t('profile.feedback'),
@@ -208,6 +210,18 @@ Page({
     })
   },
 
+  // 我的评价
+  handleMyReviews() {
+    const app = getApp()
+    if (!app.requireLogin()) {
+      return
+    }
+    
+    wx.navigateTo({
+      url: '/pages/my-reviews/my-reviews'
+    })
+  },
+
   // 陪诊师工作台
   handleWorkbench() {
     const app = getApp()
@@ -215,27 +229,7 @@ Page({
       return
     }
     
-    const userInfo = app.globalData.userInfo
-    
-    // 检查是否是陪诊师
-    if (!userInfo || !userInfo.isCompanion) {
-      wx.showModal({
-        title: app.t('common.confirm'),
-        content: app.t('profile.applyCompanionRequired'),
-        confirmText: app.t('profile.apply'),
-        cancelText: app.t('common.cancel'),
-        success: (res) => {
-          if (res.confirm) {
-            wx.navigateTo({
-              url: '/pages/apply-companion/apply-companion'
-            })
-          }
-        }
-      })
-      return
-    }
-    
-    // 跳转到陪诊师工作台页面（如果存在）
+    // 跳转到陪诊师工作台页面
     wx.navigateTo({
       url: '/pages/companion-workbench/companion-workbench'
     })
@@ -258,6 +252,18 @@ Page({
           })
         }
       }
+    })
+  },
+
+  // 申请成为陪诊师
+  handleApplyCompanion() {
+    const app = getApp()
+    if (!app.requireLogin()) {
+      return
+    }
+    
+    wx.navigateTo({
+      url: '/pages/apply-companion/apply-companion'
     })
   },
 

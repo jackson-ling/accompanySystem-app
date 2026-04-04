@@ -1,6 +1,7 @@
 // pages/ai-chat/ai-chat.js
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { sendAiMessage, getChatHistory, clearChatHistory } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -22,6 +23,12 @@ Page({
     
     // 用户信息
     userInfo: null,
+    
+    // 加载状态
+    loading: false,
+    
+    // 菜单显示状态
+    showMenu: false,
     
     // 翻译文本
     translations: {
@@ -89,10 +96,34 @@ Page({
   },
 
   // 初始化聊天
-  initChat() {
-    this.setData({
-      messages: [...mock.mockChatHistory]
-    })
+  async initChat() {
+    try {
+      // 调用后端API获取聊天历史
+      const result = await getChatHistory()
+      const messages = (result || []).map(msg => ({
+        isMe: msg.isMe || false,
+        text: msg.text,
+        time: msg.time
+      }))
+      
+      this.setData({
+        messages: messages,
+        hasStarted: messages.length > 0
+      })
+      
+      // 滚动到底部
+      if (messages.length > 0) {
+        this.setData({
+          scrollToView: `msg-${messages.length - 1}`
+        })
+      }
+    } catch (error) {
+      console.error('获取聊天历史失败:', error)
+      // 降级到mock数据
+      this.setData({
+        messages: [...mock.mockChatHistory]
+      })
+    }
   },
 
   // 输入
@@ -122,23 +153,42 @@ Page({
       inputText: '',
       canSend: false,
       hasStarted: true,
+      loading: true,
       scrollToView: `msg-${this.data.messages.length}`
     })
     
-    // 模拟AI回复
-    await mock.delay(1000)
-    
-    const aiResponse = this.getAIResponse(text)
-    
-    const aiMessage = {
-      isMe: false,
-      text: aiResponse
+    try {
+      // 调用后端API发送消息
+      const result = await sendAiMessage({
+        message: text
+      })
+      
+      // 添加AI回复
+      const aiMessage = {
+        isMe: false,
+        text: result.text || result.message || result.reply || this.getAIResponse(text)
+      }
+      
+      this.setData({
+        messages: [...this.data.messages, aiMessage],
+        scrollToView: `msg-${this.data.messages.length + 1}`,
+        loading: false
+      })
+    } catch (error) {
+      console.error('AI回复失败:', error)
+      // 降级到本地回复
+      const aiResponse = this.getAIResponse(text)
+      const aiMessage = {
+        isMe: false,
+        text: aiResponse
+      }
+      
+      this.setData({
+        messages: [...this.data.messages, aiMessage],
+        scrollToView: `msg-${this.data.messages.length + 1}`,
+        loading: false
+      })
     }
-    
-    this.setData({
-      messages: [...this.data.messages, aiMessage],
-      scrollToView: `msg-${this.data.messages.length + 1}`
-    })
   },
 
   // 发送建议问题
@@ -172,5 +222,62 @@ Page({
     }
     
     return responses[question] || t.defaultResponse
+  },
+
+  // 显示菜单
+  showMenu() {
+    this.setData({
+      showMenu: true
+    })
+  },
+
+  // 隐藏菜单
+  hideMenu() {
+    this.setData({
+      showMenu: false
+    })
+  },
+
+  // 清空聊天记录
+  async clearHistory() {
+    wx.showModal({
+      title: i18n.t('common.confirm') || '提示',
+      content: i18n.t('aiChat.clearConfirm') || '确定要清空聊天记录吗？',
+      confirmText: i18n.t('common.confirm') || '确定',
+      cancelText: i18n.t('common.cancel') || '取消',
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            // 调用后端API清空聊天记录
+            await clearChatHistory()
+            
+            // 清空本地消息
+            this.setData({
+              messages: [],
+              hasStarted: false
+            })
+            
+            wx.showToast({
+              title: i18n.t('aiChat.cleared') || '已清空',
+              icon: 'success'
+            })
+          } catch (error) {
+            console.error('清空聊天记录失败:', error)
+            wx.showToast({
+              title: error.message || i18n.t('common.failed') || '操作失败',
+              icon: 'none'
+            })
+          }
+        }
+        this.setData({
+          showMenu: false
+        })
+      }
+    })
+  },
+
+  // 阻止冒泡
+  stopPropagation() {
+    // 阻止点击菜单内容时关闭菜单
   }
 })

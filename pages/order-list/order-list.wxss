@@ -4,49 +4,12 @@
   background-color: #f7f8fa;
 }
 
-/* 头部导航 */
-.header-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 15px;
-  background-color: #fff;
-  font-size: 18px;
-  font-weight: bold;
-  border-bottom: 1px solid #eee;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  height: 48px;
-}
-
-.header-left {
-  width: 24px;
-  flex-shrink: 0;
-}
-
-.title {
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  white-space: nowrap;
-  overflow: hidden;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.placeholder {
-  width: 24px;
-  flex-shrink: 0;
-}
-
 /* 标签页 */
 .tabs-wrapper {
   background-color: #fff;
   border-bottom: 1px solid #eee;
   position: sticky;
-  top: 48px;
+  top: 0;
   z-index: 99;
 }
 

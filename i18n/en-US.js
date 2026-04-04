@@ -193,6 +193,13 @@ module.exports = {
     }
   },
   
+  myReviews: {
+    title: 'My Reviews',
+    noReviews: 'No reviews yet',
+    companion: 'Companion',
+    service: 'Service'
+  },
+  
 patient: {
     title: 'Select Patient',
     selectPatient: 'Select Patient',
@@ -228,6 +235,7 @@ patient: {
     commonFunctions: 'Common Functions',
     patientManagement: 'Patient Management',
     myFavorites: 'My Favorites',
+    myReviews: 'My Reviews',
     workbench: 'Companion Workbench',
     applyCompanion: 'Apply to Become Companion',
     contactService: 'Contact Service',
@@ -477,7 +485,9 @@ patient: {
     youWantToAsk: 'You might want to ask',
     enterYourQuestion: 'Enter your question...',
     send: 'Send',
-    loading: 'Loading...'
+    loading: 'Loading...',
+    clearConfirm: 'Are you sure you want to clear the chat history?',
+    cleared: 'Cleared'
   },
   
   incomeRecord: {
@@ -512,6 +522,23 @@ patient: {
     amount: 'Amount',
     balance: 'Balance',
     noRecords: 'No consumption records'
+  },
+  
+  hospitalList: {
+    title: 'Nearby Hospitals',
+    noHospitals: 'No hospital information'
+  },
+  
+  hospitalDetail: {
+    title: 'Hospital Details',
+    level: 'Hospital Level',
+    address: 'Hospital Address',
+    rating: 'Rating',
+    distance: 'Distance',
+    departments: 'Departments',
+    noDepartments: 'No department information',
+    navigate: 'Navigate',
+    call: 'Call'
   },
   
   orderHall: {
@@ -706,7 +733,8 @@ patient: {
     system: 'System',
     order: 'Order',
     activity: 'Activity',
-    service: 'Service'
+    service: 'Service',
+    deleteConfirm: 'Are you sure you want to delete this message?'
   },
   
   search: {

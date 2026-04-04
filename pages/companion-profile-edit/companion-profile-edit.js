@@ -1,5 +1,6 @@
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { getCompanionProfile, updateCompanionProfile } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -79,21 +80,40 @@ Page({
   },
 
   // 加载陪诊师资料
-  loadCompanionProfile() {
-    const app = getApp()
-    const companionInfo = app.globalData.userInfo?.companionInfo
-    
-    if (companionInfo) {
-      this.setData({
-        avatar: companionInfo.avatar || '',
-        formData: {
-          nickname: companionInfo.name || '',
-          phone: companionInfo.phone || '',
-          age: companionInfo.age ? companionInfo.age.toString() : '',
-          experience: companionInfo.experience || '',
-          introduction: companionInfo.intro || ''
-        }
-      })
+  async loadCompanionProfile() {
+    try {
+      const profile = await getCompanionProfile()
+      
+      if (profile) {
+        this.setData({
+          avatar: profile.avatar || '',
+          formData: {
+            nickname: profile.name || '',
+            phone: profile.phone || '',
+            age: profile.age ? profile.age.toString() : '',
+            experience: profile.experience || '',
+            introduction: profile.intro || ''
+          }
+        })
+      }
+    } catch (error) {
+      console.error('加载陪诊师资料失败:', error)
+      // 如果API调用失败，尝试使用本地数据
+      const app = getApp()
+      const companionInfo = app.globalData.userInfo?.companionInfo
+      
+      if (companionInfo) {
+        this.setData({
+          avatar: companionInfo.avatar || '',
+          formData: {
+            nickname: companionInfo.name || '',
+            phone: companionInfo.phone || '',
+            age: companionInfo.age ? companionInfo.age.toString() : '',
+            experience: companionInfo.experience || '',
+            introduction: companionInfo.intro || ''
+          }
+        })
+      }
     }
   },
 
@@ -186,10 +206,17 @@ Page({
     })
     
     try {
-      // 模拟网络延迟
-      await mock.delay(1000)
+      // 调用后端API更新陪诊师信息
+      await updateCompanionProfile({
+        name: formData.nickname,
+        avatar: avatar,
+        phone: formData.phone,
+        age: parseInt(formData.age),
+        experience: formData.experience,
+        intro: formData.introduction
+      })
       
-      // 更新陪诊师信息
+      // 更新本地用户信息
       const app = getApp()
       if (app.globalData.userInfo && app.globalData.userInfo.companionInfo) {
         app.globalData.userInfo.companionInfo = {
@@ -218,7 +245,7 @@ Page({
       wx.hideLoading()
       console.error('保存失败:', error)
       wx.showToast({
-        title: this.data.translations.saveFailed,
+        title: error.message || this.data.translations.saveFailed,
         icon: 'none'
       })
     } finally {

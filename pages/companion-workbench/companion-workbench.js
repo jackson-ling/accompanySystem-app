@@ -1,5 +1,13 @@
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
+const { 
+  getCompanionStatistics, 
+  getCompanionProfile, 
+  updateCompanionStatus,
+  getAvailableOrders, 
+  acceptOrder, 
+  rejectOrder 
+} = require('../../utils/api.js')
 
 Page({
   data: {
@@ -116,37 +124,68 @@ experienceUnknown: i18n.t('workbench.experienceUnknown'),
   },
 
   // 加载数据
-  loadData() {
-    const app = getApp()
-    const userInfo = app.globalData.userInfo
-    
-    if (userInfo && userInfo.isCompanion && userInfo.companionInfo) {
+  async loadData() {
+    try {
+      // 获取统计数据
+      const statistics = await getCompanionStatistics()
+      
+      // 获取个人信息
+      const profile = await getCompanionProfile()
+      
+      // 获取可接订单
+      const orders = await getAvailableOrders()
+      
       this.setData({
-        companionInfo: userInfo.companionInfo,
-        statistics: {
-          todayIncome: 0,
-          todayOrders: 0,
-          rating: userInfo.companionInfo.rating || 5.0,
-          followers: 0,
-          totalOrders: userInfo.companionInfo.orders || 0,
-          workDays: 0
-        },
-        pendingOrders: []
+        companionInfo: profile,
+        statistics: statistics || {},
+        isOnline: profile.isOnline === 1,
+        pendingOrders: orders || []
       })
+    } catch (error) {
+      console.error('加载数据失败:', error)
+      // 如果API调用失败，使用本地数据
+      const app = getApp()
+      const userInfo = app.globalData.userInfo
+      
+      if (userInfo && userInfo.isCompanion && userInfo.companionInfo) {
+        this.setData({
+          companionInfo: userInfo.companionInfo,
+          statistics: {
+            todayIncome: 0,
+            todayOrders: 0,
+            rating: userInfo.companionInfo.rating || 5.0,
+            followers: 0,
+            totalOrders: userInfo.companionInfo.orders || 0,
+            workDays: 0
+          },
+          pendingOrders: []
+        })
+      }
     }
   },
 
   // 切换在线状态
-  toggleStatus() {
+  async toggleStatus() {
     const newStatus = !this.data.isOnline
-    this.setData({
-      isOnline: newStatus
-    })
     
-    wx.showToast({
-      title: newStatus ? i18n.t('workbench.serviceStarted') : i18n.t('workbench.serviceStopped'),
-      icon: 'success'
-    })
+    try {
+      await updateCompanionStatus({ isOnline: newStatus ? 1 : 0 })
+      
+      this.setData({
+        isOnline: newStatus
+      })
+      
+      wx.showToast({
+        title: newStatus ? i18n.t('workbench.serviceStarted') : i18n.t('workbench.serviceStopped'),
+        icon: 'success'
+      })
+    } catch (error) {
+      console.error('更新状态失败:', error)
+      wx.showToast({
+        title: error.message || i18n.t('common.error'),
+        icon: 'none'
+      })
+    }
   },
 
   // 编辑资料
@@ -203,50 +242,60 @@ experienceUnknown: i18n.t('workbench.experienceUnknown'),
   },
 
   // 拒单
-  handleReject(e) {
+  async handleReject(e) {
     const order = e.currentTarget.dataset.order
     wx.showModal({
       title: i18n.t('workbench.confirmReject'),
       content: i18n.t('workbench.rejectOrderConfirm'),
       confirmText: i18n.t('common.confirm'),
       cancelText: i18n.t('common.cancel'),
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          wx.showToast({
-            title: i18n.t('workbench.orderRejected'),
-            icon: 'success'
-          })
-          // 从待处理列表中移除
-          const pendingOrders = this.data.pendingOrders.filter(item => item.id !== order.id)
-          this.setData({ pendingOrders })
+          try {
+            await rejectOrder(order.id)
+            wx.showToast({
+              title: i18n.t('workbench.orderRejected'),
+              icon: 'success'
+            })
+            // 重新加载订单列表
+            await this.loadData()
+          } catch (error) {
+            console.error('拒单失败:', error)
+            wx.showToast({
+              title: error.message || i18n.t('common.error'),
+              icon: 'none'
+            })
+          }
         }
       }
     })
   },
 
   // 接单
-  handleAccept(e) {
+  async handleAccept(e) {
     const order = e.currentTarget.dataset.order
     wx.showModal({
       title: i18n.t('workbench.confirmAccept'),
       content: i18n.t('workbench.acceptOrderConfirm'),
       confirmText: i18n.t('common.confirm'),
       cancelText: i18n.t('common.cancel'),
-      success: (res) => {
+      success: async (res) => {
         if (res.confirm) {
-          wx.showToast({
-            title: i18n.t('workbench.orderAccepted'),
-            icon: 'success'
-          })
-          // 从待处理列表中移除
-          const pendingOrders = this.data.pendingOrders.filter(item => item.id !== order.id)
-          this.setData({ pendingOrders })
-          
-          // 更新统计数据
-          const statistics = this.data.statistics
-          statistics.todayOrders++
-          statistics.totalOrders++
-          this.setData({ statistics })
+          try {
+            await acceptOrder(order.id)
+            wx.showToast({
+              title: i18n.t('workbench.orderAccepted'),
+              icon: 'success'
+            })
+            // 重新加载订单列表
+            await this.loadData()
+          } catch (error) {
+            console.error('接单失败:', error)
+            wx.showToast({
+              title: error.message || i18n.t('common.error'),
+              icon: 'none'
+            })
+          }
         }
       }
     })
