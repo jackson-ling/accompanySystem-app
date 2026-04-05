@@ -1,13 +1,4 @@
 <view class="container">
-  <!-- 页面头部 -->
-  <view class="page-header">
-    <view class="header-left"></view>
-    <text class="header-title">{{pageTitle}}</text>
-    <view class="header-right" wx:if="{{chatType !== 'system'}}" bindtap="toggleMenu">
-      <van-icon name="ellipsis" size="24" color="#333" />
-    </view>
-  </view>
-
   <!-- 菜单遮罩 -->
   <view class="menu-mask" wx:if="{{showMenu}}" bindtap="toggleMenu"></view>
 
@@ -22,7 +13,7 @@
   </view>
 
   <!-- 聊天区域 -->
-  <scroll-view class="chat-container" scroll-y="{{true}}" scroll-top="{{scrollTop}}" scroll-into-view="{{scrollIntoView}}">
+  <scroll-view class="chat-container" scroll-y="{{true}}" scroll-top="{{scrollTop}}" scroll-into-view="{{scrollIntoView}}" scroll-with-animation="{{true}}">
     <view wx:for="{{messages}}" wx:key="index">
       <!-- 时间分隔符 -->
       <view class="time-divider" wx:if="{{item.time}}">
@@ -49,7 +40,8 @@
 
         <!-- 消息气泡 -->
         <view class="bubble">
-          <text>{{item.text}}</text>
+          <image wx:if="{{item.type === 'image' && item.imageUrl}}" src="{{item.imageUrl}}" mode="widthFix" bindtap="previewImage" data-url="{{item.imageUrl}}" />
+          <text wx:else>{{item.text}}</text>
         </view>
       </view>
     </view>
@@ -72,11 +64,33 @@
         confirm-type="send"
       />
     </view>
+    <view class="image-btn" bindtap="showActionSheet">
+      <van-icon name="plus" size="20" color="#666" />
+    </view>
     <view 
       class="send-btn {{inputText.trim() ? '' : 'disabled'}}" 
       bindtap="sendMessage"
     >
       <text>发送</text>
+    </view>
+  </view>
+
+  <!-- 功能选择弹窗 -->
+  <view class="action-sheet-mask" wx:if="{{showActionSheet}}" bindtap="hideActionSheet">
+    <view class="action-sheet-content" catchtap="stopPropagation">
+      <view class="action-sheet-header">
+        <text class="cancel-text" bindtap="hideActionSheet">取消</text>
+      </view>
+      <view class="action-sheet-body">
+        <view class="action-item" bindtap="chooseImage" data-source="album">
+          <van-icon name="photo-o" size="24" color="#409eff" />
+          <text>相册</text>
+        </view>
+        <view class="action-item" bindtap="chooseImage" data-source="camera">
+          <van-icon name="photograph" size="24" color="#409eff" />
+          <text>拍摄</text>
+        </view>
+      </view>
     </view>
   </view>
 </view>

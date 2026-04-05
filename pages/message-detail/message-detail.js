@@ -9,6 +9,7 @@ Page({
     messages: [],
     inputText: '',
     showMenu: false,
+    showActionSheet: false,
     scrollTop: 0,
     scrollIntoView: '',
     userAvatar: 'https://placehold.co/100x100/ff99cc/fff?text=我',
@@ -68,6 +69,7 @@ Page({
       this.setData({
         messages: messages
       })
+      // 滚动到底部
       this.scrollToBottom()
     } catch (error) {
       console.error('加载聊天历史失败:', error)
@@ -79,6 +81,7 @@ Page({
         this.setData({
           messages: history
         })
+        // 滚动到底部
         this.scrollToBottom()
       } catch (e) {
         console.error('加载本地聊天历史失败:', e)
@@ -103,6 +106,13 @@ Page({
         })
       }
     }
+  },
+
+  onShow() {
+    // 每次显示页面时滚动到底部
+    setTimeout(() => {
+      this.scrollToBottom()
+    }, 100)
   },
 
   // 格式化时间
@@ -182,13 +192,30 @@ Page({
     }
   },
 
+  // 预览图片
+  previewImage(e) {
+    const url = e.currentTarget.dataset.url
+    wx.previewImage({
+      current: url,
+      urls: [url]
+    })
+  },
+
   // 滚动到底部
   scrollToBottom() {
     const length = this.data.messages.length
     if (length > 0) {
+      // 先清空scrollIntoView
       this.setData({
-        scrollIntoView: `msg-${length - 1}`
+        scrollIntoView: ''
       })
+      
+      // 延迟一下再设置scrollIntoView
+      setTimeout(() => {
+        this.setData({
+          scrollIntoView: `msg-${length - 1}`
+        })
+      }, 50)
     }
   },
 
@@ -261,5 +288,109 @@ Page({
         }
       }
     })
+  },
+
+  // 显示功能选择弹窗
+  showActionSheet() {
+    this.setData({
+      showActionSheet: true
+    })
+  },
+
+  // 隐藏功能选择弹窗
+  hideActionSheet() {
+    this.setData({
+      showActionSheet: false
+    })
+  },
+
+  // 阻止冒泡
+  stopPropagation() {
+    // 阻止点击弹窗内容时关闭弹窗
+  },
+
+  // 选择图片
+  chooseImage(e) {
+    const source = e.currentTarget.dataset.source || 'album'
+    const count = 9
+    
+    let sourceType = ['album', 'camera']
+    if (source === 'album') {
+      sourceType = ['album']
+    } else if (source === 'camera') {
+      sourceType = ['camera']
+    }
+
+    wx.chooseMedia({
+      count: count,
+      mediaType: ['image'],
+      sourceType: sourceType,
+      maxDuration: 30,
+      camera: 'back',
+      success: (res) => {
+        const tempFiles = res.tempFiles
+        tempFiles.forEach((file, index) => {
+          // 上传图片到服务器
+          this.uploadImage(file.tempFilePath, file.size)
+        })
+        this.setData({
+          showActionSheet: false
+        })
+      },
+      fail: (err) => {
+        console.error('选择图片失败:', err)
+        if (err.errMsg !== 'chooseMedia:fail cancel') {
+          wx.showToast({
+            title: '选择图片失败',
+            icon: 'none'
+          })
+        }
+        this.setData({
+          showActionSheet: false
+        })
+      }
+    })
+  },
+
+  // 上传图片
+  uploadImage(filePath, fileSize) {
+    wx.showLoading({
+      title: '上传中...'
+    })
+
+    // 模拟上传过程
+    setTimeout(() => {
+      wx.hideLoading()
+      
+      // 添加图片消息到列表
+      this.addMessage({
+        text: filePath,
+        isMe: true,
+        time: this.formatTime(new Date()),
+        type: 'image'
+      })
+
+      // 调用后端API发送图片消息
+      this.sendImageMessage(filePath)
+    }, 1000)
+  },
+
+  // 发送图片消息
+  async sendImageMessage(imageUrl) {
+    try {
+      // 调用后端API发送消息
+      const typeMap = { service: 1, companion: 2 }
+      const apiType = typeMap[this.data.conversationType] || 1
+      await sendChatMessage(apiType, {
+        text: imageUrl,
+        type: 'image'
+      })
+    } catch (error) {
+      console.error('发送图片失败:', error)
+      wx.showToast({
+        title: error.message || '发送失败',
+        icon: 'none'
+      })
+    }
   }
 })

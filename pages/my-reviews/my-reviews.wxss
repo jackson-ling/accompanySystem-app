@@ -1,7 +1,6 @@
 /* pages/my-reviews/my-reviews.wxss */
 
 .container {
-  min-height: 100vh;
   background-color: #f7f8fa;
   padding-bottom: 20rpx;
 }

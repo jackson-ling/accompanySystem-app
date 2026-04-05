@@ -62,10 +62,17 @@ Page({
     }
     // 每次显示页面时重新更新翻译，确保语言切换后立即生效
     this.updateTranslations()
+    // 滚动到底部
+    this.scrollToBottom()
   },
   
   // 更新翻译文本
   updateTranslations() {
+    const app = getApp()
+    wx.setNavigationBarTitle({
+      title: app.t('aiChat.title') || 'AI助手'
+    })
+    
     this.setData({
       translations: {
         title: i18n.t('aiChat.title'),
@@ -112,17 +119,31 @@ Page({
       })
       
       // 滚动到底部
-      if (messages.length > 0) {
-        this.setData({
-          scrollToView: `msg-${messages.length - 1}`
-        })
-      }
+      this.scrollToBottom()
     } catch (error) {
       console.error('获取聊天历史失败:', error)
       // 降级到mock数据
       this.setData({
         messages: [...mock.mockChatHistory]
       })
+    }
+  },
+
+  // 滚动到底部
+  scrollToBottom() {
+    const length = this.data.messages.length
+    if (length > 0) {
+      // 先清空scrollToView
+      this.setData({
+        scrollToView: ''
+      })
+      
+      // 延迟一下再设置scrollToView
+      setTimeout(() => {
+        this.setData({
+          scrollToView: `msg-${length - 1}`
+        })
+      }, 50)
     }
   },
 
@@ -153,9 +174,11 @@ Page({
       inputText: '',
       canSend: false,
       hasStarted: true,
-      loading: true,
-      scrollToView: `msg-${this.data.messages.length}`
+      loading: true
     })
+    
+    // 滚动到底部
+    this.scrollToBottom()
     
     try {
       // 调用后端API发送消息
@@ -171,9 +194,11 @@ Page({
       
       this.setData({
         messages: [...this.data.messages, aiMessage],
-        scrollToView: `msg-${this.data.messages.length + 1}`,
         loading: false
       })
+      
+      // 滚动到底部
+      this.scrollToBottom()
     } catch (error) {
       console.error('AI回复失败:', error)
       // 降级到本地回复
@@ -185,9 +210,11 @@ Page({
       
       this.setData({
         messages: [...this.data.messages, aiMessage],
-        scrollToView: `msg-${this.data.messages.length + 1}`,
         loading: false
       })
+      
+      // 滚动到底部
+      this.scrollToBottom()
     }
   },
 

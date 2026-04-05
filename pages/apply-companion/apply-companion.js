@@ -93,6 +93,12 @@ Page({
   // 更新翻译文本
   updateTranslations() {
     const app = getApp()
+    
+    // 设置导航栏标题
+    wx.setNavigationBarTitle({
+      title: app.t('applyCompanion.title') || '申请成为陪诊师'
+    })
+    
     this.setData({
       translations: {
         title: app.t('applyCompanion.title'),

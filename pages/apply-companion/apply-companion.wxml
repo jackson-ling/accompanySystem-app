@@ -1,12 +1,5 @@
 <!-- pages/apply-companion/apply-companion.wxml -->
 <view class="apply-page">
-  <!-- 头部导航 -->
-  <view class="header">
-    <view class="header-left"></view>
-    <text class="title">{{translations.title}}</text>
-    <view class="placeholder"></view>
-  </view>
-
   <!-- 表单内容 -->
   <scroll-view scroll-y class="content">
     <!-- 头像上传 -->

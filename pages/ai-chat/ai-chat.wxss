@@ -1,44 +1,20 @@
 /* pages/ai-chat/ai-chat.wxss */
 
 .container {
-  min-height: 100vh;
   background-color: #f7f8fa;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-/* 聊天头部 */
-.chat-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20rpx 30rpx;
-  background-color: #ffffff;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.header-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333333;
-  flex: 1;
-  text-align: center;
-}
-
-.header-actions {
-  width: 40rpx;
-  display: flex;
-  justify-content: flex-end;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding-bottom: calc(160rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
 }
 
 /* 消息列表 */
 .message-list {
-  flex: 1;
   padding: 20rpx 24rpx;
+  padding-bottom: 180rpx;
   overflow-y: auto;
-  padding-bottom: 20rpx;
   box-sizing: border-box;
+  min-height: 100vh;
 }
 
 .message-row {
@@ -126,6 +102,7 @@
 /* 建议问题 */
 .suggestions {
   padding: 20rpx 30rpx;
+  padding-bottom: 180rpx;
   background-color: #ffffff;
   border-top: 1rpx solid #f0f0f0;
   flex-shrink: 0;
@@ -163,12 +140,16 @@
 
 /* 输入区域 */
 .input-area {
+  position: fixed;
+  bottom: calc(150rpx + constant(safe-area-inset-bottom));
+  bottom: calc(150rpx + env(safe-area-inset-bottom));
+  left: 0;
+  right: 0;
   background-color: #ffffff;
   padding: 20rpx 30rpx;
-  padding-bottom: calc(140rpx + constant(safe-area-inset-bottom));
-  padding-bottom: calc(140rpx + env(safe-area-inset-bottom));
   border-top: 1rpx solid #f0f0f0;
-  flex-shrink: 0;
+  z-index: 99;
+  box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
 .input-wrapper {
@@ -210,6 +191,42 @@
   opacity: 0.6;
 }
 
+.clear-btn {
+  height: 64rpx;
+  width: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff5f5;
+  border-radius: 50%;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.clear-btn:active {
+  opacity: 0.7;
+  transform: scale(0.95);
+  background-color: #ffe6e6;
+}
+
+.chat-icon {
+  height: 64rpx;
+  width: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ecf5ff;
+  border-radius: 50%;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.chat-icon:active {
+  opacity: 0.7;
+  transform: scale(0.95);
+  background-color: #d9ecff;
+}
+
 /* 菜单弹窗 */
 .menu-mask {
   position: fixed;
@@ -220,10 +237,10 @@
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding-top: calc(100rpx + env(safe-area-inset-top));
-  padding-right: 30rpx;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding-bottom: calc(240rpx + env(safe-area-inset-bottom));
+  padding-left: 40rpx;
 }
 
 .menu-content {

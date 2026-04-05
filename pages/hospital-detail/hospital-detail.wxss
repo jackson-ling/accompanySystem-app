@@ -1,7 +1,6 @@
 /* pages/hospital-detail/hospital-detail.wxss */
 
 .hospital-detail-page {
-  min-height: 100vh;
   background-color: #f7f8fa;
   padding-bottom: 140rpx;
 }

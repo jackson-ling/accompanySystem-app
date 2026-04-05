@@ -1,37 +1,9 @@
 .container {
   background-color: #fff;
-  min-height: 100vh;
-  padding-bottom: 120rpx;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 30rpx;
-  padding-top: calc(30rpx + constant(safe-area-inset-top));
-  padding-top: calc(30rpx + env(safe-area-inset-top));
-  background-color: #fff;
-  font-size: 36rpx;
-  font-weight: bold;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
-}
-
-.header-left {
-  width: 80rpx;
-}
-
-.page-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.header-right {
-  width: 80rpx;
+  height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding-bottom: 160rpx;
 }
 
 .cover-image-container {

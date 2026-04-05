@@ -12,7 +12,7 @@
     </view>
   </view>
 
-  <!-- 筛选栏 -->
+<!-- 筛选栏 -->
   <view class="filter-bar">
     <view class="filter-item {{currentFilter === 'score' ? 'active' : ''}}" bindtap="onSortChange" data-type="score">
       <text>{{translations.byScore}}</text>
