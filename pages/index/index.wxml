@@ -77,7 +77,7 @@
       <view class="hospital-list">
         <view class="hospital-card" wx:for="{{hospitalList}}" wx:key="id" bindtap="goToHospitalDetail" data-hospital="{{item}}">
           <view class="hospital-icon-wrapper">
-            <van-icon name="shop-o" size="40" color="#409eff" />
+            <image class="hospital-icon" src="https://tse1-mm.cn.bing.net/th/id/OIP-C.0dx2dnDsfz3zSk4V3PifSAHaHa?w=217&h=217&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" mode="aspectFill" />
           </view>
           <text class="hospital-name">{{item.name}}</text>
           <van-tag type="primary" size="medium">{{item.level}}</van-tag>

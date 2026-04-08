@@ -1,6 +1,10 @@
 const mock = require('../../mock/index.js')
 const i18n = require('../../utils/i18n.js')
-const { getCompanionProfile, updateCompanionProfile } = require('../../utils/api.js')
+const { 
+  getCompanionProfile, 
+  updateCompanionProfile, 
+  updateAvatar
+} = require('../../utils/api.js')
 
 Page({
   data: {
@@ -149,18 +153,66 @@ Page({
   },
 
   // 头像上传
-  handleAvatarUpload() {
+  async handleAvatarUpload() {
     wx.chooseImage({
       count: 1,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
       success: (res) => {
-        const tempFilePaths = res.tempFilePaths
-        this.setData({
-          avatar: tempFilePaths[0]
+        const tempFilePath = res.tempFilePaths[0]
+
+        // 预览图片并询问是否上传
+        wx.previewImage({
+          urls: [tempFilePath],
+          success: () => {
+            wx.showModal({
+              title: '确认上传',
+              content: '是否上传这张图片作为新头像？',
+              confirmText: '确认上传',
+              cancelText: '取消',
+              success: (modalRes) => {
+                if (modalRes.confirm) {
+                  // 用户确认上传
+                  this.uploadAvatar(tempFilePath)
+                }
+              }
+            })
+          }
         })
       }
     })
+  },
+
+  // 上传头像到服务器
+  async uploadAvatar(tempFilePath) {
+    // 显示上传中
+    wx.showLoading({
+      title: '上传中...'
+    })
+
+    try {
+      // 调用上传图片API
+      const { uploadImage } = require('../../utils/api.js')
+      const avatarUrl = await uploadImage(tempFilePath)
+
+      // 更新头像URL
+      this.setData({
+        avatar: avatarUrl
+      })
+
+      wx.hideLoading()
+      wx.showToast({
+        title: '上传成功',
+        icon: 'success'
+      })
+    } catch (error) {
+      wx.hideLoading()
+      console.error('上传头像失败:', error)
+      wx.showToast({
+        title: error.message || '上传失败',
+        icon: 'none'
+      })
+    }
   },
 
   // 保存
@@ -215,7 +267,14 @@ Page({
         experience: formData.experience,
         intro: formData.introduction
       })
-      
+
+      // 如果上传了新头像，同时更新用户表的头像
+      if (avatar) {
+        await updateAvatar({
+          avatar: avatar
+        })
+      }
+
       // 更新本地用户信息
       const app = getApp()
       if (app.globalData.userInfo && app.globalData.userInfo.companionInfo) {
@@ -228,6 +287,9 @@ Page({
           experience: formData.experience,
           intro: formData.introduction
         }
+        // 同时更新用户信息中的头像和昵称
+        app.globalData.userInfo.avatar = avatar
+        app.globalData.userInfo.nickname = formData.nickname
         wx.setStorageSync('userInfo', app.globalData.userInfo)
       }
       

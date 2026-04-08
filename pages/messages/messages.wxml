@@ -10,7 +10,15 @@
       bindlongpress="showActionSheet"
       data-item="{{item}}"
     >
-      <view class="icon-box-wrapper" style="background-color: {{item.bgColor}}">
+      <!-- 陪诊师类型显示头像 -->
+      <view class="avatar-wrapper" wx:if="{{item.type === 'companion' && item.avatar}}">
+        <image class="message-avatar" src="{{item.avatar}}" mode="aspectFill" />
+        <view class="unread-badge" wx:if="{{item.unreadCount > 0}}">
+          <text>{{item.unreadCount > 99 ? '99+' : item.unreadCount}}</text>
+        </view>
+      </view>
+      <!-- 其他类型显示图标 -->
+      <view class="icon-box-wrapper" wx:else style="background-color: {{item.bgColor}}">
         <view class="icon-box">
           <van-icon name="{{item.iconName}}" size="28" color="#fff" />
         </view>

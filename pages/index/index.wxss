@@ -215,6 +215,12 @@
   box-shadow: 0 4rpx 12rpx rgba(64, 158, 255, 0.2);
 }
 
+.hospital-icon {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+}
+
 .hospital-name {
   font-size: 26rpx;
   font-weight: 600;

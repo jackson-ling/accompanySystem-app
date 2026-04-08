@@ -7,9 +7,9 @@ Page({
   data: {
     // 轮播图
     carouselImages: [
-      'https://placehold.co/750x360/409eff/ffffff?text=专业陪诊+安心无忧',
-      'https://placehold.co/750x360/67c23a/ffffff?text=全程陪伴+贴心服务',
-      'https://placehold.co/750x360/e6a23c/ffffff?text=专业代办+省时省力'
+      'https://tse1-mm.cn.bing.net/th/id/OIP-C.b-KqI9bsi9Jfg3DIiS3dXAHaEK?w=333&h=187&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3',
+      'https://tse2-mm.cn.bing.net/th/id/OIP-C.Uia7pwTzAAAue7m55TAHxwHaDt?w=334&h=175&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3',
+      'https://tse4-mm.cn.bing.net/th/id/OIP-C.mC33gUfMoZZIFBNzXGwTxwHaDt?w=319&h=175&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3'
     ],
     
     // 位置信息
@@ -257,6 +257,11 @@ Page({
 
   // 计算两点距离（米）
   calculateDistance(lat1, lon1, lat2, lon2) {
+    // 检查参数是否有效
+    if (!lat1 || !lon1 || !lat2 || !lon2 || isNaN(lat1) || isNaN(lon1) || isNaN(lat2) || isNaN(lon2)) {
+      return 1000 // 返回默认距离1公里
+    }
+    
     const R = 6371000 // 地球半径（米）
     const dLat = (lat2 - lat1) * Math.PI / 180
     const dLon = (lon2 - lon1) * Math.PI / 180
@@ -264,7 +269,14 @@ Page({
               Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
               Math.sin(dLon / 2) * Math.sin(dLon / 2)
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-    return R * c
+    const distance = R * c
+    
+    // 如果计算结果无效，返回默认距离
+    if (isNaN(distance) || !isFinite(distance) || distance < 0) {
+      return 1000
+    }
+    
+    return distance
   },
 
   // 获取数据

@@ -5,6 +5,7 @@ Page({
     chatType: '',
     conversationId: '',
     conversationType: '',
+    targetId: '',
     pageTitle: '',
     messages: [],
     inputText: '',
@@ -18,14 +19,20 @@ Page({
 
   onLoad(options) {
     console.log('消息详情页面加载', options)
-    const { id, type } = options
-    // 映射type到后端需要的类型：service->1, companion->2
-    const typeMap = { service: 1, companion: 2 }
-    const conversationType = typeMap[type] || 1
+    const { id, type, targetId } = options
+    
+    // 获取当前用户头像
+    const app = getApp()
+    if (app.globalData.userInfo && app.globalData.userInfo.avatar) {
+      this.setData({
+        userAvatar: app.globalData.userInfo.avatar
+      })
+    }
     
     this.setData({
       conversationId: id,
       conversationType: type,
+      targetId: targetId || '',
       chatType: type || 'service'
     })
     this.updatePageTitle()
@@ -55,9 +62,15 @@ Page({
   // 加载聊天历史
   async loadChatHistory() {
     try {
-      const typeMap = { service: 1, companion: 2 }
-      const apiType = typeMap[this.data.conversationType] || 1
-      const result = await getChatMessages(apiType)
+      const type = this.data.conversationType
+      // 对于客服消息，targetId 为 0；对于陪诊师消息，使用实际的 targetId
+      let targetId = null
+      if (type === 'service') {
+        targetId = 0
+      } else if (this.data.targetId) {
+        targetId = parseInt(this.data.targetId)
+      }
+      const result = await getChatMessages(type, targetId)
       const messages = (result || []).map(msg => ({
         id: msg.id,
         text: msg.text,
@@ -65,7 +78,7 @@ Page({
         time: this.formatTime(msg.time),
         type: msg.type || 'text'
       }))
-      
+
       this.setData({
         messages: messages
       })
@@ -91,13 +104,13 @@ Page({
     // 如果没有历史记录，根据类型添加欢迎消息
     if (this.data.messages.length === 0) {
       let welcomeText = ''
-      
+
       if (this.data.chatType === 'service') {
         welcomeText = '您好！我是客服，有什么可以帮您的吗？'
       } else if (this.data.chatType === 'companion') {
         welcomeText = '您好，有什么需要帮助的吗？'
       }
-      
+
       if (welcomeText) {
         this.addMessage({
           text: welcomeText,
@@ -177,9 +190,15 @@ Page({
 
     try {
       // 调用后端API发送消息
-      const typeMap = { service: 1, companion: 2 }
-      const apiType = typeMap[this.data.conversationType] || 1
-      await sendChatMessage(apiType, {
+      const type = this.data.conversationType
+      // 对于客服消息，targetId 为 0；对于陪诊师消息，使用实际的 targetId
+      let targetId = null
+      if (type === 'service') {
+        targetId = 0
+      } else if (this.data.targetId) {
+        targetId = parseInt(this.data.targetId)
+      }
+      await sendChatMessage(type, targetId, {
         text: inputText,
         type: 'text'
       })
@@ -248,21 +267,27 @@ Page({
       this.showConfirm('确定要删除该聊天吗？', async () => {
         try {
           // 调用后端API删除聊天会话
-          const typeMap = { service: 1, companion: 2 }
-          const apiType = typeMap[this.data.conversationType] || 1
-          await deleteChatConversation(apiType)
-          
+          const type = this.data.conversationType
+          // 对于客服消息，targetId 为 0；对于陪诊师消息，使用实际的 targetId
+          let targetId = null
+          if (type === 'service') {
+            targetId = 0
+          } else if (this.data.targetId) {
+            targetId = parseInt(this.data.targetId)
+          }
+          await deleteChatConversation(type, targetId)
+
           // 清空本地数据
           this.setData({
             messages: []
           })
           this.saveChatHistory()
-          
+
           wx.showToast({
             title: '删除成功',
             icon: 'success'
           })
-          
+
           setTimeout(() => {
             wx.navigateBack()
           }, 1500)
@@ -379,9 +404,15 @@ Page({
   async sendImageMessage(imageUrl) {
     try {
       // 调用后端API发送消息
-      const typeMap = { service: 1, companion: 2 }
-      const apiType = typeMap[this.data.conversationType] || 1
-      await sendChatMessage(apiType, {
+      const type = this.data.conversationType
+      // 对于客服消息，targetId 为 0；对于陪诊师消息，使用实际的 targetId
+      let targetId = null
+      if (type === 'service') {
+        targetId = 0
+      } else if (this.data.targetId) {
+        targetId = parseInt(this.data.targetId)
+      }
+      await sendChatMessage(type, targetId, {
         text: imageUrl,
         type: 'image'
       })

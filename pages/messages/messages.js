@@ -58,6 +58,7 @@ Page({
       const messages = (result || []).map(item => ({
         id: item.id,
         type: item.type,
+        targetId: item.targetId,
         name: item.name,
         avatar: item.avatar,
         time: item.time,
@@ -66,7 +67,7 @@ Page({
         bgColor: this.getMessageBgColor(item.type),
         iconName: this.getMessageIcon(item.type)
       }))
-      
+
       this.setData({
         messageList: messages
       })
@@ -112,12 +113,13 @@ Page({
   goToDetail(e) {
     const item = e.currentTarget.dataset.item
     const type = item.type || 'service'
+    const targetId = item.targetId || ''
     
     // 标记消息已读
     this.markAsRead(item.id)
     
     wx.navigateTo({
-      url: `/pages/message-detail/message-detail?id=${item.id}&type=${type}`
+      url: `/pages/message-detail/message-detail?id=${item.id}&type=${type}&targetId=${targetId}`
     })
   },
 

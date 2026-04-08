@@ -71,6 +71,16 @@ let mockMessages = [
     icon: 'Gift',
     iconName: 'gift-o',
     unreadCount: 1
+  },
+  {
+    id: '4',
+    type: 'companion',
+    name: '武海艳',
+    time: '10:35',
+    preview: '收到，我会按时到达。',
+    avatar: 'https://project--accompanysystem.oss-cn-beijing.aliyuncs.com/2026/04/43248519-f784-4054-967c-faba7b2eea51.png',
+    targetId: '101',
+    unreadCount: 0
   }
 ]
 

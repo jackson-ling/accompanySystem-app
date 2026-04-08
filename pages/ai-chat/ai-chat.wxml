@@ -6,7 +6,7 @@
       <!-- AI消息 -->
       <view class="message-bubble ai-bubble" wx:if="{{!item.isMe}}">
         <view class="ai-avatar">
-          <van-icon name="user-circle-o" size="48" color="#409eff" />
+          <image src="https://project--accompanysystem.oss-cn-beijing.aliyuncs.com/2026/04/43248519-f784-4054-967c-faba7b2eea51.png" mode="aspectFill" />
         </view>
         <view class="bubble-content">
           <text>{{item.text}}</text>

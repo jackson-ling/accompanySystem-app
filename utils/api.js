@@ -35,6 +35,11 @@ const getUserProfile = () => get('/user/profile')
 const updateUserProfile = (data) => put('/user/profile', data)
 
 /**
+ * 更新用户头像
+ */
+const updateAvatar = (data) => put('/user/avatar', data)
+
+/**
  * 修改密码
  */
 const changePassword = (data) => put('/user/password', data)
@@ -261,7 +266,7 @@ const getConsumptionRecords = (params) => get('/user/consumption', params)
  */
 const getTransactions = (params) => get('/user/transactions', params)
 
-// ============ 消息相关 ============
+// 消息相关
 /**
  * 获取消息会话列表
  */
@@ -283,9 +288,18 @@ const markMessageRead = (id) => put(`/user/messages/${id}/read`)
 const deleteMessage = (id) => del(`/user/messages/${id}`)
 
 // 聊天相关
-const getChatMessages = (type) => get(`/user/chats/${type}`)
-const sendChatMessage = (type, data) => post(`/user/chats/${type}/messages`, data)
-const deleteChatConversation = (type) => del(`/user/chats/${type}`)
+const getChatMessages = (type, targetId) => {
+  const params = targetId !== null && targetId !== undefined ? { targetId } : {}
+  return get(`/user/chats/${type}`, params)
+}
+const sendChatMessage = (type, targetId, data) => {
+  const params = targetId !== null && targetId !== undefined ? { targetId } : {}
+  return post(`/user/chats/${type}/messages`, data, params)
+}
+const deleteChatConversation = (type, targetId) => {
+  const url = (targetId !== null && targetId !== undefined) ? `/user/chats/${type}?targetId=${targetId}` : `/user/chats/${type}`
+  return del(url)
+}
 
 // ============ AI相关 ============
 /**
@@ -344,6 +358,7 @@ module.exports = {
   // 用户相关
   getUserProfile,
   updateUserProfile,
+  updateAvatar,
   changePassword,
   getUserBalance,
   

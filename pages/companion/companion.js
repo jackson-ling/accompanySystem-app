@@ -152,6 +152,11 @@ Page({
 
   // 计算两点之间的距离（单位：米）
   getDistance(lat1, lng1, lat2, lng2) {
+    // 检查参数是否有效
+    if (!lat1 || !lng1 || !lat2 || !lng2 || isNaN(lat1) || isNaN(lng1) || isNaN(lat2) || isNaN(lng2)) {
+      return Infinity // 返回无穷大，表示距离未知
+    }
+    
     const R = 6371000 // 地球半径（米）
     const dLat = (lat2 - lat1) * Math.PI / 180
     const dLng = (lng2 - lng1) * Math.PI / 180
@@ -159,12 +164,19 @@ Page({
               Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
               Math.sin(dLng / 2) * Math.sin(dLng / 2)
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-    return R * c
+    const distance = R * c
+    
+    // 如果计算结果无效，返回无穷大
+    if (isNaN(distance) || !isFinite(distance) || distance < 0) {
+      return Infinity
+    }
+    
+    return distance
   },
 
   // 格式化距离显示
   formatDistance(distance) {
-    if (distance === Infinity) return '未知'
+    if (distance === Infinity || !distance || isNaN(distance)) return '1.0km' // 距离未知时显示1公里
     if (distance < 1000) return Math.round(distance) + 'm'
     return (distance / 1000).toFixed(1) + 'km'
   },

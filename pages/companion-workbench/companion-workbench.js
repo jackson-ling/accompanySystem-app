@@ -124,46 +124,45 @@ experienceUnknown: i18n.t('workbench.experienceUnknown'),
   },
 
   // 加载数据
-  async loadData() {
-    try {
-      // 获取统计数据
-      const statistics = await getCompanionStatistics()
-      
-      // 获取个人信息
-      const profile = await getCompanionProfile()
-      
-      // 获取可接订单
-      const orders = await getAvailableOrders()
-      
-      this.setData({
-        companionInfo: profile,
-        statistics: statistics || {},
-        isOnline: profile.isOnline === 1,
-        pendingOrders: orders || []
-      })
-    } catch (error) {
-      console.error('加载数据失败:', error)
-      // 如果API调用失败，使用本地数据
-      const app = getApp()
-      const userInfo = app.globalData.userInfo
-      
-      if (userInfo && userInfo.isCompanion && userInfo.companionInfo) {
+    async loadData() {
+      try {
+        // 获取统计数据
+        const statistics = await getCompanionStatistics()
+        
+        // 获取个人信息
+        const profile = await getCompanionProfile()
+        
+        // 获取可接订单
+        const orders = await getAvailableOrders()
+        
         this.setData({
-          companionInfo: userInfo.companionInfo,
-          statistics: {
-            todayIncome: 0,
-            todayOrders: 0,
-            rating: userInfo.companionInfo.rating || 5.0,
-            followers: 0,
-            totalOrders: userInfo.companionInfo.orders || 0,
-            workDays: 0
-          },
-          pendingOrders: []
+          companionInfo: profile,
+          statistics: statistics || {},
+          isOnline: profile.isOnline === 1,
+          pendingOrders: orders || []
         })
+      } catch (error) {
+        console.error('加载数据失败:', error)
+        // 如果API调用失败，使用本地数据
+        const app = getApp()
+        const userInfo = app.globalData.userInfo
+        
+        if (userInfo && userInfo.isCompanion && userInfo.companionInfo) {
+          this.setData({
+            companionInfo: userInfo.companionInfo,
+            statistics: {
+              todayIncome: 0,
+              todayOrders: 0,
+              rating: userInfo.companionInfo.rating || 5.0,
+              followers: 0,
+              totalOrders: userInfo.companionInfo.orders || 0,
+              workDays: 0
+            },
+            pendingOrders: []
+          })
+        }
       }
-    }
-  },
-
+    },
   // 切换在线状态
   async toggleStatus() {
     const newStatus = !this.data.isOnline

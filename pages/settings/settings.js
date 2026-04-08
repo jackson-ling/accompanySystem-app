@@ -1,4 +1,4 @@
-const { logout, updateUserProfile, uploadImage } = require('../../utils/api.js')
+const { logout, updateUserProfile, updateAvatar, uploadImage } = require('../../utils/api.js')
 
 Page({
   data: {
@@ -113,7 +113,7 @@ Page({
       sourceType: ['album', 'camera'],
       success: (res) => {
         const tempFilePath = res.tempFilePaths[0]
-        
+
         // 简单的文件大小检查
         wx.getFileInfo({
           filePath: tempFilePath,
@@ -125,9 +125,25 @@ Page({
               })
               return
             }
-            
-            // 更新头像
-            this.updateAvatar(tempFilePath)
+
+            // 预览图片并询问是否上传
+            wx.previewImage({
+              urls: [tempFilePath],
+              success: () => {
+                wx.showModal({
+                  title: '确认上传',
+                  content: '是否上传这张图片作为新头像？',
+                  confirmText: '确认上传',
+                  cancelText: '取消',
+                  success: (modalRes) => {
+                    if (modalRes.confirm) {
+                      // 用户确认上传
+                      this.updateAvatar(tempFilePath)
+                    }
+                  }
+                })
+              }
+            })
           }
         })
       }
@@ -144,8 +160,8 @@ Page({
       // 上传图片到服务器
       const avatarUrl = await uploadImage(filePath)
       
-      // 更新用户头像
-      await updateUserProfile({
+      // 调用专门的更新头像接口
+      await updateAvatar({
         avatar: avatarUrl
       })
       
@@ -153,6 +169,10 @@ Page({
       const app = getApp()
       if (app.globalData.userInfo) {
         app.globalData.userInfo.avatar = avatarUrl
+        // 同时更新陪诊师信息中的头像（如果是陪诊师）
+        if (app.globalData.userInfo.companionInfo) {
+          app.globalData.userInfo.companionInfo.avatar = avatarUrl
+        }
         wx.setStorageSync('userInfo', app.globalData.userInfo)
         
         this.setData({

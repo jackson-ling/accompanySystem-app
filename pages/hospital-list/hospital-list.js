@@ -127,6 +127,11 @@ Page({
 
   // 计算两点距离（米）
   calculateDistance(lat1, lon1, lat2, lon2) {
+    // 检查参数是否有效
+    if (!lat1 || !lon1 || !lat2 || !lon2 || isNaN(lat1) || isNaN(lon1) || isNaN(lat2) || isNaN(lon2)) {
+      return 1000 // 返回默认距离1公里
+    }
+    
     const R = 6371000 // 地球半径（米）
     const dLat = (lat2 - lat1) * Math.PI / 180
     const dLon = (lon2 - lon1) * Math.PI / 180
@@ -134,7 +139,14 @@ Page({
               Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
               Math.sin(dLon / 2) * Math.sin(dLon / 2)
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-    return R * c
+    const distance = R * c
+    
+    // 如果计算结果无效，返回默认距离
+    if (isNaN(distance) || !isFinite(distance) || distance < 0) {
+      return 1000
+    }
+    
+    return distance
   },
 
   // 跳转到医院详情
